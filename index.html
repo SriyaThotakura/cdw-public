@@ -23,6 +23,8 @@
   
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
   <!-- This loads the Roboto font from Google Fonts for use on our page -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- This loads the DM Sans font for modern timeline styling -->
   
   <link rel="stylesheet" href="style.css">
   <!-- This links our CSS file to style the page - the href points to our style.css file -->
@@ -76,7 +78,7 @@
     <div class="section-title">Digital Object 2: Temporal Structures</div>
     <!-- Section heading for the D3.js data visualization demonstration -->
     
-    <p>This section explores temporal data visualization using D3.js, demonstrating how to create interactive timelines and event-based visualizations that help understand temporal patterns and relationships in data.</p>
+
     <!-- Introduction to the first section -->
 
 
@@ -85,36 +87,27 @@
     <!-- ADD A NEW 'CANVAS CONTAINER' FOR EACH NEW D3.JS SKETCH (THE ORDER IS DEFINED BY THE CONTAINER NUMBER BELOW + THE MOST RECENT SKETCH SHOULD BE AT THE TOP) -->
 
     <!-- Section for D3.js Foundation -->
-    <div class="section-title">D3.js Foundation: Basic Setup and Axes</div>
-    <p>A foundational D3.js example demonstrating the core concepts needed to get started with data visualization. This example shows how to set up an SVG container, create scales to map data to pixels, and draw basic axes. It covers the essential building blocks that all D3.js visualizations are built upon.</p>
-    
-    <!-- Canvas container for D3.js foundation (d3-testing.js) -->
-    <div id="d3-container-0"></div>
+
 
     <!-- Section for first D3.js sketch (events-simple.js) -->
-    <div class="section-title">D3.js Foundation: Timeline with Events</div>
-    <p>A foundational D3.js example demonstrating core concepts including scales, axes, data binding, and event handling. This timeline shows project milestones with interactive tooltips and color-coded categories.</p>
-    
     <!-- Canvas container for first D3.js sketch (events-simple.js) -->
     <div id="d3-container-1"></div>
 
     <!-- Section for second D3.js sketch (concurrent-events.js) -->
     <div class="section-title">Gantt Chart: Concurrent Events and Project Timeline</div>
-    <p>A Gantt chart visualization showing project phases with start and end dates, demonstrating how to visualize concurrent activities and project dependencies. Features include progress tracking, interactive tooltips, and a current date indicator.</p>
     
     <!-- Canvas container for second D3.js sketch (concurrent-events.js) -->
     <div id="d3-container-2"></div>
 
     <!-- Section for third D3.js sketch (concurrent-events-cvs.js) -->
-    <div class="section-title">Historic Timeline: Loading Data from CSV File</div>
-    <p>A historic timeline visualization that demonstrates how to load temporal data from external CSV files using D3.js. This example shows the process of parsing CSV data, converting date strings to Date objects, and creating visualizations from external data sources. Includes error handling for file loading issues.</p>
-    
+    <div class="section-title">Historic Timeline: Art Movements</div>
+    <p class="timeline-description">A creative, color-coded tangled timeline of major art movements from 1400 to today, highlighting overlaps and transitions with modern, vibrant design.</p>
     <!-- Canvas container for third D3.js sketch (concurrent-events-cvs.js) -->
     <div id="d3-container-3"></div>
 
     <!-- Section for Calendar Visualization -->
-    <div class="section-title">Calendar Heatmap: Daily Data Visualization</div>
-    <p>A calendar heatmap visualization inspired by GitHub's contribution graph, demonstrating how to create a year-view calendar with daily data points. This example shows how to use D3.js to create a grid-based layout where each cell represents a day, with color intensity indicating data values.</p>
+    <div class="section-title">Rainfall Data Calendar Heatmap</div>
+    <p>This calendar heatmap visualizes daily rainfall (mm) using a color scale, allowing you to see rainfall patterns and seasonality over multiple years. Each cell represents a day, colored by rainfall measured in the dataset.</p>
         
     <!-- Canvas container for calendar visualization (calendar-heatmap.js) -->
     <div id="d3-container-4"></div>
