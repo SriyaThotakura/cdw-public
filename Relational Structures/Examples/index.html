@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- This tells the browser this is an HTML5 document - always include this at the top -->
+<html lang="en">
+<!-- The html tag is the root element that contains everything on the page -->
+<!-- lang="en" tells the browser this page is in English -->
+
+<head>
+  <!-- The head section contains information about the page, not visible content -->
+
+
+  <!-- ------------------------------------------------------------ -->
+  <!-- Load D3.js library from CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- This loads the D3.js library which provides functions for creating data visualizations -->
+  <!-- ------------------------------------------------------------ -->
+
+  
+  <meta charset="UTF-8">
+  <!-- This sets the character encoding to UTF-8, which supports special characters and emojis -->
+  
+  <title>Module 1</title>
+  <!-- This is the title that appears in the browser tab and bookmarks -->
+  
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- This loads the Roboto font from Google Fonts for use on our page -->
+  
+  <link rel="stylesheet" href="style.css">
+  <!-- This links our CSS file to style the page - the href points to our style.css file -->
+</head>
+
+<body>
+  <!-- The body contains all the visible content that users will see on the page -->
+  
+  <header>
+    <!-- The header is typically used for navigation and site branding -->
+    
+    <div class="left">Columbia GSAPP</div>
+    <!-- This div creates a container for the left side of the header -->
+    <!-- class="left" allows us to style this specific div with CSS -->
+    
+    <div class="center">
+      <!-- This div creates a container for the center of the header -->
+      Computational Design Workflows<br>
+      <!-- This is the main text in the center -->
+      <!-- <br> creates a line break, moving the next text to a new line -->
+      <span>Exploration of Digital Objects</span>
+      <!-- span is an inline element that groups text without creating a new line -->
+      <!-- class="center" allows us to style this span differently -->
+    </div>
+    
+    <div class="right">About</div>
+    <!-- This div creates a container for the right side of the header -->
+    <!-- <a href="#">About</a> creates a clickable link (currently goes nowhere with #) -->
+  </header>
+
+  <main>
+    <!-- The main tag contains the primary content of the page -->
+    
+    <div class="project-meta">2025</div>
+    <!-- This div displays the year/project metadata -->
+    <!-- class="project-meta" allows us to style this with CSS -->
+    
+    <div class="project-title">Website Title</div>
+    <!-- This div displays the main project title -->
+    <!-- class="project-title" allows us to style this with CSS -->
+    
+    <div class="project-subtitle">Student Name</div>
+    <!-- This div displays the student's name as a subtitle -->
+    <!-- class="project-subtitle" allows us to style this with CSS -->
+    
+    <div class="advisor">Advisor Name</div>
+    <!-- This div displays advisor information -->
+    <!-- <br> creates a line break -->
+    <!-- <strong> makes the text bold for emphasis -->
+    
+    <div class="section-title">Digital Object 3: Relational Structures</div>
+    <!-- Section heading for the D3.js data visualization demonstration -->
+    
+    <p>This section explores relational data visualization using D3.js, demonstrating how to create interactive network graphs and relationship visualizations that help understand connections and patterns in complex data structures.</p>
+    <!-- Introduction to the first section -->
+
+
+    <!-- ------------------------------------------------------------ -->
+
+    <!-- ADD A NEW 'CANVAS CONTAINER' FOR EACH NEW D3.JS SKETCH (THE ORDER IS DEFINED BY THE CONTAINER NUMBER BELOW + THE MOST RECENT SKETCH SHOULD BE AT THE TOP) -->
+
+    <!-- Section for first D3.js sketch (graph-simple-01.js) -->
+    <div class="section-title">D3.js Foundation: Simple Force-Directed Graph</div>
+    <p>A basic D3.js example demonstrating core force simulation concepts. This simple network graph shows basic connections between nodes with drag interactions and force-directed layout. Features include basic node and link visualization with automatic positioning.</p>
+    
+    <!-- Canvas container for first D3.js sketch (graph-simple-01.js) -->
+    <div id="d3-container-1"></div>
+
+    <!-- Section for second D3.js sketch (graph-simple-02.js) -->
+    <div class="section-title">D3.js Advanced: Interactive Network Graph with Enhanced Features</div>
+    <p>An advanced D3.js example demonstrating enhanced features including custom data properties, relationship types, interactive tooltips, and dynamic visual encoding. This network graph shows relationships between people with different roles, departments, and connection strengths. Features include drag interactions, hover effects with tooltips, and dynamic visual encoding based on data properties.</p>
+    
+    <!-- Canvas container for second D3.js sketch (graph-simple-02.js) -->
+    <div id="d3-container-2"></div>
+
+    <!-- Section for third D3.js sketch (graph-from-csv.js) -->
+    <div class="section-title">D3.js CSV Integration: Network Graph with External Data Sources</div>
+    <p>A demonstration of loading network data from external CSV files, showing how to separate data from visualization logic. This example loads node and edge data from separate CSV files, processes the data types appropriately, and creates the same interactive network visualization. This approach enables easy data updates without modifying code and supports larger datasets. <strong>Note: This example requires running the HTML file in a local server due to browser security restrictions when loading external CSV files. If you're unsure how to set up a local server, please refer to the "Running a Local Server Tutorial" in the course materials.</strong></p>
+    
+    <!-- Canvas container for third D3.js sketch (graph-from-csv.js) -->
+    <div id="d3-container-3"></div>
+
+    <!-- ------------------------------------------------------------ -->
+    
+  </main>
+  <!-- End of main content area -->
+  
+
+  <!-- ------------------------------------------------------------ -->
+
+  <!-- LOAD EACH NEW D3.JS SCRIPT HERE -->
+
+  <script src="graph-simple-01.js"></script>
+  <script src="graph-simple-02.js"></script>
+  <script src="graph-from-csv.js"></script>
+
+  <!-- ------------------------------------------------------------ -->
+
+
+</body>
+<!-- End of body - all visible content goes above this line -->
+</html>
+<!-- End of HTML document -->
