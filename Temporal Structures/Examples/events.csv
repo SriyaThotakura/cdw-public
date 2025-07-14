@@ -1,20 +1,20 @@
-name,start,end,category,parent
-Renaissance,1400,1600,Early Period,
-Baroque,1600,1750,Classical,Renaissance
-Neoclassicism,1750,1830,Classical,Baroque
-Romanticism,1800,1850,Classical,Neoclassicism
-Realism,1840,1880,Modern,Romanticism
-Impressionism,1860,1890,Avant-garde,Realism
-Post-Impressionism,1880,1905,Avant-garde,Impressionism
-Art Nouveau,1890,1910,Experimental,Post-Impressionism
-Fauvism,1900,1910,Modern,Post-Impressionism
-Cubism,1907,1920,Modern,Fauvism
-Expressionism,1905,1920,Avant-garde,Post-Impressionism
-Dada,1916,1924,Experimental,Expressionism
-Surrealism,1924,1966,Experimental,Dada
-Abstract Expressionism,1940,1960,Contemporary,Surrealism
-Pop Art,1950,1970,Contemporary,Abstract Expressionism
-Minimalism,1960,1975,Contemporary,Abstract Expressionism
-Conceptual Art,1960,1980,Experimental,Minimalism
-Postmodernism,1970,1990,Modern,Conceptual Art
-Contemporary Art,1980,2024,Contemporary,Postmodernism
+name,start,end,category
+Renaissance,1400,1600,Early Period
+Baroque,1600,1750,Classical
+Neoclassicism,1750,1830,Classical
+Romanticism,1800,1850,Classical
+Realism,1840,1880,Modern
+Impressionism,1860,1890,Avant-garde
+Post-Impressionism,1880,1905,Avant-garde
+Art Nouveau,1890,1910,Experimental
+Fauvism,1900,1910,Modern
+Cubism,1907,1920,Modern
+Expressionism,1905,1920,Avant-garde
+Dada,1916,1924,Experimental
+Surrealism,1924,1966,Experimental
+Abstract Expressionism,1940,1960,Contemporary
+Pop Art,1950,1970,Contemporary
+Minimalism,1960,1975,Contemporary
+Conceptual Art,1960,1980,Experimental
+Postmodernism,1970,1990,Modern
+Contemporary Art,1980,2024,Contemporary
