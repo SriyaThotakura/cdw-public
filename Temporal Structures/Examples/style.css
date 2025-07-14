@@ -143,6 +143,41 @@ button:hover {
   margin-bottom: 60px;                /* Extra space after the last canvas */
 }
 
+/* Hurricane spiral spin animation */
+@keyframes hurricane-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.hurricane-spiral path {
+  animation: hurricane-spin 2.5s linear infinite, hurricane-color-shift 3.5s linear infinite;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  stroke: #00bfff;
+}
+
+.catastrophic-spiral path {
+  animation: hurricane-spin 2.5s linear infinite, catastrophic-color-shift 2.2s linear infinite !important;
+  stroke: #ff1a1a !important;
+}
+
+@keyframes catastrophic-color-shift {
+  0%   { stroke: #ff1a1a; }
+  20%  { stroke: #ff3333; }
+  40%  { stroke: #ff4d4d; }
+  60%  { stroke: #ff6666; }
+  80%  { stroke: #ff0000; }
+  100% { stroke: #ff1a1a; }
+}
+
+@keyframes hurricane-color-shift {
+  0%   { stroke: #00bfff; }
+  20%  { stroke: #00ffea; }
+  40%  { stroke: #6a5acd; }
+  60%  { stroke: #ff00cc; }
+  80%  { stroke: #ffd700; }
+  100% { stroke: #00bfff; }
+}
+
 /* Style for D3.js tooltips */
 .tooltip {
   z-index: 1000;                      /* Ensure tooltip appears above other elements */

@@ -7,11 +7,13 @@
   const width = 800 - margin.left - margin.right;
   const height = 400 - margin.top - margin.bottom;
 
-  // Create SVG element
+  // Create SVG element with magenta background
+  d3.select('#d3-container-2').style('background', '#e600ff');
   const svg = d3.select('#d3-container-2')
     .append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
+    .style('background', '#e600ff')
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -86,69 +88,51 @@
     .tickFormat(d3.timeFormat('%b %Y'))
     .tickSize(-height);
 
-  // Add x-axis to SVG
-  svg.append('g')
-    .attr('class', 'x-axis')
-    .attr('transform', `translate(0, ${height})`)
-    .call(xAxis)
-    .selectAll('line')
-    .attr('stroke', '#e0e0e0')
-    .attr('stroke-dasharray', '2,2');
 
-  // Style the axis
-  svg.select('.x-axis')
-    .selectAll('text')
-    .style('font-size', '11px')
-    .style('fill', '#666');
 
-  // Add axis title
-  svg.append('text')
-    .attr('x', width / 2)
-    .attr('y', height + 35)
-    .attr('text-anchor', 'middle')
-    .style('font-size', '14px')
-    .style('fill', '#333')
-    .text('Timeline');
 
-  // Add event bars (Gantt chart bars)
-  const eventBars = svg.selectAll('.event-bar')
+
+  // Color palette for bars (matching image)
+  const palette = ['#2196f3', '#00c9a7', '#ffc107', '#ff9800', '#fff', '#00c9a7'];
+  // Assign color by event index
+  function barColor(i) { return palette[i % palette.length]; }
+
+  // Draw colored rounded bars
+  const barRadius = 18;
+  svg.selectAll('.event-bar')
     .data(events)
     .enter()
     .append('rect')
     .attr('class', 'event-bar')
     .attr('x', d => timeScale(d.start))
-    .attr('y', d => yScale(d.name))
+    .attr('y', (d, i) => yScale(d.name) + 8)
     .attr('width', d => timeScale(d.end) - timeScale(d.start))
-    .attr('height', yScale.bandwidth())
-    .attr('fill', d => colorScale(d.category))
+    .attr('height', yScale.bandwidth() - 16)
+    .attr('rx', barRadius)
+    .attr('ry', barRadius)
+    .attr('fill', (d, i) => barColor(i))
+    .attr('stroke', 'none')
+    .style('opacity', 1);
+
+  // Draw white outlined "inactive" bars (background floats)
+  svg.selectAll('.event-outline')
+    .data(events)
+    .enter()
+    .append('rect')
+    .attr('class', 'event-outline')
+    .attr('x', d => timeScale.range()[0] + 10)
+    .attr('y', (d, i) => yScale(d.name) + 4)
+    .attr('width', width - 20)
+    .attr('height', yScale.bandwidth() - 8)
+    .attr('rx', barRadius)
+    .attr('ry', barRadius)
+    .attr('fill', 'none')
     .attr('stroke', '#fff')
-    .attr('stroke-width', 1)
-    .style('cursor', 'pointer')
-    .style('opacity', 0.8)
-    .on('mouseover', function(event, d) {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .style('opacity', 1)
-        .attr('stroke-width', 2);
-      
-      // Show tooltip
-      showTooltip(event, d);
-    })
-    .on('mouseout', function() {
-      d3.select(this)
-        .transition()
-        .duration(200)
-        .style('opacity', 0.8)
-        .attr('stroke-width', 1);
-      
-      // Hide tooltip
-      hideTooltip();
-    })
-    .on('click', function(event, d) {
-      console.log('Event clicked:', d);
-      // Add click functionality here
-    });
+    .attr('stroke-width', 2.2)
+    .attr('opacity', 0.9);
+
+  // Bring colored bars above outlines
+  svg.selectAll('.event-bar').raise();
 
   // Add progress bars (overlay on event bars)
   const progressBars = svg.selectAll('.progress-bar')
@@ -169,7 +153,13 @@
     .enter()
     .append('g')
     .attr('class', 'event-label-group')
-    .attr('transform', d => `translate(-10, ${yScale(d.name) + yScale.bandwidth() / 2})`)
+    .attr('transform', (d, i) => {
+      // Center horizontally in bar
+      const x = (timeScale(d.start) + timeScale(d.end)) / 2;
+      // Center vertically in bar
+      const y = yScale(d.name) + yScale.bandwidth() / 2;
+      return `translate(${x}, ${y})`;
+    })
     .style('pointer-events', 'none');
 
   // Function to split text into two lines
@@ -199,11 +189,14 @@
     .append('text')
     .attr('class', 'event-label-line1')
     .attr('x', 0)
-    .attr('y', -6)
-    .attr('text-anchor', 'end')
+    .attr('y', -7)
+    .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .style('font-size', '11px')
-    .style('fill', '#333')
+    .style('font-size', '12px')
+    .style('font-family', 'Inter, Montserrat, Arial, system-ui, sans-serif')
+    .style('font-weight', 'bold')
+    .style('fill', '#fff')
+    .style('text-shadow', '1px 1px 4px #a200a2')
     .text(d => splitTextIntoTwoLines(d.name)[0]);
 
   // Add second line of text
@@ -211,11 +204,14 @@
     .append('text')
     .attr('class', 'event-label-line2')
     .attr('x', 0)
-    .attr('y', 6)
-    .attr('text-anchor', 'end')
+    .attr('y', 9)
+    .attr('text-anchor', 'middle')
     .attr('dominant-baseline', 'middle')
-    .style('font-size', '11px')
-    .style('fill', '#333')
+    .style('font-size', '12px')
+    .style('font-family', 'Inter, Montserrat, Arial, system-ui, sans-serif')
+    .style('font-weight', 'bold')
+    .style('fill', '#fff')
+    .style('text-shadow', '1px 1px 4px #a200a2')
     .text(d => splitTextIntoTwoLines(d.name)[1]);
 
   // Create tooltip
@@ -223,11 +219,14 @@
     .append('div')
     .attr('class', 'tooltip')
     .style('position', 'absolute')
-    .style('background', 'rgba(0, 0, 0, 0.8)')
-    .style('color', 'white')
-    .style('padding', '8px 12px')
-    .style('border-radius', '4px')
-    .style('font-size', '12px')
+    .style('background', 'rgba(0, 0, 0, 0.92)')
+    .style('color', '#fff')
+    .style('padding', '12px 18px')
+    .style('border-radius', '8px')
+    .style('font-size', '18px')
+    .style('font-family', 'Inter, Montserrat, Arial, system-ui, sans-serif')
+    .style('font-weight', 'bold')
+    .style('text-shadow', '1px 1px 4px #a200a2')
     .style('pointer-events', 'none')
     .style('opacity', 0)
     .style('transition', 'opacity 0.2s');
@@ -257,32 +256,7 @@
       .style('opacity', 0);
   }
 
-  // Add legend
-  const legend = svg.append('g')
-    .attr('class', 'legend')
-    .attr('transform', `translate(${width - 150}, 20)`);
 
-  const legendItems = legend.selectAll('.legend-item')
-    .data(['planning', 'design', 'development', 'testing', 'documentation', 'deployment'])
-    .enter()
-    .append('g')
-    .attr('class', 'legend-item')
-    .attr('transform', (d, i) => `translate(0, ${i * 18})`);
-
-  legendItems.append('rect')
-    .attr('width', 12)
-    .attr('height', 12)
-    .attr('fill', d => colorScale(d))
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1);
-
-  legendItems.append('text')
-    .attr('x', 18)
-    .attr('y', 9)
-    .attr('dominant-baseline', 'middle')
-    .style('font-size', '11px')
-    .style('fill', '#333')
-    .text(d => d.charAt(0).toUpperCase() + d.slice(1));
 
   // Add today's line (current date indicator)
   const today = new Date();

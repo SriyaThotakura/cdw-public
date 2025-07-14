@@ -24,11 +24,18 @@
   // Load and process the CSV data
   d3.csv("synthetic-data.csv", d => ({ // Load CSV file and transform each row
     Date: d3.utcParse("%-m/%-d/%Y")(d.Date), // Parse date string to Date object
-    Value: +d.Close // Convert close price string to number (now treated as direct value)
+    Value: +d.Rainfall_mm // Use rainfall amount in mm
   })).then(function(data) { // Handle successful data loading
     
     // Define a diverging and symmetric color scale for the full range -100 to +100
-    const color = d3.scaleSequential(d3.interpolatePiYG).domain([-100, +100]); // Create color scale from pink to green for -100 to +100
+    const color = d3.scaleSequential()
+      .domain([0, 120])
+      .interpolator(d3.interpolateRgbBasis([
+        "#f6fbff", // pale blue
+        "#7be3e6", // aqua
+        "#2196f3", // bright blue
+        "#005377"  // deep sea blue
+      ])); // Sea shades blue scale for rainfall
 
     // Group data by year, in reverse input order. (Since the dataset is chronological,
     // this will show years in reverse chronological order.)
@@ -75,19 +82,28 @@
         .attr("dy", "0.31em") // Adjust vertical alignment
         .text(formatDay); // Set text to day abbreviation
 
-    // Add calendar cells (rectangles for each trading day)
-    year.append("g") // Add group for calendar cells
-      .selectAll() // Select all elements (initially empty)
-      .data(([, values]) => values.filter(d => ![0, 6].includes(d.Date.getUTCDay()))) // Filter to exclude weekends (0=Sunday, 6=Saturday)
-      .join("rect") // Create/update rectangle elements
-        .attr("width", cellSize - 1) // Set rectangle width (slightly smaller than cell for spacing)
-        .attr("height", cellSize - 1) // Set rectangle height
-        .attr("x", d => timeWeek.count(d3.utcYear(d.Date), d.Date) * cellSize + 0.5) // Position horizontally by week number
-        .attr("y", d => countDay(d.Date.getUTCDay()) * cellSize + 0.5) // Position vertically by day of week
-        .attr("fill", d => color(d.Value)) // Color based on direct value
-      .append("title") // Add tooltip
-        .text(d => `${formatDate(d.Date)}
-Value: ${formatValue(d.Value)}`); // Tooltip shows date and value
+    // Function to create a drop shape path centered at (cx, cy)
+    function dropPath(cx, cy, size) {
+      const w = size * 0.8, h = size * 1.1;
+      return `M ${cx} ${cy - h/2}
+        C ${cx + w/2} ${cy - h/4}, ${cx + w/2} ${cy + h/3}, ${cx} ${cy + h/2}
+        C ${cx - w/2} ${cy + h/3}, ${cx - w/2} ${cy - h/4}, ${cx} ${cy - h/2}
+        Z`;
+    }
+
+    // Add calendar cells (drop shapes for each day)
+    year.append("g")
+      .selectAll("path")
+      .data(d => d[1])
+      .join("path")
+        .attr("d", d => {
+          const x = d3.utcMonday.count(d3.utcYear(d.Date), d.Date) * cellSize + cellSize/2 + 1;
+          const y = d.Date.getUTCDay() * cellSize + cellSize/2 + 1;
+          return dropPath(x, y, cellSize - 2);
+        })
+        .attr("fill", d => color(d.Value))
+      .append("title")
+        .text(d => `${formatDate(d.Date)}\nRainfall: ${formatValue(d.Value)} mm`);
 
     // Add month separators and labels
     const month = year.append("g") // Add group for month elements
@@ -121,14 +137,14 @@ Value: ${formatValue(d.Value)}`); // Tooltip shows date and value
 
     // Create scale for legend axis
     const legendScale = d3.scaleLinear() // Create linear scale
-      .domain([-100, +100]) // Scale from -100 to +100
+      .domain([0, 120]) // Scale from 0 to 120 mm
       .range([0, legendWidth - 20]); // Map to legend width
 
     // Create axis for legend
     const legendAxis = d3.axisBottom(legendScale) // Create bottom-oriented axis
       .tickSize(6) // Set tick mark size
       .tickFormat(formatValue) // Format ticks as integers
-      .tickValues([-100, -50, 0, 50, 100]); // Set specific tick values to show the full range clearly
+      .tickValues([0, 30, 60, 90, 120]); // Set specific tick values to show the full range clearly
 
     // Add axis to legend
     legendSvg.append("g") // Add group for axis
@@ -149,7 +165,7 @@ Value: ${formatValue(d.Value)}`); // Tooltip shows date and value
       .data(d3.ticks(0, 1, 10)) // Bind data for 10 evenly spaced values
       .enter().append("stop") // Create stop elements
       .attr("offset", d => `${d * 100}%`) // Set offset as percentage
-      .attr("stop-color", d => color(d3.scaleLinear().domain([0, 1]).range([-100, +100])(d))); // Set color using same scale as main chart
+      .attr("stop-color", d => color(d3.scaleLinear().domain([0, 1]).range([0, 120])(d))); // Set color using rainfall scale
 
     // Add gradient rectangle to legend
     legendSvg.append("rect") // Add rectangle element
@@ -165,7 +181,7 @@ Value: ${formatValue(d.Value)}`); // Tooltip shows date and value
       .attr("y", legendHeight - 25) // Position above gradient
       .attr("text-anchor", "middle") // Center-align text
       .style("font-size", "12px") // Set font size
-      .text("Daily Value (-100 to +100)"); // Set text content
+      .text("Rainfall (mm)"); // Set text content
 
   }).catch(function(error) { // Handle errors in data loading
     console.error("Error loading the CSV file:", error); // Log error to console

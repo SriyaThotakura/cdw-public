@@ -76,53 +76,91 @@
     .text('Major Hurricanes (2018-2024)');
 
   // Add events as circles with size based on damage
-  const eventCircles = svg.selectAll('.event-circle')
+  // Spiral generator for hurricane events
+  function spiralPath(cx, cy, r0, r1, turns) {
+    const points = 60;
+    let path = '';
+    for (let i = 0; i <= points; i++) {
+      const t = i / points * Math.PI * 2 * turns;
+      const r = r0 + (r1 - r0) * (i / points);
+      const x = cx + Math.cos(t) * r;
+      const y = cy + Math.sin(t) * r;
+      path += i === 0 ? `M${x},${y}` : `L${x},${y}`;
+    }
+    return path;
+  }
+
+  const eventGroups = svg.selectAll('.event-marker')
     .data(events)
     .enter()
-    .append('circle')
-    .attr('class', 'event-circle')
-    .attr('cx', d => timeScale(d.date))
-    .attr('cy', (d, i) => height - 100 - (i * 25)) // Y increases over time (earlier events at bottom)
-    .attr('r', d => {
-      // Size based on damage amount
+    .append('g')
+    .attr('class', 'event-marker')
+    .attr('transform', (d, i) => `translate(${timeScale(d.date)}, ${height - 100 - (i * 25)})`)
+    .classed('hurricane-spiral', d => (['major','catastrophic'].includes(d.category)) && d.date.getFullYear() >= 2018 && d.date.getFullYear() <= 2024)
+    .classed('catastrophic-spiral', d => d.category === 'catastrophic' && d.date.getFullYear() >= 2018 && d.date.getFullYear() <= 2024);
+
+  // Draw a smooth curve connecting all event markers in order
+  const eventPoints = events.map((d, i) => [timeScale(d.date), height - 100 - (i * 25)]);
+  const lineGenerator = d3.line().curve(d3.curveBasis);
+  svg.append('path')
+    .attr('d', lineGenerator(eventPoints))
+    .attr('fill', 'none')
+    .attr('stroke', '#b1b1b1')
+    .attr('stroke-width', 2.5)
+    .attr('opacity', 0.6);
+
+  eventGroups.each(function(d, i) {
+    const g = d3.select(this);
+    if ((['major','catastrophic'].includes(d.category)) && d.date.getFullYear() >= 2018 && d.date.getFullYear() <= 2024) {
+      // Draw hurricane-like spiral for major hurricanes (2018-2024)
+      // More open, thicker spiral
+      g.append('path')
+        .attr('d', spiralPath(0, 0, 5, 22, 2.2)) // much larger spiral
+        .attr('fill', 'none')
+        
+        .attr('stroke-width', 2)
+        .attr('opacity', 0.9)
+        .style('cursor', 'pointer');
+      // Add hurricane 'eye'
+      g.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 7)
+        .attr('fill', 'white')
+        .attr('stroke', '#bbb')
+        .attr('stroke-width', 1.5)
+        .attr('opacity', 1);
+    
+    } else {
+      // Draw regular circle for other events
       const damage = parseFloat(d.damage.replace(/[^0-9.]/g, ''));
-      if (damage > 50) return 12; // Catastrophic
-      if (damage > 10) return 10; // Major
-      return 8; // Minor
-    })
-    .attr('fill', d => colorScale(d.category))
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 2)
-    .style('cursor', 'pointer')
-    .style('opacity', 0.8)
+      let r = 8;
+      if (damage > 50) r = 12;
+      else if (damage > 10) r = 10;
+      g.append('circle')
+        .attr('r', r)
+        .attr('fill', colorScale(d.category))
+        .attr('stroke', '#fff')
+        .attr('stroke-width', 2)
+        .style('cursor', 'pointer')
+        .style('opacity', 0.8);
+    }
+  });
+
+  // Tooltip and interaction
+  eventGroups
     .on('mouseover', function(event, d) {
-      d3.select(this)
+      d3.select(this).select('circle,path')
         .transition()
         .duration(200)
-        .attr('r', d => {
-          const damage = parseFloat(d.damage.replace(/[^0-9.]/g, ''));
-          if (damage > 50) return 16;
-          if (damage > 10) return 14;
-          return 12;
-        })
-        .style('opacity', 1);
-      
-      // Show tooltip
+        .attr('opacity', 1);
       showTooltip(event, d);
     })
     .on('mouseout', function(event, d) {
-      d3.select(this)
+      d3.select(this).select('circle,path')
         .transition()
         .duration(200)
-        .attr('r', d => {
-          const damage = parseFloat(d.damage.replace(/[^0-9.]/g, ''));
-          if (damage > 50) return 12;
-          if (damage > 10) return 10;
-          return 8;
-        })
-        .style('opacity', 0.8);
-      
-      // Hide tooltip
+        .attr('opacity', 0.8);
       hideTooltip();
     })
     .on('click', function(event, d) {
@@ -194,11 +232,58 @@
     .attr('class', 'legend-item')
     .attr('transform', (d, i) => `translate(0, ${i * 20})`);
 
-  legendItems.append('circle')
-    .attr('r', 6)
-    .attr('fill', d => colorScale(d))
-    .attr('stroke', '#fff')
-    .attr('stroke-width', 1);
+  legendItems.each(function(d) {
+  const g = d3.select(this);
+  if (d === 'catastrophic') {
+    // Catastrophic: red spiral
+    g.append('svg')
+      .attr('width', 28)
+      .attr('height', 28)
+      .attr('x', -10)
+      .attr('y', -10)
+      .append('g')
+      .attr('class', 'hurricane-spiral catastrophic-spiral')
+      .attr('transform', 'translate(14,14)')
+      .append('path')
+      .attr('d', spiralPath(0, 0, 4, 11, 2.2))
+      .attr('fill', 'none')
+      .attr('stroke-width', 2)
+      .attr('opacity', 0.9);
+    g.select('svg g')
+      .append('circle')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('r', 4)
+      .attr('fill', 'white')
+      .attr('stroke', '#bbb')
+      .attr('stroke-width', 1.2)
+      .attr('opacity', 1);
+  } else {
+    // Major: rainbow spiral
+    g.append('svg')
+      .attr('width', 28)
+      .attr('height', 28)
+      .attr('x', -10)
+      .attr('y', -10)
+      .append('g')
+      .attr('class', 'hurricane-spiral')
+      .attr('transform', 'translate(14,14)')
+      .append('path')
+      .attr('d', spiralPath(0, 0, 4, 11, 2.2))
+      .attr('fill', 'none')
+      .attr('stroke-width', 2)
+      .attr('opacity', 0.9);
+    g.select('svg g')
+      .append('circle')
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('r', 4)
+      .attr('fill', 'white')
+      .attr('stroke', '#bbb')
+      .attr('stroke-width', 1.2)
+      .attr('opacity', 1);
+  }
+});
 
   legendItems.append('text')
     .attr('x', 15)
