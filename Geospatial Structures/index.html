@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New York City Map - Mapbox Examples</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <div class="project-title">New York City Interactive Maps</div>
+        <div class="project-subtitle">Mapbox Visualization Examples</div>
+
+        <div class="section-title">Digital Object 4: Geospatial Structures</div>
+        <p>This section explores geospatial data visualization using Mapbox GL JS, demonstrating how to create interactive maps with markers, line features, and polygon regions. These examples show how to represent different types of spatial data and create engaging user experiences.</p>
+
+        <!-- Section for first Mapbox sketch (mapBox_Sketch_01.js) -->
+        <div class="section-title">Mapbox Foundation: Interactive Map with Markers</div>
+        <p>A basic Mapbox example demonstrating core mapping concepts. This interactive map shows New York City with clickable markers for key landmarks. Features include basic map controls, marker placement with popups, zoom controls, and coordinate display on click. This example provides the foundation for more advanced geospatial visualizations.</p>
+        
+        <div id="mapbox-container-1"></div>
+        
+        <div class="controls">
+            <button id="zoomIn">Zoom In</button>
+            <button id="zoomOut">Zoom Out</button>
+            <button id="resetView">Reset View</button>
+        </div>
+
+        <!-- Section for second Mapbox sketch (mapBox_Sketch_02.js) -->
+        <div class="section-title">Mapbox Advanced: Line Features and Regions</div>
+        <p>An advanced Mapbox example demonstrating line features and polygon regions using GeoJSON data. This map shows Manhattan with interactive line features (waterfront route and Brooklyn Bridge crossing) and polygon regions (Central Park and Times Square district). Features include hover effects, click interactions with detailed information, toggle controls for different feature types, and keyboard shortcuts. This example shows how to work with complex spatial data structures and create layered visualizations.</p>
+        
+        <div id="mapbox-container-2"></div>
+        
+        <div class="controls">
+            <button id="toggleLines">Hide Lines</button>
+            <button id="toggleRegions">Hide Regions</button>
+            <button id="resetView2">Reset View</button>
+        </div>
+
+        <!-- Section for third Mapbox sketch (mapBox_Sketch_03.js) -->
+        <div class="section-title">Mapbox External Data: Loading GeoJSON from Files</div>
+        <p>A demonstration of loading and visualizing data from external GeoJSON files, showing how to separate data from visualization logic. This example loads NYC neighborhood data from a local GeoJSON file and automatically frames the map to fit all the data. Features include data-driven styling based on properties, automatic map framing, filtering by category, search functionality, and interactive popups with detailed information. <strong>Note: This example requires running the HTML file in a local server due to browser security restrictions when loading external files. If you're unsure how to set up a local server, please refer to the "Running a Local Server Tutorial" in the course materials.</strong> The script demonstrates how to adapt to any GeoJSON data found online by simply changing the file path and adjusting the property names used for styling and filtering.</p>
+        
+        <div id="mapbox-container-3"></div>
+        
+        <div class="controls">
+            <input type="text" id="searchFeature" placeholder="Search neighborhoods...">
+            <button id="resetFilters">Reset Search</button>
+            <button id="fitToData">Fit to Data</button>
+        </div>
+
+    </main>
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <script src="mapBox_Sketch_01.js"></script>
+    <script src="mapBox_Sketch_02.js"></script>
+    <script src="mapBox_Sketch_03.js"></script>
+</body>
+</html> 
