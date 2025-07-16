@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Hue Network Diagram</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .network-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .info {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Color Hue Network Diagram</h1>
+        
+        <div class="controls">
+            <button onclick="restartSimulation()">Restart Animation</button>
+            <button onclick="toggleConnections()">Toggle Connections</button>
+            <button onclick="randomizeColors()">Randomize Layout</button>
+            <button onclick="startBubbleAnimation()">Restart Bubbles</button>
+        </div>
+        
+        <div class="network-container">
+            <div id="network"></div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>Red Hues (0-30°)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffa500;"></div>
+                <span>Orange Hues (30-60°)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffff00;"></div>
+                <span>Yellow Hues (60-120°)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4;"></div>
+                <span>Green Hues (120-180°)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4dabf7;"></div>
+                <span>Blue Hues (180-240°)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #9775fa;"></div>
+                <span>Purple Hues (240-300°)</span>
+            </div>
+            <div class="legend-item">
+                <div style="width: 16px; height: 16px; background: rgba(255,255,255,0.2); border-radius: 50%; position: relative;">
+                    <div style="width: 6px; height: 6px; background: #ffffff; border-radius: 50%; position: absolute; top: 5px; left: 5px; box-shadow: 0 0 4px rgba(255,255,255,0.5);"></div>
+                </div>
+                <span>Hue Similarity Flow</span>
+            </div>
+            <div class="legend-item">
+                <div style="width: 16px; height: 16px; background: rgba(255,255,0,0.2); border-radius: 50%; position: relative;">
+                    <div style="width: 6px; height: 6px; background: #ffff00; border-radius: 50%; position: absolute; top: 5px; left: 5px; box-shadow: 0 0 4px #ffff00;"></div>
+                    <div style="position: absolute; right: -6px; top: 5px; width: 0; height: 0; border-left: 4px solid #ffff00; border-top: 2px solid transparent; border-bottom: 2px solid transparent;"></div>
+                </div>
+                <span>Synonym Connection</span>
+            </div>
+        </div>
+        
+        <div class="info">
+            Hover over nodes to see color details and synonyms. Drag nodes to explore connections. White lines show hue similarity, yellow arrows show synonym relationships.
+        </div>
+    </div>
+
+    <script>
+        // Color dataset with hue values, comprehensive real-life examples, and synonyms
+        const colorData = [
+            { name: "Crimson", hex: "#dc143c", hue: 348, examples: ["Ripe cherries", "Rose petals", "Fire truck", "Apple skin", "Red wine", "Cranberries", "Valentine's roses", "Stop sign"], synonyms: ["Deep Red", "Blood Red", "Cherry Red"] },
+            { name: "Scarlet", hex: "#ff2400", hue: 8, examples: ["Strawberries", "Cardinal bird", "Red lipstick", "Tomatoes", "Red peppers", "Ladybug", "Fire engine", "Red maple leaves"], synonyms: ["Bright Red", "Fire Red", "Vermillion"] },
+            { name: "Coral", hex: "#ff7f50", hue: 16, examples: ["Coral reef", "Sunset clouds", "Peach fruit", "Salmon flesh", "Papaya", "Hibiscus flower", "Flamingo feathers", "Terracotta pots"], synonyms: ["Salmon", "Peach", "Apricot"] },
+            { name: "Orange", hex: "#ffa500", hue: 39, examples: ["Orange fruit", "Autumn leaves", "Basketball", "Pumpkin", "Carrot", "Tiger fur", "Traffic cones", "Monarch butterfly"], synonyms: ["Amber", "Burnt Orange", "Rust"] },
+            { name: "Tangerine", hex: "#ff8c00", hue: 33, examples: ["Tangerine fruit", "Marigold flowers", "Safety cone", "Persimmon", "Orange bell pepper", "Goldfish", "Sunset", "Clementine"], synonyms: ["Mandarin", "Pumpkin Orange", "Flame"] },
+            { name: "Gold", hex: "#ffd700", hue: 51, examples: ["Gold jewelry", "Sunflower petals", "Honey", "Corn kernels", "Banana peel", "Wheat fields", "Golden retriever", "Daffodils"], synonyms: ["Golden Yellow", "Amber", "Honey"] },
+            { name: "Yellow", hex: "#ffff00", hue: 60, examples: ["Lemon", "Taxi cab", "Banana", "Sunflower center", "Butter", "Canary bird", "School bus", "Corn on the cob"], synonyms: ["Lemon Yellow", "Canary", "Sunshine"] },
+            { name: "Chartreuse", hex: "#7fff00", hue: 90, examples: ["Tennis ball", "Lime zest", "Spring leaves", "Green apple", "Kiwi fruit", "Parrot feathers", "Highlighter", "Young grass"], synonyms: ["Yellow Green", "Lime Green", "Electric Green"] },
+            { name: "Lime", hex: "#32cd32", hue: 120, examples: ["Lime fruit", "Fresh grass", "Emerald gem", "Green grapes", "Basil leaves", "Tree frog", "Mint leaves", "Cucumber skin"], synonyms: ["Bright Green", "Vivid Green", "Spring Green"] },
+            { name: "Forest Green", hex: "#228b22", hue: 120, examples: ["Pine trees", "Moss", "Jade stone", "Spinach", "Broccoli", "Evergreen needles", "Avocado skin", "Pickle"], synonyms: ["Dark Green", "Hunter Green", "Emerald"] },
+            { name: "Teal", hex: "#008080", hue: 180, examples: ["Turquoise stone", "Peacock feathers", "Ocean water", "Duck egg", "Patina copper", "Eucalyptus leaves", "Teal duck", "Amazonite"], synonyms: ["Blue Green", "Turquoise", "Aqua"] },
+            { name: "Cyan", hex: "#00ffff", hue: 180, examples: ["Swimming pool", "Tropical sea", "Aquamarine gem", "Blue raspberry", "Iceberg", "Bluebird egg", "Toothpaste", "Mouthwash"], synonyms: ["Aqua", "Electric Blue", "Bright Turquoise"] },
+            { name: "Sky Blue", hex: "#87ceeb", hue: 197, examples: ["Clear sky", "Robin's egg", "Sapphire", "Forget-me-not", "Blue jay", "Cornflower", "Baby boy items", "Bluebell flower"], synonyms: ["Light Blue", "Baby Blue", "Powder Blue"] },
+            { name: "Royal Blue", hex: "#4169e1", hue: 225, examples: ["Royal robe", "Bluebird", "Denim jeans", "Blue iris", "Cobalt glass", "Police uniform", "Smurf", "Blue morpho butterfly"], synonyms: ["Cobalt Blue", "True Blue", "Imperial Blue"] },
+            { name: "Navy", hex: "#000080", hue: 240, examples: ["Navy uniform", "Midnight sky", "Blueberry", "Dark denim", "Sapphire", "Night ocean", "Blackberry", "Formal suit"], synonyms: ["Dark Blue", "Midnight Blue", "Deep Blue"] },
+            { name: "Indigo", hex: "#4b0082", hue: 275, examples: ["Indigo dye", "Eggplant", "Purple grapes", "Twilight sky", "Plum skin", "Blackcurrant", "Amethyst", "Violet flower"], synonyms: ["Blue Purple", "Deep Purple", "Violet"] },
+            { name: "Purple", hex: "#800080", hue: 300, examples: ["Amethyst crystal", "Lavender flowers", "Plum fruit", "Purple cabbage", "Violet petals", "Grape juice", "Orchid", "Purple onion"], synonyms: ["Violet", "Plum", "Royal Purple"] },
+            { name: "Magenta", hex: "#ff00ff", hue: 300, examples: ["Fuchsia flower", "Pink flamingo", "Magenta ink", "Dragon fruit", "Bougainvillea", "Petunia", "Highlighter", "Party decorations"], synonyms: ["Fuchsia", "Hot Pink", "Electric Pink"] },
+            { name: "Rose", hex: "#ff007f", hue: 330, examples: ["Rose flower", "Pink sunset", "Carnation", "Watermelon flesh", "Pink grapefruit", "Hibiscus", "Raspberry", "Strawberry milk"], synonyms: ["Pink", "Blush", "Dusty Rose"] },
+            { name: "Hot Pink", hex: "#ff69b4", hue: 330, examples: ["Pink flamingo", "Bubble gum", "Cherry blossom", "Cotton candy", "Pink roses", "Peony flower", "Barbie pink", "Watermelon interior"], synonyms: ["Bright Pink", "Neon Pink", "Bubble Gum Pink"] }
+        ];
+
+        // Create links based on hue similarity and synonym relationships
+        function createLinks(nodes) {
+            const links = [];
+            const threshold = 60; // Hue difference threshold
+            
+            // Create hue-based connections (bidirectional)
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const hue1 = nodes[i].hue;
+                    const hue2 = nodes[j].hue;
+                    
+                    // Calculate hue difference considering circular nature (0-360)
+                    let diff = Math.abs(hue1 - hue2);
+                    if (diff > 180) diff = 360 - diff;
+                    
+                    if (diff < threshold) {
+                        links.push({
+                            source: i,
+                            target: j,
+                            strength: 1 - (diff / threshold),
+                            type: 'hue',
+                            bidirectional: true
+                        });
+                    }
+                }
+            }
+            
+            // Create synonym connections (unidirectional)
+            nodes.forEach((node, sourceIndex) => {
+                node.synonyms.forEach(synonym => {
+                    // Find if any other node's name matches this synonym (case-insensitive)
+                    const targetIndex = nodes.findIndex((targetNode, targetIdx) => 
+                        targetIdx !== sourceIndex && 
+                        targetNode.name.toLowerCase() === synonym.toLowerCase()
+                    );
+                    
+                    if (targetIndex !== -1) {
+                        links.push({
+                            source: sourceIndex,
+                            target: targetIndex,
+                            strength: 0.8,
+                            type: 'synonym',
+                            bidirectional: false,
+                            synonymName: synonym
+                        });
+                    }
+                });
+            });
+            
+            return links;
+        }
+
+        // Set up SVG
+        const width = 1000;
+        const height = 600;
+        const svg = d3.select("#network")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Create gradient definitions
+        const defs = svg.append("defs");
+        colorData.forEach((color, i) => {
+            const gradient = defs.append("radialGradient")
+                .attr("id", `gradient-${i}`)
+                .attr("cx", "50%")
+                .attr("cy", "50%")
+                .attr("r", "50%");
+            
+            gradient.append("stop")
+                .attr("offset", "0%")
+                .attr("stop-color", color.hex)
+                .attr("stop-opacity", 1);
+            
+            gradient.append("stop")
+                .attr("offset", "100%")
+                .attr("stop-color", d3.color(color.hex).darker(1))
+                .attr("stop-opacity", 0.8);
+        });
+
+        // Initialize data
+        let nodes = colorData.map((d, i) => ({ ...d, id: i }));
+        let links = createLinks(nodes);
+        let showConnections = true;
+
+        // Create tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip");
+
+        // Create simulation
+        let simulation = d3.forceSimulation(nodes)
+            .force("link", d3.forceLink(links).id(d => d.id).distance(80).strength(d => d.strength))
+            .force("charge", d3.forceManyBody().strength(-200))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(25));
+
+        // Create links with bubble animations
+        let linkElements = svg.selectAll(".link")
+            .data(links)
+            .enter()
+            .append("line")
+            .attr("class", "link")
+            .attr("stroke", d => d.type === 'synonym' ? "rgba(255, 255, 0, 0.4)" : "rgba(255, 255, 255, 0.2)")
+            .attr("stroke-width", d => d.type === 'synonym' ? 3 : d.strength * 4)
+            .attr("stroke-dasharray", d => d.type === 'synonym' ? "8,4" : "none")
+            .style("opacity", d => d.type === 'synonym' ? 0.6 : d.strength * 0.4);
+
+        // Create bubble groups for each link
+        let bubbleGroups = svg.selectAll(".bubble-group")
+            .data(links)
+            .enter()
+            .append("g")
+            .attr("class", "bubble-group");
+
+        // Add multiple bubbles per link for continuous flow
+        bubbleGroups.each(function(d, i) {
+            const group = d3.select(this);
+            const numBubbles = d.type === 'synonym' ? 3 : 2;
+            
+            for (let j = 0; j < numBubbles; j++) {
+                group.append("circle")
+                    .attr("class", "bubble")
+                    .attr("r", d.type === 'synonym' ? 4 : 3)
+                    .attr("fill", d.type === 'synonym' ? "#ffff00" : "#ffffff")
+                    .attr("opacity", d.type === 'synonym' ? 0.9 : 0.7)
+                    .style("filter", d.type === 'synonym' ? 
+                        "drop-shadow(0 0 6px #ffff00)" : 
+                        "drop-shadow(0 0 4px rgba(255,255,255,0.5))")
+                    .style("animation-delay", `${j * 0.8}s`);
+            }
+        });
+
+        // Add arrowheads for unidirectional synonym links
+        defs.append("defs").append("marker")
+            .attr("id", "arrowhead")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "#ffff00")
+            .style("filter", "drop-shadow(0 0 2px #ffff00)");
+
+        // Apply arrowheads to synonym links
+        linkElements.filter(d => d.type === 'synonym')
+            .attr("marker-end", "url(#arrowhead)");
+
+        // Animate bubbles along the links
+        function animateBubbles() {
+            bubbleGroups.selectAll(".bubble")
+                .transition()
+                .duration(2000)
+                .ease(d3.easeLinear)
+                .attrTween("transform", function(d) {
+                    const link = d3.select(this.parentNode).datum();
+                    return function(t) {
+                        if (!link.source.x || !link.target.x) return "";
+                        
+                        const x1 = link.source.x;
+                        const y1 = link.source.y;
+                        const x2 = link.target.x;
+                        const y2 = link.target.y;
+                        
+                        // For synonym links, animate from source to target
+                        // For hue links, animate both directions
+                        let progress = t;
+                        if (link.type === 'hue') {
+                            // Create back-and-forth movement for hue connections
+                            progress = t < 0.5 ? t * 2 : (1 - t) * 2;
+                        }
+                        
+                        const x = x1 + (x2 - x1) * progress;
+                        const y = y1 + (y2 - y1) * progress;
+                        
+                        return `translate(${x}, ${y})`;
+                    };
+                })
+                .on("end", function() {
+                    // Restart animation for continuous flow
+                    d3.select(this).attr("transform", "translate(0,0)");
+                });
+        }
+
+        // Start bubble animation
+        function startBubbleAnimation() {
+            animateBubbles();
+            setInterval(animateBubbles, 2200); // Slight delay to create continuous flow
+        }
+
+        // Create nodes
+        let nodeElements = svg.selectAll(".node")
+            .data(nodes)
+            .enter()
+            .append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        // Add circles to nodes
+        nodeElements.append("circle")
+            .attr("r", 20)
+            .attr("fill", (d, i) => `url(#gradient-${i})`)
+            .attr("stroke", "white")
+            .attr("stroke-width", 2)
+            .style("filter", "drop-shadow(0 4px 8px rgba(0,0,0,0.3))")
+            .on("mouseover", function(event, d) {
+                d3.select(this).transition().duration(200).attr("r", 25);
+                tooltip.transition().duration(200).style("opacity", 1);
+                tooltip.html(`
+                    <strong>${d.name}</strong><br>
+                    Hex: ${d.hex}<br>
+                    Hue: ${d.hue}°<br>
+                    <strong>Synonyms:</strong> ${d.synonyms.join(", ")}<br>
+                    <strong>Examples:</strong> ${d.examples.join(", ")}
+                `)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+            })
+            .on("mouseout", function() {
+                d3.select(this).transition().duration(200).attr("r", 20);
+                tooltip.transition().duration(200).style("opacity", 0);
+            });
+
+        // Add labels
+        nodeElements.append("text")
+            .text(d => d.name)
+            .attr("text-anchor", "middle")
+            .attr("dy", 35)
+            .attr("font-size", "12px")
+            .attr("fill", "white")
+            .attr("font-weight", "bold")
+            .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.8)");
+
+        // Update positions on simulation tick
+        simulation.on("tick", () => {
+            linkElements
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            nodeElements
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+            
+            // Update bubble positions to follow the links
+            bubbleGroups.attr("transform", d => `translate(0,0)`);
+        });
+
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Control functions
+        function restartSimulation() {
+            simulation.alpha(1).restart();
+        }
+
+        function toggleConnections() {
+            showConnections = !showConnections;
+            linkElements.style("opacity", showConnections ? 
+                d => d.type === 'synonym' ? 0.6 : d.strength * 0.4 : 0);
+            bubbleGroups.style("opacity", showConnections ? 1 : 0);
+        }
+
+        function randomizeColors() {
+            nodes.forEach(node => {
+                node.x = Math.random() * width;
+                node.y = Math.random() * height;
+            });
+            simulation.alpha(1).restart();
+        }
+
+        // Add some initial animation
+        setTimeout(() => {
+            nodeElements.selectAll("circle")
+                .transition()
+                .duration(2000)
+                .ease(d3.easeElastic)
+                .attr("r", 20);
+            
+            // Start bubble animations after nodes are settled
+            setTimeout(startBubbleAnimation, 1000);
+        }, 500);
+    </script>
+</body>
+</html>
