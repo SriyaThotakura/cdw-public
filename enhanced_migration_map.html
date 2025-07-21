@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Bird Migration Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0d1117 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(26, 35, 50, 0.9));
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="g" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.03"/><stop offset="100%" stop-color="%23000000" stop-opacity="0.01"/></radialGradient></defs><circle cx="500" cy="500" r="400" fill="url(%23g)"/></svg>') center/cover;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.8; }
+        }
+
+        .main-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6, #1d4ed8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: slideInUp 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-description {
+            max-width: 600px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 3rem;
+            animation: slideInUp 1s ease-out 0.4s both;
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .map-section {
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            min-height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            background-color: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 2rem 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 20, 25, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 280px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .control-panel:hover {
+            background: rgba(15, 20, 25, 0.95);
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #334155;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .species-filter {
+            display: grid;
+            gap: 8px;
+        }
+
+        .species-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .species-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .species-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+
+        .species-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .species-name {
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            flex: 1;
+        }
+
+        .species-count {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .info-popup {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 20, 25, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 350px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .info-popup.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .popup-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .popup-content {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(96, 165, 250, 0.3);
+            border-top: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #60a5fa;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+                max-height: none;
+            }
+            
+            .map-container {
+                height: 60vh;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="main-title">Amazon Bird Migration Explorer</h1>
+        <p class="subtitle">Journey Through Nature's Greatest Migration Routes</p>
+        <p class="hero-description">
+            Discover the incredible migration patterns of birds across the Amazon rainforest. 
+            Explore interactive routes, population data, and seasonal movements of over 10 species 
+            in this immersive visualization experience.
+        </p>
+        <button class="cta-button" onclick="scrollToMap()">Explore Migration Routes</button>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="section-header">
+            <h2 class="section-title">Interactive Migration Map</h2>
+            <p class="section-description">
+                Use the controls to filter species, view migration patterns, and explore detailed information 
+                about each bird species and their incredible journeys across the Americas.
+            </p>
+        </div>
+
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Bird Species</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">9.8M+</div>
+                <div class="stat-label">Total Birds</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6,000</div>
+                <div class="stat-label">Max Distance (km)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Migration Types</div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loading">
+                <div class="loading-spinner"></div>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h3 class="panel-title">Migration Controls</h3>
+                
+                <div class="control-group">
+                    <label class="control-label">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggleAnimation" checked>
+                            <span class="slider"></span>
+                        </label>
+                        Animate Routes
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggleLabels" checked>
+                            <span class="slider"></span>
+                        </label>
+                        Show Labels
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Migration Season</label>
+                    <select id="seasonFilter" style="width: 100%; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                        <option value="all">All Seasons</option>
+                        <option value="spring">Spring (Mar-May)</option>
+                        <option value="fall">Fall (Sep-Nov)</option>
+                        <option value="winter">Winter (Dec-Feb)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Species Filter</label>
+                    <div class="species-filter" id="speciesFilter">
+                        <!-- Species items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Popup -->
+            <div class="info-popup" id="infoPopup">
+                <div class="popup-title" id="popupTitle">Select a migration route</div>
+                <div class="popup-content" id="popupContent">
+                    Click on any migration route to learn more about the species, 
+                    their journey, and migration patterns.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Mapbox
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic3JpeWF0aG90YWt1cmEiLCJhIjoiY21kYzhuMG1hMTVrbjJpcHpnZ3Awdjc1dCJ9.bEGwdPmOH5kVaT9RWduC5Q';
+        
+        let map;
+        let migrationData;
+        let animationFrame;
+        
+        // Migration data with flow counts
+        const birdMigrationData = {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": {
+                "species": "Blackpoll Warbler",
+                "scientific_name": "Setophaga striata",
+                "migration_type": "Neotropical Migrant",
+                "season": "October - March",
+                "distance_km": 4000,
+                "population": "Stable",
+                "bird_count": 2500000,
+                "flow_intensity": "High",
+                "peak_months": ["October", "November", "February", "March"],
+                "description": "Epic trans-oceanic migrant that winters in northern South America and Amazon basin",
+                "color": "#ff6b6b"
+              },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [-75.0, 45.0], [-70.0, 40.0], [-65.0, 35.0], [-60.0, 25.0], [-55.0, 15.0], 
+                  [-58.0, 5.0], [-60.0, -2.0], [-62.0, -5.0], [-65.0, -8.0], [-68.0, -10.0]
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": {
+                "species": "Tennessee Warbler",
+                "scientific_name": "Leiothlypis peregrina",
+                "migration_type": "Neotropical Migrant",
+                "season": "September - April",
+                "distance_km": 3200,
+                "population": "Stable",
+                "bird_count": 3500000,
+                "flow_intensity": "Very High",
+                "peak_months": ["September", "October", "March", "April"],
+                "description": "Small songbird that winters in tropical forests of northern South America",
+                "color": "#4ecdc4"
+              },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [-90.0, 50.0], [-88.0, 46.0], [-86.0, 42.0], [-84.0, 38.0], [-82.0, 34.0], 
+                  [-80.0, 30.0], [-78.0, 26.0], [-76.0, 22.0], [-74.0, 18.0], [-72.0, 14.0], 
+                  [-70.0, 10.0], [-68.0, 6.0], [-66.0, 2.0], [-64.0, -2.0], [-62.0, -6.0]
+                ]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": {
+                "species": "Swainson's Hawk",
+                "scientific_name": "Buteo swainsoni",
+                "migration_type": "Neotropical Migrant",
+                "season": "October - February",
+                "distance_km": 6000,
+                "population": "Stable",
+                "bird_count": 800000,
+                "flow_intensity": "High",
+                "peak_months": ["October", "November", "January", "February"],
+                "description": "One of longest raptor migrations, travels from North American prairies to Argentine Pampas via Amazon",
+                "color": "#45b7d1"
+              },
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [-105.0, 50.0], [-102.0, 46.0], [-100.0, 42.0], [-98.0, 38.0], [-96.0, 34.0], 
+                  [-94.0, 30.0], [-92.0, 26.0], [-90.0, 22.0], [-88.0, 18.0], [-86.0, 14.0], 
+                  [-84.0, 10.0], [-82.0, 6.0], [-80.0, 2.0], [-78.0, -2.0], [-76.0, -6.0], 
+                  [-74.0, -10.0], [-72.0, -14.0], [-70.0, -18.0], [-68.0, -22.0], [-66.0, -26.0], [-64.0, -30.0]
+                ]
+              }
+            }
+          ]
+        };
+
+        function scrollToMap() {
+            document.getElementById('map-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function initializeMap() {
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/dark-v11',
+                center: [-65, -5],
+                zoom: 3,
+                pitch: 45,
+                bearing: 0
+            });
+
+            map.on('load', () => {
+                loadMigrationData();
+                setupControls();
+                hideLoading();
+            });
+        }
+
+        function loadMigrationData() {
+            // Add migration routes
+            birdMigrationData.features.forEach((feature, index) => {
+                const sourceId = `migration-${index}`;
+                const layerId = `migration-layer-${index}`;
+                
+                map.addSource(sourceId, {
+                    type: 'geojson',
+                    data: feature,
+                    lineMetrics: true
+                });
+
+                // Add animated route
+                map.addLayer({
+                    id: layerId,
+                    type: 'line',
+                    source: sourceId,
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': feature.properties.color,
+                        'line-width': [
+                            'interpolate',
+                            ['linear'],
+                            ['zoom'],
+                            2, Math.max(2, feature.properties.bird_count / 500000),
+                            10, Math.max(4, feature.properties.bird_count / 250000)
+                        ],
+                        'line-gradient': [
+                            'interpolate',
+                            ['linear'],
+                            ['line-progress'],
+                            0, feature.properties.color,
+                            0.5, feature.properties.color + '80',
+                            1, feature.properties.color
+                        ],
+                        'line-opacity': 0.8
+                    }
+                });
+
+                // Add click interaction
+                map.on('click', layerId, (e) => {
+                    showSpeciesInfo(feature.properties);
+                });
+
+                map.on('mouseenter', layerId, () => {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                map.on('mouseleave', layerId, () => {
+                    map.getCanvas().style.cursor = '';
+                });
+            });
+
+            populateSpeciesFilter();
+        }
+
+        function populateSpeciesFilter() {
+            const container = document.getElementById('speciesFilter');
+            
+            birdMigrationData.features.forEach((feature, index) => {
+                const item = document.createElement('div');
+                item.className = 'species-item active';
+                item.innerHTML = `
+                    <div class="species-color" style="background-color: ${feature.properties.color}"></div>
+                    <div class="species-name">${feature.properties.species}</div>
+                    <div class="species-count">${(feature.properties.bird_count / 1000000).toFixed(1)}M</div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                    toggleSpeciesVisibility(index, item.classList.contains('active'));
+                });
+                
+                container.appendChild(item);
+            });
+        }
+
+        function toggleSpeciesVisibility(index, visible) {
+            const layerId = `migration-layer-${index}`;
+            map.setLayoutProperty(layerId, 'visibility', visible ? 'visible' : 'none');
+        }
+
+        function showSpeciesInfo(properties) {
+            const popup = document.getElementById('infoPopup');
+            const title = document.getElementById('popupTitle');
+            const content = document.getElementById('popupContent');
+            
+            title.textContent = properties.species;
+            content.innerHTML = `
+                <strong>Scientific Name:</strong> ${properties.scientific_name}<br>
+                <strong>Migration Type:</strong> ${properties.migration_type}<br>
+                <strong>Season:</strong> ${properties.season}<br>
+                <strong>Distance:</strong> ${properties.distance_km.toLocaleString()} km<br>
+                <strong>Population:</strong> ${properties.bird_count.toLocaleString()} birds<br>
+                <strong>Flow Intensity:</strong> ${properties.flow_intensity}<br><br>
+                ${properties.description}
+            `;
+            
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 8000);
+        }
+
+        function setupControls() {
+            // Animation toggle
+            document.getElementById('toggleAnimation').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    startAnimation();
+                } else {
+                    stopAnimation();
+                }
+            });
+
+            // Labels toggle
+            document.getElementById('toggleLabels').addEventListener('change', (e) => {
+                // Toggle label visibility logic here
+            });
+
+            // Season filter
+            document.getElementById('seasonFilter').addEventListener('change', (e) => {
+                filterBySeason(e.target.value);
+            });
+        }
+
+        function startAnimation() {
+            let progress = 0;
+            
+            function animate() {
+                progress += 0.01;
+                if (progress > 1) progress = 0;
+                
+                // Update line animation here
+                animationFrame = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function stopAnimation() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function filterBySeason(season) {
+            // Implement season filtering logic
+            console.log('Filtering by season:', season);
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            loading.style.opacity = '0';
+            setTimeout(() => {
+                loading.style.display = 'none';
+            }, 300);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeMap);
+    </script>
+
+</body>
+</html>
