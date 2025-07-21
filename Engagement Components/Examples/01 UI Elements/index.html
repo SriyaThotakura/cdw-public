@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!-- This tells the browser this is an HTML5 document - always include this at the top -->
+<html lang="en">
+<!-- The html tag is the root element that contains everything on the page -->
+<!-- lang="en" tells the browser this page is in English -->
+
+<head>
+  <!-- The head section contains information about the page, not visible content -->
+
+
+  <!-- ------------------------------------------------------------ -->
+  <!-- Load p5.js library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+  <!-- This loads the p5.js library which provides functions for creating graphics and animations -->
+  <!-- ------------------------------------------------------------ -->
+
+  
+  <meta charset="UTF-8">
+  <!-- This sets the character encoding to UTF-8, which supports special characters and emojis -->
+  
+  <title>HTML Elements</title>
+  <!-- This is the title that appears in the browser tab and bookmarks -->
+  
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- This loads the Roboto font from Google Fonts for use on our page -->
+  
+  <link rel="stylesheet" href="style.css">
+  <!-- This links our CSS file to style the page - the href points to our style.css file -->
+</head>
+
+<body>
+  <!-- The body contains all the visible content that users will see on the page -->
+  
+  <header>
+    <!-- The header is typically used for navigation and site branding -->
+    
+    <div class="left">Columbia GSAPP</div>
+    <!-- This div creates a container for the left side of the header -->
+    <!-- class="left" allows us to style this specific div with CSS -->
+    
+    <div class="center">
+      <!-- This div creates a container for the center of the header -->
+      Computational Design Workflows<br>
+      <!-- This is the main text in the center -->
+      <!-- <br> creates a line break, moving the next text to a new line -->
+      <span>HTML Elements</span>
+      <!-- span is an inline element that groups text without creating a new line -->
+      <!-- class="center" allows us to style this span differently -->
+    </div>
+    
+    <div class="right">About</div>
+    <!-- This div creates a container for the right side of the header -->
+    <!-- <a href="#">About</a> creates a clickable link (currently goes nowhere with #) -->
+  </header>
+
+  <main>
+    <!-- The main tag contains the primary content of the page -->
+    
+    <div class="project-meta">2025</div>
+    <!-- This div displays the year/project metadata -->
+    <!-- class="project-meta" allows us to style this with CSS -->
+    
+    <div class="project-title">HTML Elements</div>
+    <!-- This div displays the main project title -->
+    <!-- class="project-title" allows us to style this with CSS -->
+    
+    <div class="project-subtitle">Student Name</div>
+    <!-- This div displays the student's name as a subtitle -->
+    <!-- class="project-subtitle" allows us to style this with CSS -->
+    
+    <div class="advisor">Advisor Name</div>
+    <!-- This div displays advisor information -->
+    <!-- <br> creates a line break -->
+    <!-- <strong> makes the text bold for emphasis -->
+    
+    <div class="section-title">Interactive Elements</div>
+    <p>This page demonstrates various HTML elements styled with our template.</p>
+
+    <!-- Button Section -->
+    <div class="section-title">Buttons</div>
+    <p>Different button styles and states:</p>
+    
+    <div class="element-group">
+      <button class="btn-primary">Primary Button</button>
+      <button class="btn-secondary">Secondary Button</button>
+      <button class="btn-outline">Outline Button</button>
+      <button class="btn-disabled" disabled>Disabled Button</button>
+    </div>
+
+    <!-- Text Input Section -->
+    <div class="section-title">Text Inputs</div>
+    <p>Various text input types:</p>
+    
+    <div class="element-group">
+      <div class="input-group">
+        <label for="text-input">Text Input:</label>
+        <input type="text" id="text-input" placeholder="Enter some text...">
+      </div>
+      
+      <div class="input-group">
+        <label for="email-input">Email Input:</label>
+        <input type="email" id="email-input" placeholder="Enter your email...">
+      </div>
+      
+      <div class="input-group">
+        <label for="password-input">Password Input:</label>
+        <input type="password" id="password-input" placeholder="Enter password...">
+      </div>
+      
+      <div class="input-group">
+        <label for="textarea-input">Textarea:</label>
+        <textarea id="textarea-input" placeholder="Enter a longer message..."></textarea>
+      </div>
+    </div>
+
+    <!-- Slider Section -->
+    <div class="section-title">Sliders</div>
+    <p>Range input sliders with different configurations:</p>
+    
+    <div class="element-group">
+      <div class="slider-group">
+        <label for="slider-1">Basic Slider (0-100):</label>
+        <input type="range" id="slider-1" min="0" max="100" value="50">
+        <span class="slider-value" id="slider-1-value">50</span>
+      </div>
+      
+      <div class="slider-group">
+        <label for="slider-2">Custom Range (0-200):</label>
+        <input type="range" id="slider-2" min="0" max="200" value="100">
+        <span class="slider-value" id="slider-2-value">100</span>
+      </div>
+      
+      <div class="slider-group">
+        <label for="slider-3">Stepped Slider (0-10, step 2):</label>
+        <input type="range" id="slider-3" min="0" max="10" step="2" value="5">
+        <span class="slider-value" id="slider-3-value">5</span>
+      </div>
+    </div>
+
+    <!-- Checkbox and Radio Section -->
+    <div class="section-title">Checkboxes & Radio Buttons</div>
+    <p>Selection controls:</p>
+    
+    <div class="element-group">
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="checkbox-1">
+          <span class="checkmark"></span>
+          Option 1
+        </label>
+        
+        <label class="checkbox-label">
+          <input type="checkbox" id="checkbox-2" checked>
+          <span class="checkmark"></span>
+          Option 2 (checked)
+        </label>
+      </div>
+      
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="radio-group" id="radio-1" checked>
+          <span class="radio-mark"></span>
+          Radio Option 1
+        </label>
+        
+        <label class="radio-label">
+          <input type="radio" name="radio-group" id="radio-2">
+          <span class="radio-mark"></span>
+          Radio Option 2
+        </label>
+        
+        <label class="radio-label">
+          <input type="radio" name="radio-group" id="radio-3">
+          <span class="radio-mark"></span>
+          Radio Option 3
+        </label>
+      </div>
+    </div>
+
+    <!-- Select Dropdown Section -->
+    <div class="section-title">Select Dropdown</div>
+    <p>Dropdown selection menu:</p>
+    
+    <div class="element-group">
+      <div class="select-group">
+        <label for="select-dropdown">Choose an option:</label>
+        <select id="select-dropdown">
+          <option value="">Select an option...</option>
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+          <option value="option3">Option 3</option>
+          <option value="option4">Option 4</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Output Display Section -->
+    <div class="section-title">Interactive Output</div>
+    <p>See the values change as you interact with the elements above:</p>
+    
+    <div id="output-display">
+      <p>Interact with the elements above to see their values here.</p>
+    </div>
+  </main>
+  <!-- End of main content area -->
+  
+
+  <!-- ------------------------------------------------------------ -->
+
+  <!-- Load JavaScript file -->
+  <script src="ui-elements.js"></script>
+
+  <!-- ------------------------------------------------------------ -->
+</body>
+<!-- End of body - all visible content goes above this line -->
+</html>
+<!-- End of HTML document -->
