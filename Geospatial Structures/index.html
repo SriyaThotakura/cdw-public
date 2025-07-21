@@ -3,61 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New York City Map - Mapbox Examples</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Amazon Bird Migration Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Enhanced styling from enhanced_migration_map.html */
+        .hero-section {
+            background-image: linear-gradient(to bottom, #f7f7f7, #fff);
+            padding: 100px 20px;
+            text-align: center;
+        }
+        .main-title {
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+        .hero-description {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        .cta-button {
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .cta-button:hover {
+            background-color: #357abd;
+        }
+        .map-section {
+            padding: 20px;
+        }
+        .section-header {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .section-description {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1;
+            max-width: 300px;
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-label {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        .species-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .season-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .season-btn {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .season-btn.active {
+            background-color: #4a90e2;
+            color: #fff;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+        .slider.round {
+            border-radius: 34px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .legend {
+            margin-top: 20px;
+        }
+        .legend-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+        #legend-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .info-panel {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .info-panel.visible {
+            display: block;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 18px;
+            font-weight: 400;
+        }
+    </style>
 </head>
 <body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="main-title">Amazon Bird Migration Explorer</h1>
+        <p class="subtitle">Journey Through Nature's Greatest Migration Routes</p>
+        <p class="hero-description">
+            Explore the incredible journeys of migratory birds across the Americas. 
+            Discover their paths, learn about their habitats, and understand the challenges they face.
+        </p>
+        <div class="cta-buttons">
+            <button class="cta-button" onclick="scrollToMap()">Explore Migration Routes</button>
+            <a href="Relational%20Structures/color_network_diagram.html" class="cta-button secondary">View Relational Structures</a>
+            <a href="Temporal%20Structures/index.html" class="cta-button tertiary">Explore Temporal Structures</a>
+        </div>
+    </section>
 
-    <main>
-        <div class="project-title">New York City Interactive Maps</div>
-        <div class="project-subtitle">Mapbox Visualization Examples</div>
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="species-count">10</div>
+                    <div class="stat-label">Bird Species</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="total-birds">9.8M+</div>
+                    <div class="stat-label">Total Birds</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="max-distance">6,000</div>
+                    <div class="stat-label">Max Distance (km)</div>
+                </div>
+            </div>
+            <p class="stats-description">
+                Interactive Migration Map: Use the controls to filter species, view migration patterns, 
+                and explore detailed information about each bird species and their incredible journeys across the Americas.
+            </p>
+        </div>
+    </section>
 
-        <div class="section-title">Digital Object 4: Geospatial Structures</div>
-        <p>This section explores geospatial data visualization using Mapbox GL JS, demonstrating how to create interactive maps with markers, line features, and polygon regions. These examples show how to represent different types of spatial data and create engaging user experiences.</p>
-
-        <!-- Section for first Mapbox sketch (mapBox_Sketch_01.js) -->
-        <div class="section-title">Mapbox Foundation: Interactive Map with Markers</div>
-        <p>A basic Mapbox example demonstrating core mapping concepts. This interactive map shows New York City with clickable markers for key landmarks. Features include basic map controls, marker placement with popups, zoom controls, and coordinate display on click. This example provides the foundation for more advanced geospatial visualizations.</p>
-        
-        <div id="mapbox-container-1"></div>
-        
-        <div class="controls">
-            <button id="zoomIn">Zoom In</button>
-            <button id="zoomOut">Zoom Out</button>
-            <button id="resetView">Reset View</button>
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="section-header">
+            <h2 class="section-title">Interactive Migration Map</h2>
+            <p class="section-description">
+                Click on migration routes to learn more about each species and their incredible journeys.
+                Use the controls to filter and explore different aspects of the data.
+            </p>
         </div>
 
-        <!-- Section for second Mapbox sketch (mapBox_Sketch_02.js) -->
-        <div class="section-title">Mapbox Advanced: Line Features and Regions</div>
-        <p>An advanced Mapbox example demonstrating line features and polygon regions using GeoJSON data. This map shows Manhattan with interactive line features (waterfront route and Brooklyn Bridge crossing) and polygon regions (Central Park and Times Square district). Features include hover effects, click interactions with detailed information, toggle controls for different feature types, and keyboard shortcuts. This example shows how to work with complex spatial data structures and create layered visualizations.</p>
-        
-        <div id="mapbox-container-2"></div>
-        
-        <div class="controls">
-            <button id="toggleLines">Hide Lines</button>
-            <button id="toggleRegions">Hide Regions</button>
-            <button id="resetView2">Reset View</button>
+        <div class="map-container">
+            <div id="map"></div>
+            <div id="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading migration data...</p>
+            </div>
+            
+            <!-- Map Controls -->
+            <div class="control-panel">
+                <h3 class="panel-title">Map Controls</h3>
+                
+                <div class="control-group">
+                    <label class="control-label">Species</label>
+                    <div id="species-list" class="species-list">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">Animation</label>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animate-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span id="animate-label">Off</span>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <h4 class="legend-title">Species Legend</h4>
+                    <div id="legend-items">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <!-- Section for third Mapbox sketch (mapBox_Sketch_03.js) -->
-        <div class="section-title">Mapbox External Data: Loading GeoJSON from Files</div>
-        <p>A demonstration of loading and visualizing data from external GeoJSON files, showing how to separate data from visualization logic. This example loads NYC neighborhood data from a local GeoJSON file and automatically frames the map to fit all the data. Features include data-driven styling based on properties, automatic map framing, filtering by category, search functionality, and interactive popups with detailed information. <strong>Note: This example requires running the HTML file in a local server due to browser security restrictions when loading external files. If you're unsure how to set up a local server, please refer to the "Running a Local Server Tutorial" in the course materials.</strong> The script demonstrates how to adapt to any GeoJSON data found online by simply changing the file path and adjusting the property names used for styling and filtering.</p>
-        
-        <div id="mapbox-container-3"></div>
-        
-        <div class="controls">
-            <input type="text" id="searchFeature" placeholder="Search neighborhoods...">
-            <button id="resetFilters">Reset Search</button>
-            <button id="fitToData">Fit to Data</button>
-        </div>
+    <!-- Info Panel (hidden by default) -->
+    <div id="info-panel" class="info-panel">
+        <button id="close-info" class="close-btn">&times;</button>
+        <div id="info-content"></div>
+    </div>
 
-    </main>
-    
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
-    <script src="mapBox_Sketch_01.js"></script>
-    <script src="mapBox_Sketch_02.js"></script>
-    <script src="mapBox_Sketch_03.js"></script>
+    <script src="combinedMap.js"></script>
+    <script>
+        // Smooth scroll to map section
+        function scrollToMap() {
+            document.querySelector('.map-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+        
+        // Close info panel
+        document.getElementById('close-info').addEventListener('click', function() {
+            document.getElementById('info-panel').classList.remove('visible');
+        });
+        
+        // Toggle animation
+        document.getElementById('animate-toggle').addEventListener('change', function() {
+            const label = document.getElementById('animate-label');
+            label.textContent = this.checked ? 'On' : 'Off';
+            // Add animation toggle logic here
+        });
+    </script>
 </body>
-</html> 
+</html>

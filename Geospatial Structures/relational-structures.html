@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relational Structures - Amazon Bird Migration Explorer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Main container styling */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Header section */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .page-description {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        /* Back to home button */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-button:hover {
+            background-color: #34495e;
+        }
+        
+        /* Network diagram container */
+        .network-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Controls */
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 10px 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .controls {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .legend {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <a href="index.html" class="back-button">← Back to Home</a>
+        
+        <header class="page-header">
+            <h1 class="page-title">Relational Structures</h1>
+            <p class="page-description">
+                Explore the complex relationships between different bird species and their migration patterns 
+                through interactive network visualizations. Click on nodes to discover connections and 
+                learn more about each species' role in the ecosystem.
+            </p>
+        </header>
+        
+        <div class="network-container">
+            <div class="controls">
+                <button id="reset-view">Reset View</button>
+                <button id="toggle-labels">Toggle Labels</button>
+                <button id="toggle-links">Toggle Links</button>
+            </div>
+            
+            <div id="network-diagram">
+                <!-- Network visualization will be rendered here by D3.js -->
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #FF6B6B;"></div>
+                    <span>Birds of Prey</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #4ECDC4;"></div>
+                    <span>Waterfowl</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #45B7D1;"></div>
+                    <span>Songbirds</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #F9CA24;"></div>
+                    <span>Shorebirds</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- D3.js library -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Custom JavaScript for the relational structures visualization -->
+    <script src="js/relational-structures.js"></script>
+    </script>
+</body>
+</html>

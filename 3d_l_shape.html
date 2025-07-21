@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D L Shape</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #container {
+            width: 100vw;
+            height: 90vh;
+            position: relative;
+        }
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+        }
+        .control-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type="color"] {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="range"] {
+            width: 100px;
+        }
+        label {
+            font-size: 14px;
+            min-width: 60px;
+        }
+    #lshape-label {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 1.3em;
+    color: #4361ee;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+    <div id="container">
+        <div id="controls">
+            <div class="control-item">
+                <label>Color:</label>
+                <input type="color" id="colorPicker" value="#e74c3c">
+            <div id="instructions">
+            <strong>Interactive Controls:</strong><br>
+            • Click and drag to rotate<br>
+            • Scroll to zoom in/out<br>
+            • Use sliders for more control
+        </div>
+            <div class="control-item">
+                <label>Rotate:</label>
+                <input type="range" id="rotationSpeed" min="0" max="3" value="1" step="0.1">
+            </div>
+            <div class="control-item">
+                <label>Scale:</label>
+                <input type="range" id="scaleSlider" min="0.5" max="2" value="1" step="0.1">
+            </div>
+            <div class="control-item">
+                <label>Rod Size:</label>
+                <input type="range" id="rodSize" min="0.1" max="0.5" value="0.2" step="0.05">
+            </div>
+        </div>
+    </div>
+    <div id="lshape-label">Pen rose Path</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        // Create 3D L shape with three equal length cuboid rods
+        function createLShape(rodSize = 0.2, rodLength = 3) {
+            const group = new THREE.Group();
+            
+            const rodMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xe74c3c,
+                shininess: 100,
+                specular: 0x111111
+            });
+
+            // Vertical rod (going up along Y axis)
+            const verticalGeometry = new THREE.BoxGeometry(rodSize, rodLength, rodSize);
+            const verticalRod = new THREE.Mesh(verticalGeometry, rodMaterial);
+            verticalRod.position.y = rodLength / 2;
+            verticalRod.castShadow = true;
+            verticalRod.receiveShadow = true;
+            group.add(verticalRod);
+
+            // Horizontal rod (going right along X axis)
+            const horizontalGeometry = new THREE.BoxGeometry(rodLength, rodSize, rodSize);
+            const horizontalRod = new THREE.Mesh(horizontalGeometry, rodMaterial);
+            horizontalRod.position.x = rodLength / 2;
+            horizontalRod.castShadow = true;
+            horizontalRod.receiveShadow = true;
+            group.add(horizontalRod);
+
+            // Third rod (going forward along Z axis from the end of the horizontal rod)
+            const depthGeometry = new THREE.BoxGeometry(rodSize, rodSize, rodLength);
+            const depthRod = new THREE.Mesh(depthGeometry, rodMaterial);
+            depthRod.position.set(rodLength, 0, rodLength / 2);
+            depthRod.castShadow = true;
+            depthRod.receiveShadow = true;
+            group.add(depthRod);
+
+            // Add cubic joint at the origin
+            const jointGeometry = new THREE.BoxGeometry(rodSize * 1.4, rodSize * 1.4, rodSize * 1.4);
+            const jointMaterial = new THREE.MeshPhongMaterial({ 
+                color: 0xc0392b, // Slightly darker red for the joint
+                shininess: 100,
+                specular: 0x111111
+            });
+            const joint = new THREE.Mesh(jointGeometry, jointMaterial);
+            joint.castShadow = true;
+            joint.receiveShadow = true;
+            group.add(joint);
+
+            // Add second cubic joint at the end of horizontal rod where third rod connects
+            const joint2 = new THREE.Mesh(jointGeometry, jointMaterial);
+            joint2.position.set(rodLength, 0, 0);
+            joint2.castShadow = true;
+            joint2.receiveShadow = true;
+            group.add(joint2);
+
+            return group;
+        }
+
+        // Create L shape
+        let lShape = createLShape();
+        scene.add(lShape);
+
+        // Add ground plane for shadows
+        const groundGeometry = new THREE.PlaneGeometry(20, 20);
+        const groundMaterial = new THREE.MeshPhongMaterial({ 
+            color: 0x34495e,
+            transparent: true,
+            opacity: 0.4
+        });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 5);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.width = 2048;
+        directionalLight.shadow.mapSize.height = 2048;
+        directionalLight.shadow.camera.near = 0.5;
+        directionalLight.shadow.camera.far = 500;
+        directionalLight.shadow.camera.left = -10;
+        directionalLight.shadow.camera.right = 10;
+        directionalLight.shadow.camera.top = 10;
+        directionalLight.shadow.camera.bottom = -10;
+        scene.add(directionalLight);
+
+        const pointLight = new THREE.PointLight(0x3498db, 0.4, 100);
+        pointLight.position.set(-5, 5, 5);
+        scene.add(pointLight);
+
+        // Position camera
+        camera.position.set(6, 6, 6);
+        camera.lookAt(1.5, 1.5, 1.5);
+
+        // Control variables
+        let rotationSpeed = 1;
+        let targetScale = 1;
+        let currentScale = 1;
+        let isMouseDown = false;
+        let previousMousePosition = { x: 0, y: 0 };
+
+        // Mouse interaction variables
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+
+        // Mouse interaction for manual rotation
+        renderer.domElement.addEventListener('mousedown', (event) => {
+            isMouseDown = true;
+            previousMousePosition = { x: event.clientX, y: event.clientY };
+        });
+
+        renderer.domElement.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        renderer.domElement.addEventListener('mousemove', (event) => {
+            if (isMouseDown) {
+                const deltaX = event.clientX - previousMousePosition.x;
+                const deltaY = event.clientY - previousMousePosition.y;
+                
+                targetRotationY += deltaX * 0.01;
+                targetRotationX += deltaY * 0.01;
+                
+                previousMousePosition = { x: event.clientX, y: event.clientY };
+            }
+        });
+
+        // Mouse wheel for zooming
+        renderer.domElement.addEventListener('wheel', (event) => {
+            const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9;
+            camera.position.multiplyScalar(zoomFactor);
+            event.preventDefault();
+        });
+
+        // Touch events for mobile
+        renderer.domElement.addEventListener('touchstart', (event) => {
+            if (event.touches.length === 1) {
+                isMouseDown = true;
+                previousMousePosition = { 
+                    x: event.touches[0].clientX, 
+                    y: event.touches[0].clientY 
+                };
+            }
+            event.preventDefault();
+        });
+
+        renderer.domElement.addEventListener('touchend', () => {
+            isMouseDown = false;
+        });
+
+        renderer.domElement.addEventListener('touchmove', (event) => {
+            if (isMouseDown && event.touches.length === 1) {
+                const deltaX = event.touches[0].clientX - previousMousePosition.x;
+                const deltaY = event.touches[0].clientY - previousMousePosition.y;
+                
+                targetRotationY += deltaX * 0.01;
+                targetRotationX += deltaY * 0.01;
+                
+                previousMousePosition = { 
+                    x: event.touches[0].clientX, 
+                    y: event.touches[0].clientY 
+                };
+            }
+            event.preventDefault();
+        });
+
+        // Controls
+        document.getElementById('colorPicker').addEventListener('input', (e) => {
+            const color = e.target.value.replace('#', '0x');
+            lShape.children.forEach(child => {
+                if (child.material && child.geometry.type !== 'SphereGeometry') {
+                    child.material.color.setHex(color);
+                }
+            });
+        });
+
+        document.getElementById('rotationSpeed').addEventListener('input', (e) => {
+            rotationSpeed = parseFloat(e.target.value);
+        });
+
+        document.getElementById('scaleSlider').addEventListener('input', (e) => {
+            targetScale = parseFloat(e.target.value);
+        });
+
+        document.getElementById('rodSize').addEventListener('input', (e) => {
+            const newSize = parseFloat(e.target.value);
+            scene.remove(lShape);
+            lShape = createLShape(newSize);
+            scene.add(lShape);
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Smooth rotation interpolation
+            currentRotationX += (targetRotationX - currentRotationX) * 0.1;
+            currentRotationY += (targetRotationY - currentRotationY) * 0.1;
+
+            // Apply manual rotation
+            lShape.rotation.x = currentRotationX;
+            lShape.rotation.y = currentRotationY;
+
+            // Add automatic rotation if speed > 0
+            if (rotationSpeed > 0) {
+                targetRotationY += rotationSpeed * 0.01;
+                targetRotationX += rotationSpeed * 0.005;
+            }
+
+            // Smooth scaling
+            currentScale += (targetScale - currentScale) * 0.1;
+            lShape.scale.set(currentScale, currentScale, currentScale);
+
+            // Add subtle floating animation
+            lShape.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
