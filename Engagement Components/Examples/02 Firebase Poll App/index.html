@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<!-- This tells the browser this is an HTML5 document - always include this at the top -->
+<html lang="en">
+<!-- The html tag is the root element that contains everything on the page -->
+<!-- lang="en" tells the browser this page is in English -->
+
+<head>
+  <!-- The head section contains information about the page, not visible content -->
+
+  <!-- ------------------------------------------------------------ -->
+  <!-- Load Firebase SDK from CDN -->
+  <!-- Firebase is Google's backend-as-a-service platform that provides real-time database, authentication, and hosting -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <!-- These scripts load Firebase libraries for app initialization and real-time database functionality -->
+  <!-- ------------------------------------------------------------ -->
+
+  
+  <meta charset="UTF-8">
+  <!-- This sets the character encoding to UTF-8, which supports special characters and emojis -->
+  
+  <title>Simple Poll App - Firebase Tutorial</title>
+  <!-- This is the title that appears in the browser tab and bookmarks -->
+  
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- This loads the Roboto font from Google Fonts for use on our page -->
+  
+  <link rel="stylesheet" href="style.css">
+  <!-- This links our CSS file to style the page - the href points to our style.css file -->
+</head>
+
+<body>
+  <!-- The body contains all the visible content that users will see on the page -->
+  
+  <header>
+    <!-- The header is typically used for navigation and site branding -->
+    
+    <div class="left">Columbia GSAPP</div>
+    <!-- This div creates a container for the left side of the header -->
+    <!-- class="left" allows us to style this specific div with CSS -->
+    
+    <div class="center">
+      <!-- This div creates a container for the center of the header -->
+      Computational Design Workflows<br>
+      <!-- This is the main text in the center -->
+      <!-- <br> creates a line break, moving the next text to a new line -->
+      <span>Firebase Poll Tutorial</span>
+      <!-- span is an inline element that groups text without creating a new line -->
+      <!-- class="center" allows us to style this span differently -->
+    </div>
+    
+    <div class="right">About</div>
+    <!-- This div creates a container for the right side of the header -->
+    <!-- <a href="#">About</a> creates a clickable link (currently goes nowhere with #) -->
+  </header>
+
+  <main>
+    <!-- The main tag contains the primary content of the page -->
+    
+    <div class="project-meta">2025</div>
+    <!-- This div displays the year/project metadata -->
+    <!-- class="project-meta" allows us to style this with CSS -->
+    
+    <div class="project-title">Simple Poll App</div>
+    <!-- This div displays the main project title -->
+    <!-- class="project-title" allows us to style this with CSS -->
+    
+    <div class="project-subtitle">Firebase Real-time Database Tutorial</div>
+    <!-- This div displays the student's name as a subtitle -->
+    <!-- class="project-subtitle" allows us to style this with CSS -->
+    
+    <div class="advisor">Learn how to connect frontend to backend</div>
+    <!-- This div displays advisor information -->
+    <!-- <br> creates a line break -->
+    <!-- <strong> makes the text bold for emphasis -->
+    
+    <div class="section-title">What is Firebase?</div>
+    <p>
+      Firebase is Google's backend-as-a-service platform that allows you to build web applications 
+      without managing servers. In this tutorial, we'll use Firebase Realtime Database to create 
+      a simple poll that updates in real-time across all users.
+    </p>
+
+    <!-- Poll Section -->
+    <div class="section-title">Simple Poll</div>
+    <p>Click a button to vote. The results update in real-time thanks to Firebase!</p>
+    
+    <div class="poll-container">
+      <!-- Poll question -->
+      <div class="poll-question">
+        <h3>Do you like this tutorial?</h3>
+      </div>
+      
+      <!-- Vote buttons -->
+      <div class="vote-buttons">
+        <button class="vote-btn vote-yes" id="vote-yes">
+          <span class="vote-text">Yes</span>
+          <span class="vote-count" id="yes-count">0</span>
+        </button>
+        
+        <button class="vote-btn vote-no" id="vote-no">
+          <span class="vote-text">No</span>
+          <span class="vote-count" id="no-count">0</span>
+        </button>
+      </div>
+      
+      <!-- Total votes display -->
+      <div class="total-votes">
+        <p>Total votes: <span id="total-votes">0</span></p>
+      </div>
+    </div>
+
+    <!-- Tutorial Section -->
+    <div class="section-title">How It Works</div>
+    <p>
+      This app demonstrates several key Firebase concepts:
+    </p>
+    
+    <div class="tutorial-steps">
+      <div class="step">
+        <h4>1. Firebase Configuration</h4>
+        <p>We connect to Firebase using configuration settings in our JavaScript file.</p>
+      </div>
+      
+      <div class="step">
+        <h4>2. Real-time Database</h4>
+        <p>When someone votes, the data is saved to Firebase and automatically updates on all connected devices.</p>
+      </div>
+      
+      <div class="step">
+        <h4>3. Event Listeners</h4>
+        <p>Firebase listens for changes in the database and updates our UI automatically.</p>
+      </div>
+    </div>
+
+    <!-- Status Display -->
+    <div class="section-title">Connection Status</div>
+    <div id="connection-status" class="status-display">
+      <p>Connecting to Firebase...</p>
+    </div>
+  </main>
+  <!-- End of main content area -->
+  
+
+  <!-- ------------------------------------------------------------ -->
+
+  <!-- Load JavaScript file -->
+  <script src="poll-app.js"></script>
+
+  <!-- ------------------------------------------------------------ -->
+</body>
+<!-- End of body - all visible content goes above this line -->
+</html>
+<!-- End of HTML document -->
