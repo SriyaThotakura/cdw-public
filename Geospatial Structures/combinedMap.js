@@ -591,7 +591,7 @@ function getBirdImagePath(species) {
     };
     
     const filename = imageMap[species] || 'default-bird.jpg';
-    return `images/birds/${filename}`;
+    return `../images/birds/${filename}`;
 }
 
 // Function to handle image loading with fallback
@@ -611,8 +611,8 @@ function loadImageWithFallback(imgElement, species) {
     
     imgElement.onerror = function() {
         // If image fails to load, try with a placeholder
-        if (imgElement.src !== 'images/birds/default-bird.jpg') {
-            imgElement.src = 'images/birds/default-bird.jpg';
+        if (!imgElement.src.endsWith('/images/birds/default-bird.jpg')) {
+            imgElement.src = '../images/birds/default-bird.jpg';
         } else {
             // If placeholder also fails, show a colored circle as fallback
             const fallbackColor = speciesColors[species] || '#6b7280';
@@ -707,146 +707,51 @@ function updateLegend() {
         item.setAttribute('tabindex', '0');
         item.setAttribute('aria-label', `Show ${species} migration route`);
         
-        // Create image container
-        const imgContainer = document.createElement('div');
-        imgContainer.style.width = '50px';
-        imgContainer.style.height = '50px';
-        imgContainer.style.borderRadius = '6px';
-        imgContainer.style.overflow = 'hidden';
-        imgContainer.style.flexShrink = '0';
-        imgContainer.style.marginRight = '12px';
-        imgContainer.style.backgroundColor = '#f3f4f6';
-        imgContainer.style.display = 'flex';
-        imgContainer.style.alignItems = 'center';
-        imgContainer.style.justifyContent = 'center';
-        
-        // Create image element
-        const img = document.createElement('img');
-        img.alt = species;
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-        img.style.objectPosition = 'center';
-        img.style.transition = 'transform 0.3s ease';
-        
-        // Load image with fallback
-        loadImageWithFallback(img, species);
-        
-        // Create text container
-        const textContainer = document.createElement('div');
-        textContainer.style.flex = '1';
-        textContainer.style.minWidth = '0';
-        
-        // Create species name element
-        const speciesName = document.createElement('div');
-        speciesName.textContent = species;
-        speciesName.style.fontWeight = '600';
-        speciesName.style.color = '#1f2937';
-        speciesName.style.marginBottom = '2px';
-        speciesName.style.whiteSpace = 'nowrap';
-        speciesName.style.overflow = 'hidden';
-        speciesName.style.textOverflow = 'ellipsis';
-        
-        // Create scientific name element
-        const sciName = document.createElement('div');
-        sciName.textContent = scientificName;
-        sciName.style.fontSize = '0.8em';
-        sciName.style.color = '#6b7280';
-        sciName.style.fontStyle = 'italic';
-        sciName.style.whiteSpace = 'nowrap';
-        sciName.style.overflow = 'hidden';
-        sciName.style.textOverflow = 'ellipsis';
-        
-        // Assemble the item
-        textContainer.appendChild(speciesName);
-        textContainer.appendChild(sciName);
-        imgContainer.appendChild(img);
-        item.appendChild(imgContainer);
-        item.appendChild(textContainer);
-        
-        // Add color indicator
-        const colorIndicator = document.createElement('div');
-        colorIndicator.style.width = '8px';
-        colorIndicator.style.height = '100%';
-        colorIndicator.style.borderRadius = '0 6px 6px 0';
-        colorIndicator.style.position = 'absolute';
-        colorIndicator.style.right = '0';
-        colorIndicator.style.top = '0';
-        colorIndicator.style.backgroundColor = color;
-        item.appendChild(colorIndicator);
-        
-        // Styling for the item
+        // Styling
         item.style.display = 'flex';
         item.style.alignItems = 'center';
-        item.style.padding = '12px 16px 12px 12px';
-        item.style.margin = '8px 0';
+        item.style.padding = '10px 12px';
+        item.style.margin = '6px 0';
         item.style.borderRadius = '8px';
-        item.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        item.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
         item.style.transition = 'all 0.2s ease';
         item.style.cursor = 'pointer';
-        item.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-        item.style.position = 'relative';
-        item.style.overflow = 'hidden';
+        item.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
         
         // Hover and focus states
         const hoverStyles = {
             backgroundColor: '#f8fafc',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-            transform: 'translateY(-2px)'
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            transform: 'translateY(-1px)'
         };
         
         const activeStyles = {
             backgroundColor: '#f1f5f9',
-            transform: 'translateY(0)',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+            transform: 'translateY(0)'
         };
         
         item.addEventListener('mouseenter', () => {
             Object.assign(item.style, hoverStyles);
             highlightSpecies(species);
-            
-            // Scale up the image on hover
-            const img = item.querySelector('img');
-            if (img) {
-                img.style.transform = 'scale(1.1)';
-            }
         });
         
         item.addEventListener('mouseleave', () => {
-            item.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-            item.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            item.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+            item.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
             item.style.transform = 'none';
             highlightSpecies(null);
-            
-            // Reset image scale
-            const img = item.querySelector('img');
-            if (img) {
-                img.style.transform = 'scale(1)';
-            }
         });
         
         item.addEventListener('focus', () => {
             Object.assign(item.style, hoverStyles);
             highlightSpecies(species);
-            
-            // Scale up the image on focus
-            const img = item.querySelector('img');
-            if (img) {
-                img.style.transform = 'scale(1.1)';
-            }
         });
         
         item.addEventListener('blur', () => {
-            item.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-            item.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            item.style.backgroundColor = 'rgba(255, 255, 255, 0.85)';
+            item.style.boxShadow = '0 1px 2px rgba(0,0,0,0.05)';
             item.style.transform = 'none';
             highlightSpecies(null);
-            
-            // Reset image scale
-            const img = item.querySelector('img');
-            if (img) {
-                img.style.transform = 'scale(1)';
-            }
         });
         
         item.addEventListener('click', () => {
