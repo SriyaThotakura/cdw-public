@@ -1,6 +1,46 @@
 /* Import Google Fonts - this loads the Roboto font family from Google's servers */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes buttonAppear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #333;
+    line-height: 1.6;
+}
+
 /* Style the entire body of the webpage */
 body {
   font-family: 'Roboto', sans-serif;  /* Set the font to Roboto, with sans-serif as backup */
@@ -44,10 +84,10 @@ header .right a {
   font-weight: 400;                   /* Set font weight to normal */
 }
 
-/* Style the main content area */
+/* Main Content Area */
 main {
-  max-width: 800px;                   /* Limit the maximum width to 800 pixels */
-  margin: 60px auto;                  /* Add 60px top/bottom margin, center horizontally */
+    max-width: 800px;
+    margin: 0 auto;
   padding: 0 20px;                    /* Add 20px left/right padding, no top/bottom */
 }
 
@@ -108,6 +148,15 @@ p {
   border-radius: 12px;                /* Rounded corners */
   background-color: #fafafa;          /* Very light background */
   text-align: center;                 /* Center all content */
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 /* Poll question styling */
@@ -144,6 +193,25 @@ p {
   font-family: 'Roboto', sans-serif;  /* Consistent font */
   position: relative;                 /* For hover effects */
   overflow: hidden;                   /* Hide overflow for effects */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 25px;
+  border: none;
+  border-radius: 12px;
+  background: #f5f7fa;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: buttonAppear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation-delay: 0.3s;
+}
+
+.vote-btn:last-child {
+  animation-delay: 0.5s;
 }
 
 /* Yes button specific styling */

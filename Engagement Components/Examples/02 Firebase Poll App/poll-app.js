@@ -1,9 +1,6 @@
-// Firebase Poll App - Tutorial JavaScript
-// This script demonstrates how to integrate Firebase Realtime Database with a simple web app
-// It shows real-time data synchronization across multiple users
+// Firebase Poll App
+// Updated to work with new poll options and structure
 
-// Wait for the DOM (Document Object Model) to be fully loaded before running any code
-// This ensures all HTML elements exist before we try to access them
 document.addEventListener('DOMContentLoaded', function() {
   
   // ========================================
@@ -19,110 +16,120 @@ document.addEventListener('DOMContentLoaded', function() {
   // 4. Replace the values below with your actual Firebase config
   
   const firebaseConfig = {
-    // Your Firebase project configuration goes here
-    // For this tutorial, we'll use a demo configuration
-    // In a real app, you would replace these with your actual Firebase project settings
-    apiKey: "your-api-key",
-    authDomain: "your-project.firebaseapp.com",
-    databaseURL: "https://your-project-default-rtdb.firebaseio.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id"
+    apiKey: "AIzaSyCxPm4CTc2a2NgTyguxfTw8OKMhgikkzbw",
+    authDomain: "poll-tutorial-14307.firebaseapp.com",
+    databaseURL: "https://poll-tutorial-14307-default-rtdb.firebaseio.com",
+    projectId: "poll-tutorial-14307",
+    storageBucket: "poll-tutorial-14307.appspot.com",
+    messagingSenderId: "537495701721",
+    appId: "1:537495701721:web:8f23217048f8c8436256c8",
+    measurementId: "G-QKTMKPMFKE"
   };
 
   // Initialize Firebase - this connects your app to Firebase services
-  // firebase.initializeApp() sets up the connection using your configuration
   firebase.initializeApp(firebaseConfig);
-
+  
   // Get a reference to the Firebase Realtime Database
   // This is like getting a "handle" to your database that you can use to read/write data
   const database = firebase.database();
 
-  // ========================================
-  // STEP 2: GET REFERENCES TO HTML ELEMENTS
-  // ========================================
-  // We need to get references to the HTML elements we want to update
-  // This is like getting "handles" to the parts of the webpage we want to change
-  
-  const yesButton = document.getElementById('vote-yes');
-  const noButton = document.getElementById('vote-no');
-  const yesCount = document.getElementById('yes-count');
-  const noCount = document.getElementById('no-count');
-  const totalVotes = document.getElementById('total-votes');
+  // Get references to HTML elements
+  const pollOptions = document.querySelectorAll('.poll-option');
   const connectionStatus = document.getElementById('connection-status');
-
-  // ========================================
-  // STEP 3: SET UP REAL-TIME DATABASE LISTENERS
-  // ========================================
-  // Firebase Realtime Database can automatically update your app when data changes
-  // We use .on('value') to listen for any changes to our poll data
+  const resetButton = document.getElementById('reset-poll');
+  const totalVotes = document.getElementById('total-count');
   
-  // Listen for changes to the 'yes' votes in the database
-  // This function runs every time the 'yes' vote count changes in Firebase
-  database.ref('poll/yes').on('value', function(snapshot) {
-    // snapshot.val() gets the current value from the database
-    const count = snapshot.val() || 0; // If no value exists, default to 0
-    
-    // Update the display on our webpage
-    yesCount.textContent = count;
-    
-    // Update the total votes display
-    updateTotalVotes();
-    
-    console.log('Yes votes updated:', count); // For debugging
+  // Poll options configuration
+  const options = ['parks', 'cafes', 'transit', 'malls', 'nowhere'];
+  
+  // Initialize vote counts and progress bars
+  const voteCounts = {};
+  const progressBars = {};
+  
+  options.forEach(option => {
+    voteCounts[option] = document.getElementById(`${option}-count`);
+    progressBars[option] = document.getElementById(`${option}-progress`);
+  });
+  
+  // Add animation class to options on load
+  pollOptions.forEach((option, index) => {
+    setTimeout(() => {
+      option.style.opacity = '1';
+      option.style.transform = 'translateY(0)';
+    }, 100 * index);
   });
 
-  // Listen for changes to the 'no' votes in the database
-  // This function runs every time the 'no' vote count changes in Firebase
-  database.ref('poll/no').on('value', function(snapshot) {
-    const count = snapshot.val() || 0; // If no value exists, default to 0
-    
-    // Update the display on our webpage
-    noCount.textContent = count;
-    
-    // Update the total votes display
-    updateTotalVotes();
-    
-    console.log('No votes updated:', count); // For debugging
+  // Set up real-time database listeners for each option
+  options.forEach(option => {
+    database.ref(`poll/${option}`).on('value', function(snapshot) {
+      const count = snapshot.val() || 0;
+      // Update the vote count display
+      if (voteCounts[option]) {
+        voteCounts[option].textContent = count;
+      }
+      updateTotalVotes();
+      updateProgressBars();
+    });
   });
 
-  // ========================================
-  // STEP 4: SET UP BUTTON EVENT LISTENERS
-  // ========================================
-  // When users click the vote buttons, we need to update the database
-  // Firebase will then automatically update all other connected users
-  
-  // Handle "Yes" vote button clicks
-  yesButton.addEventListener('click', function() {
-    console.log('Yes button clicked'); // For debugging
-    
-    // Get the current count from the database and increment it
-    // We use .once('value') to get the current value once, then update it
-    database.ref('poll/yes').once('value')
-      .then(function(snapshot) {
-        const currentCount = snapshot.val() || 0; // Current count, or 0 if none exists
-        const newCount = currentCount + 1; // Add 1 to the current count
+  // Set up event listeners for voting
+  pollOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const optionType = this.getAttribute('data-option');
+      if (!optionType) return;
+      
+      // Add visual feedback
+      this.classList.add('voted');
+      
+      // Show celebration
+      const celebration = document.getElementById('celebration');
+      celebration.classList.add('animate');
+      setTimeout(() => celebration.classList.remove('animate'), 1000);
+      
+      // Get current count and update
+      database.ref(`poll/${optionType}`).once('value')
+        .then(function(snapshot) {
+          const currentCount = snapshot.val() || 0;
+          return database.ref(`poll/${optionType}`).set(currentCount + 1);
+        })
+        .then(function() {
+          // Show vote confirmation
+          const optionText = option.querySelector('.option-text').textContent.split(' ')[0];
+          showVoteConfirmation(optionText);
+        })
+        .catch(function(error) {
+          console.error('Error recording vote:', error);
+          showError('Failed to record vote. Please try again.');
+        });
+    });
+  });
+
+  // Reset button functionality
+  if (resetButton) {
+    resetButton.addEventListener('click', function() {
+      if (confirm('Are you sure you want to reset all vote counts to zero?')) {
+        const updates = {};
+        options.forEach(option => {
+          updates[`poll/${option}`] = 0;
+        });
         
-        // Update the database with the new count
-        // This will trigger the .on('value') listener above, updating all connected users
-        return database.ref('poll/yes').set(newCount);
-      })
-      .then(function() {
-        console.log('Yes vote recorded successfully');
-        showVoteConfirmation('Yes');
-      })
-      .catch(function(error) {
-        console.error('Error recording vote:', error);
-        showError('Failed to record vote. Please try again.');
-      });
-  });
+        database.ref().update(updates)
+          .then(() => {
+            showVoteConfirmation('Poll has been reset');
+            // Remove voted class from all options
+            document.querySelectorAll('.poll-option').forEach(el => {
+              el.classList.remove('voted');
+            });
+          })
+          .catch(error => {
+            console.error('Error resetting poll:', error);
+            showError('Failed to reset poll.');
+          });
+      }
+    });
+  }
 
-  // Handle "No" vote button clicks
-  noButton.addEventListener('click', function() {
-    console.log('No button clicked'); // For debugging
-    
-    // Get the current count from the database and increment it
+  // Get the current count from the database and increment it
     database.ref('poll/no').once('value')
       .then(function(snapshot) {
         const currentCount = snapshot.val() || 0; // Current count, or 0 if none exists
@@ -149,16 +156,56 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * updateTotalVotes Function
    * Purpose: Calculate and display the total number of votes
-   * This function runs whenever either vote count changes
+   * This function runs whenever any vote count changes
    */
   function updateTotalVotes() {
-    // Get the current values from our display elements
-    const yesVotes = parseInt(yesCount.textContent) || 0;
-    const noVotes = parseInt(noCount.textContent) || 0;
-    const total = yesVotes + noVotes;
+    let total = 0;
     
-    // Update the total display
-    totalVotes.textContent = total;
+    // Sum up all votes
+    options.forEach(option => {
+      if (voteCounts[option]) {
+        total += parseInt(voteCounts[option].textContent) || 0;
+      }
+    });
+    
+    // Update the total votes display
+    if (totalVotes) {
+      totalVotes.textContent = total;
+    }
+    
+    // Show or hide the reset button based on total votes
+    if (resetButton) {
+      resetButton.style.display = total > 0 ? 'inline-block' : 'none';
+    }
+    
+    return total;
+  }
+  
+  /**
+   * updateProgressBars Function
+   * Purpose: Update the width of progress bars based on vote distribution
+   */
+  function updateProgressBars() {
+    const total = updateTotalVotes();
+    
+    // Update each progress bar
+    options.forEach(option => {
+      if (voteCounts[option] && progressBars[option]) {
+        const votes = parseInt(voteCounts[option].textContent) || 0;
+        const percentage = total > 0 ? (votes / total) * 100 : 0;
+        progressBars[option].style.width = `${percentage}%`;
+        
+        // Show/hide vote count based on whether there are any votes
+        const voteCountElement = voteCounts[option].parentElement.querySelector('.vote-count');
+        if (voteCountElement) {
+          if (votes > 0) {
+            voteCountElement.classList.add('visible');
+          } else {
+            voteCountElement.classList.remove('visible');
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -170,32 +217,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a temporary confirmation message
     const confirmation = document.createElement('div');
     confirmation.className = 'vote-confirmation';
-    confirmation.textContent = `Thank you for voting "${vote}"!`;
+    confirmation.textContent = `Thank you for voting ${vote === 'Yes' ? 'In the Park' : 'At the Beach'}!`;
     confirmation.style.cssText = `
       position: fixed;
       top: 20px;
       right: 20px;
       background: #4CAF50;
       color: white;
-      padding: 12px 20px;
-      border-radius: 4px;
-      font-size: 14px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-size: 16px;
       z-index: 1000;
-      animation: slideIn 0.3s ease-out;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      opacity: 0;
+      transform: translateY(-20px);
     `;
     
     // Add the confirmation to the page
     document.body.appendChild(confirmation);
     
     // Remove the confirmation after 3 seconds
-    setTimeout(function() {
-      confirmation.style.animation = 'slideOut 0.3s ease-in';
-      setTimeout(function() {
+    setTimeout(() => {
+      confirmation.style.animation = 'fadeOut 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
+      setTimeout(() => {
         if (confirmation.parentNode) {
           confirmation.parentNode.removeChild(confirmation);
         }
-      }, 300);
-    }, 3000);
+      }, 400);
+    }, 2800);
   }
 
   /**
@@ -255,15 +305,32 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up any initial state when the page loads
   
   // Initialize vote counts to 0 if they don't exist in the database
-  // This ensures we start with a clean slate
   database.ref('poll').once('value')
     .then(function(snapshot) {
       if (!snapshot.exists()) {
-        // If no poll data exists, initialize it with zeros
-        return database.ref('poll').set({
-          yes: 0,
-          no: 0
+        // Initialize with all options set to 0
+        const initialData = {};
+        options.forEach(option => {
+          initialData[option] = 0;
         });
+        return database.ref('poll').set(initialData);
+      } else {
+        // Ensure all current options exist in the database
+        const data = snapshot.val() || {};
+        const updates = {};
+        let needsUpdate = false;
+        
+        // Check for missing options
+        options.forEach(option => {
+          if (data[option] === undefined) {
+            updates[option] = 0;
+            needsUpdate = true;
+          }
+        });
+        
+        if (needsUpdate) {
+          return database.ref('poll').update(updates);
+        }
       }
     })
     .then(function() {

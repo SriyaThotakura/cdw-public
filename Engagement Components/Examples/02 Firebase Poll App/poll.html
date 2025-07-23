@@ -3,34 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poll: Where do you feel most comfortable spending time outside?</title>
-    
-    <!-- Firebase SDK -->
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-      import { getFirestore, collection, getDocs, doc, setDoc, onSnapshot, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-      
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCxPm4CTc2a2NgTyguxfTw8OKMhgikkzbw",
-        authDomain: "poll-tutorial-14307.firebaseapp.com",
-        projectId: "poll-tutorial-14307",
-        storageBucket: "poll-tutorial-14307.appspot.com",
-        messagingSenderId: "537495701721",
-        appId: "1:537495701721:web:8f23217048f8c8436256c8",
-        measurementId: "G-QKTMKPMFKE"
-      };
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      
-      // Make db available globally for poll-app.js
-      window.db = db;
-      window.firebaseModules = { collection, getDocs, doc, setDoc, onSnapshot, updateDoc, increment };
-    </script>
-    
+    <title>Where Do You Feel Most Comfortable Outside?</title>
     <style>
         * {
             margin: 0;
@@ -187,14 +160,6 @@
             .poll-title { font-size: 1.5em; }
             .option-content { padding: 15px; }
         }
-
-        /* Connection status styling */
-        .connection-status {
-            margin-top: 10px;
-            font-size: 0.8em;
-            color: #666;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -205,54 +170,137 @@
             <div class="poll-option" data-option="parks">
                 <div class="option-content">
                     <span class="option-icon">🌳</span>
-                    <span class="option-text">Public parks <span class="vote-count" id="parks-count">0</span></span>
+                    <span class="option-text">Public parks</span>
+                    <span class="vote-count">0 votes</span>
                 </div>
-                <div class="progress-bar" id="parks-progress"></div>
+                <div class="progress-bar"></div>
             </div>
 
             <div class="poll-option" data-option="cafes">
                 <div class="option-content">
                     <span class="option-icon">☕</span>
-                    <span class="option-text">Sidewalk cafés / restaurants <span class="vote-count" id="cafes-count">0</span></span>
+                    <span class="option-text">Sidewalk cafés / restaurants</span>
+                    <span class="vote-count">0 votes</span>
                 </div>
-                <div class="progress-bar" id="cafes-progress"></div>
+                <div class="progress-bar"></div>
             </div>
 
             <div class="poll-option" data-option="transit">
                 <div class="option-content">
                     <span class="option-icon">🚌</span>
-                    <span class="option-text">Transit stops <span class="vote-count" id="transit-count">0</span></span>
+                    <span class="option-text">Transit stops</span>
+                    <span class="vote-count">0 votes</span>
                 </div>
-                <div class="progress-bar" id="transit-progress"></div>
+                <div class="progress-bar"></div>
             </div>
 
             <div class="poll-option" data-option="malls">
                 <div class="option-content">
                     <span class="option-icon">🏬</span>
-                    <span class="option-text">Malls or indoor spaces <span class="vote-count" id="malls-count">0</span></span>
+                    <span class="option-text">Malls or indoor spaces</span>
+                    <span class="vote-count">0 votes</span>
                 </div>
-                <div class="progress-bar" id="malls-progress"></div>
+                <div class="progress-bar"></div>
             </div>
 
             <div class="poll-option" data-option="nowhere">
                 <div class="option-content">
                     <span class="option-icon">🏠</span>
-                    <span class="option-text">Nowhere / I feel unsafe <span class="vote-count" id="nowhere-count">0</span></span>
+                    <span class="option-text">Nowhere / I feel unsafe</span>
+                    <span class="vote-count">0 votes</span>
                 </div>
-                <div class="progress-bar" id="nowhere-progress"></div>
+                <div class="progress-bar"></div>
             </div>
         </div>
 
         <div class="total-votes">
             Total votes: <span id="total-count">0</span>
-            <div class="connection-status" id="connection-status">Connecting to database...</div>
-            <button class="reset-btn" id="reset-poll">Reset Poll</button>
+            <br>
+            <button class="reset-btn" onclick="resetPoll()">Reset Poll</button>
         </div>
 
         <div class="celebration" id="celebration">🎉</div>
     </div>
 
-    <!-- Firebase and Custom JS -->
-    <script src="poll-app.js"></script>
+    <script>
+        let votes = {
+            parks: 0,
+            cafes: 0,
+            transit: 0,
+            malls: 0,
+            nowhere: 0
+        };
+
+        let totalVotes = 0;
+        let hasVoted = false;
+
+        function updateDisplay() {
+            const maxVotes = Math.max(...Object.values(votes));
+            
+            Object.keys(votes).forEach(option => {
+                const optionElement = document.querySelector(`[data-option="${option}"]`);
+                const voteCount = optionElement.querySelector('.vote-count');
+                const progressBar = optionElement.querySelector('.progress-bar');
+                
+                voteCount.textContent = `${votes[option]} vote${votes[option] !== 1 ? 's' : ''}`;
+                voteCount.classList.add('visible');
+                
+                const percentage = totalVotes > 0 ? (votes[option] / totalVotes) * 100 : 0;
+                progressBar.style.width = `${percentage}%`;
+            });
+
+            document.getElementById('total-count').textContent = totalVotes;
+        }
+
+        function vote(option) {
+            if (hasVoted) return;
+            
+            votes[option]++;
+            totalVotes++;
+            hasVoted = true;
+            
+            // Add visual feedback
+            const optionElement = document.querySelector(`[data-option="${option}"]`);
+            optionElement.classList.add('voted');
+            
+            // Show celebration
+            const celebration = document.getElementById('celebration');
+            celebration.classList.add('animate');
+            setTimeout(() => celebration.classList.remove('animate'), 1000);
+            
+            updateDisplay();
+            
+            // Re-enable voting after 2 seconds for demo purposes
+            setTimeout(() => {
+                hasVoted = false;
+                document.querySelectorAll('.poll-option').forEach(el => el.classList.remove('voted'));
+            }, 2000);
+        }
+
+        function resetPoll() {
+            votes = { parks: 0, cafes: 0, transit: 0, malls: 0, nowhere: 0 };
+            totalVotes = 0;
+            hasVoted = false;
+            
+            document.querySelectorAll('.poll-option').forEach(el => {
+                el.classList.remove('voted');
+                el.querySelector('.vote-count').classList.remove('visible');
+                el.querySelector('.progress-bar').style.width = '0%';
+            });
+            
+            updateDisplay();
+        }
+
+        // Add click listeners
+        document.querySelectorAll('.poll-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const optionType = option.dataset.option;
+                vote(optionType);
+            });
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
 </body>
 </html>
