@@ -1,6 +1,9 @@
-// Firebase Poll App
-// Updated to work with new poll options and structure
+// Firebase Poll App - Tutorial JavaScript
+// This script demonstrates how to integrate Firebase Realtime Database with a simple web app
+// It shows real-time data synchronization across multiple users
 
+// Wait for the DOM (Document Object Model) to be fully loaded before running any code
+// This ensures all HTML elements exist before we try to access them
 document.addEventListener('DOMContentLoaded', function() {
   
   // ========================================
@@ -15,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 3. Copy the config object that Firebase provides
   // 4. Replace the values below with your actual Firebase config
   
+  // Firebase configuration object
   const firebaseConfig = {
     apiKey: "AIzaSyCxPm4CTc2a2NgTyguxfTw8OKMhgikkzbw",
     authDomain: "poll-tutorial-14307.firebaseapp.com",
@@ -26,127 +30,257 @@ document.addEventListener('DOMContentLoaded', function() {
     measurementId: "G-QKTMKPMFKE"
   };
 
-  // Initialize Firebase - this connects your app to Firebase services
+  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   
-  // Get a reference to the Firebase Realtime Database
-  // This is like getting a "handle" to your database that you can use to read/write data
+  // Get a reference to the database service
   const database = firebase.database();
 
-  // Get references to HTML elements
-  const pollOptions = document.querySelectorAll('.poll-option');
-  const connectionStatus = document.getElementById('connection-status');
-  const resetButton = document.getElementById('reset-poll');
-  const totalVotes = document.getElementById('total-count');
+  // ========================================
+  // STEP 2: CAPTCHA VERIFICATION
+  // ========================================
+  let captchaVerified = false;
   
-  // Poll options configuration
-  const options = ['parks', 'cafes', 'transit', 'malls', 'nowhere'];
-  
-  // Initialize vote counts and progress bars
-  const voteCounts = {};
-  const progressBars = {};
-  
-  options.forEach(option => {
-    voteCounts[option] = document.getElementById(`${option}-count`);
-    progressBars[option] = document.getElementById(`${option}-progress`);
-  });
-  
-  // Add animation class to options on load
-  pollOptions.forEach((option, index) => {
-    setTimeout(() => {
-      option.style.opacity = '1';
-      option.style.transform = 'translateY(0)';
-    }, 100 * index);
-  });
-
-  // Set up real-time database listeners for each option
-  options.forEach(option => {
-    database.ref(`poll/${option}`).on('value', function(snapshot) {
-      const count = snapshot.val() || 0;
-      // Update the vote count display
-      if (voteCounts[option]) {
-        voteCounts[option].textContent = count;
-      }
-      updateTotalVotes();
-      updateProgressBars();
-    });
-  });
-
-  // Set up event listeners for voting
-  pollOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const optionType = this.getAttribute('data-option');
-      if (!optionType) return;
-      
-      // Add visual feedback
-      this.classList.add('voted');
-      
-      // Show celebration
-      const celebration = document.getElementById('celebration');
-      celebration.classList.add('animate');
-      setTimeout(() => celebration.classList.remove('animate'), 1000);
-      
-      // Get current count and update
-      database.ref(`poll/${optionType}`).once('value')
-        .then(function(snapshot) {
-          const currentCount = snapshot.val() || 0;
-          return database.ref(`poll/${optionType}`).set(currentCount + 1);
-        })
-        .then(function() {
-          // Show vote confirmation
-          const optionText = option.querySelector('.option-text').textContent.split(' ')[0];
-          showVoteConfirmation(optionText);
-        })
-        .catch(function(error) {
-          console.error('Error recording vote:', error);
-          showError('Failed to record vote. Please try again.');
-        });
-    });
-  });
-
-  // Reset button functionality
-  if (resetButton) {
-    resetButton.addEventListener('click', function() {
-      if (confirm('Are you sure you want to reset all vote counts to zero?')) {
-        const updates = {};
-        options.forEach(option => {
-          updates[`poll/${option}`] = 0;
-        });
-        
-        database.ref().update(updates)
-          .then(() => {
-            showVoteConfirmation('Poll has been reset');
-            // Remove voted class from all options
-            document.querySelectorAll('.poll-option').forEach(el => {
-              el.classList.remove('voted');
-            });
-          })
-          .catch(error => {
-            console.error('Error resetting poll:', error);
-            showError('Failed to reset poll.');
-          });
-      }
-    });
+  // Check if CAPTCHA is verified
+  function checkCaptchaVerified() {
+    return captchaVerified || sessionStorage.getItem('captchaVerified') === 'true';
   }
+  
+  // Show CAPTCHA if not verified
+  function showCaptchaIfNeeded() {
+    if (!checkCaptchaVerified()) {
+      document.body.classList.add('show-captcha');
+      document.body.classList.remove('show-poll-options');
+      // Scroll to CAPTCHA
+      const captchaEl = document.querySelector('.captcha-container');
+      if (captchaEl) {
+        captchaEl.scrollIntoView({ behavior: 'smooth' });
+      }
+      return false;
+    }
+    return true;
+  }
+  
+  // Function to verify CAPTCHA (to be called from captcha.js)
+  window.verifyCaptchaSuccess = function() {
+    captchaVerified = true;
+    document.body.classList.remove('show-captcha');
+    document.body.classList.add('show-poll-options');
+    sessionStorage.setItem('captchaVerified', 'true');
+  };
+  
+  // ========================================
+  // STEP 3: INITIALIZE THE POLL
+  // ========================================
+  
+  // Only initialize poll if CAPTCHA is verified
+  if (checkCaptchaVerified()) {
+    document.body.classList.add('show-poll-options');
+  } else {
+    showCaptchaIfNeeded();
+  }
+  
+  // ========================================
+  // STEP 4: GET REFERENCES TO HTML ELEMENTS
+  // ========================================
+  // We need to get references to the HTML elements we want to update
+  // This is like getting "handles" to the parts of the webpage we want to change
+  
+  // Get references to all poll option elements
+  const pollOptions = {
+    'yes': {
+      button: document.getElementById('vote-yes'),
+      count: document.getElementById('yes-count'),
+      name: 'Parks & Nature Trails'
+    },
+    'no': {
+      button: document.getElementById('vote-no'),
+      count: document.getElementById('no-count'),
+      name: 'Urban Plazas & Streets'
+    },
+    'beach': {
+      button: document.getElementById('vote-beach'),
+      count: document.getElementById('beach-count'),
+      name: 'Beaches & Waterfronts'
+    },
+    'mountains': {
+      button: document.getElementById('vote-mountains'),
+      count: document.getElementById('mountains-count'),
+      name: 'Mountains & Hiking Trails'
+    }
+  };
 
-  // Get the current count from the database and increment it
-    database.ref('poll/no').once('value')
-      .then(function(snapshot) {
-        const currentCount = snapshot.val() || 0; // Current count, or 0 if none exists
-        const newCount = currentCount + 1; // Add 1 to the current count
-        
-        // Update the database with the new count
-        return database.ref('poll/no').set(newCount);
-      })
-      .then(function() {
-        console.log('No vote recorded successfully');
-        showVoteConfirmation('No');
-      })
-      .catch(function(error) {
-        console.error('Error recording vote:', error);
-        showError('Failed to record vote. Please try again.');
-      });
+  const totalVotes = document.getElementById('total-votes');
+  const connectionStatus = document.getElementById('connection-status');
+
+  // ========================================
+  // STEP 3: SET UP REAL-TIME DATABASE LISTENERS
+  // ========================================
+  // Firebase Realtime Database can automatically update your app when data changes
+  // We use .on('value') to listen for any changes to our poll data
+  
+  // Set up database listeners for each poll option
+  Object.entries(pollOptions).forEach(([key, option]) => {
+    // Listen for changes to each option's vote count in the database
+    database.ref(`poll/${key}`).on('value', function(snapshot) {
+      const count = snapshot.val() || 0;
+      
+      // Update the display on our webpage
+      option.count.textContent = `${count} vote${count !== 1 ? 's' : ''}`;
+      
+      // Update the total votes display
+      updateTotalVotes();
+      
+      console.log(`${option.name} votes updated:`, count);
+    });
   });
+
+  // ========================================
+  // STEP 4: SET UP BUTTON EVENT LISTENERS
+  // ========================================
+  // When users click the vote buttons, we need to update the database
+  // Firebase will then automatically update all other connected users
+  
+  // Validate poll option key
+  function isValidPollOption(key) {
+    return Object.prototype.hasOwnProperty.call(pollOptions, key);
+  }
+  
+  // Validate vote count
+  function isValidVoteCount(count) {
+    return typeof count === 'number' && 
+           Number.isInteger(count) && 
+           count >= 0 && 
+           count < 1000000; // Reasonable upper limit
+  }
+  
+  // Sanitize user input
+  function sanitizeInput(input) {
+    if (typeof input === 'string') {
+      // Remove any HTML tags and trim whitespace
+      return input.replace(/<[^>]*>/g, '').trim();
+    }
+    return input;
+  }
+  
+  // Set up click handlers for each poll option
+  Object.entries(pollOptions).forEach(([key, option]) => {
+    option.button.addEventListener('click', async function() {
+      // First validate the poll option key
+      if (!isValidPollOption(key)) {
+        console.error('Invalid poll option selected:', key);
+        showError('Invalid selection. Please try again.');
+        return;
+      }
+      
+      // Check if CAPTCHA is verified
+      if (!showCaptchaIfNeeded()) {
+        return;
+      }
+      
+      // Check if user has already voted in this session
+      if (hasVotedInSession()) {
+        showError('You have already voted in this session.');
+        return;
+      }
+      
+      // Check rate limiting
+      if (isRateLimited()) {
+        showError('Please wait a moment before voting again.');
+        return;
+      }
+      
+      console.log(`${option.name} button clicked`);
+      
+      try {
+        // Record the vote attempt timestamp
+        recordVoteAttempt();
+        
+        // Get the current count from the database
+        const snapshot = await database.ref(`poll/${key}`).once('value');
+        let currentCount = snapshot.val() || 0;
+        
+        // Validate the current count from the database
+        if (!isValidVoteCount(currentCount)) {
+          console.error('Invalid vote count in database:', currentCount);
+          throw new Error('Invalid vote count');
+        }
+        
+        // Sanitize the new count
+        const newCount = currentCount + 1;
+        if (!isValidVoteCount(newCount)) {
+          console.error('Invalid new vote count:', newCount);
+          throw new Error('Invalid new vote count');
+        }
+        
+        // Create a transaction to ensure atomic updates
+        await database.ref(`poll/${key}`).set(newCount);
+        
+        console.log(`Successfully updated ${option.name} votes to ${newCount}`);
+        showVoteConfirmation(option.name);
+        
+        // Record the vote in session storage
+        recordVoteInSession();
+        
+        // Disable voting after successful vote
+        disableVoting();
+        
+      } catch (error) {
+        console.error(`Error updating ${option.name} votes:`, error);
+        showError('Failed to record your vote. Please try again.');
+      }
+    });
+  });
+  
+  // Check if user has already voted in this session
+  function hasVotedInSession() {
+    return sessionStorage.getItem('hasVoted') === 'true';
+  }
+  
+  // Record vote in session storage
+  function recordVoteInSession() {
+    sessionStorage.setItem('hasVoted', 'true');
+    // Set a timestamp for when the vote was recorded
+    sessionStorage.setItem('voteTimestamp', Date.now().toString());
+  }
+  
+  // Check if user is rate limited
+  function isRateLimited() {
+    const lastVoteTime = parseInt(sessionStorage.getItem('lastVoteAttempt') || '0');
+    const now = Date.now();
+    // 5 second cooldown between votes
+    return (now - lastVoteTime) < 5000;
+  }
+  
+  // Record vote attempt timestamp for rate limiting
+  function recordVoteAttempt() {
+    sessionStorage.setItem('lastVoteAttempt', Date.now().toString());
+  }
+  
+  // Function to disable voting buttons
+  function disableVoting() {
+    Object.values(pollOptions).forEach(option => {
+      option.button.disabled = true;
+    });
+    
+    // Show message that user has already voted
+    const voteStatus = document.createElement('p');
+    voteStatus.className = 'vote-status';
+    voteStatus.textContent = 'Thank you for voting!';
+    voteStatus.style.color = '#4CAF50';
+    voteStatus.style.marginTop = '10px';
+    voteStatus.style.textAlign = 'center';
+    
+    const totalVotesContainer = document.querySelector('.total-votes');
+    if (totalVotesContainer && !document.querySelector('.vote-status')) {
+      totalVotesContainer.appendChild(voteStatus);
+    }
+  }
+  
+  // Check if user has already voted in this session
+  if (sessionStorage.getItem('hasVoted') === 'true') {
+    disableVoting();
+  }
 
   // ========================================
   // STEP 5: HELPER FUNCTIONS
@@ -156,56 +290,25 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * updateTotalVotes Function
    * Purpose: Calculate and display the total number of votes
-   * This function runs whenever any vote count changes
+   * This function runs whenever either vote count changes
    */
   function updateTotalVotes() {
+    // Get all vote counts and calculate the total
     let total = 0;
     
-    // Sum up all votes
-    options.forEach(option => {
-      if (voteCounts[option]) {
-        total += parseInt(voteCounts[option].textContent) || 0;
-      }
+    // Sum up all the votes
+    Object.values(pollOptions).forEach(option => {
+      const count = parseInt(option.count.textContent) || 0;
+      total += count;
     });
     
     // Update the total votes display
-    if (totalVotes) {
-      totalVotes.textContent = total;
-    }
+    totalVotes.textContent = total;
     
-    // Show or hide the reset button based on total votes
-    if (resetButton) {
-      resetButton.style.display = total > 0 ? 'inline-block' : 'none';
-    }
+    // Update progress bars
+    updateProgressBars(total);
     
-    return total;
-  }
-  
-  /**
-   * updateProgressBars Function
-   * Purpose: Update the width of progress bars based on vote distribution
-   */
-  function updateProgressBars() {
-    const total = updateTotalVotes();
-    
-    // Update each progress bar
-    options.forEach(option => {
-      if (voteCounts[option] && progressBars[option]) {
-        const votes = parseInt(voteCounts[option].textContent) || 0;
-        const percentage = total > 0 ? (votes / total) * 100 : 0;
-        progressBars[option].style.width = `${percentage}%`;
-        
-        // Show/hide vote count based on whether there are any votes
-        const voteCountElement = voteCounts[option].parentElement.querySelector('.vote-count');
-        if (voteCountElement) {
-          if (votes > 0) {
-            voteCountElement.classList.add('visible');
-          } else {
-            voteCountElement.classList.remove('visible');
-          }
-        }
-      }
-    });
+    console.log('Total votes:', total);
   }
 
   /**
@@ -213,39 +316,29 @@ document.addEventListener('DOMContentLoaded', function() {
    * Purpose: Show a brief confirmation message when a vote is recorded
    * @param {string} vote - The vote that was recorded ('Yes' or 'No')
    */
-  function showVoteConfirmation(vote) {
-    // Create a temporary confirmation message
-    const confirmation = document.createElement('div');
-    confirmation.className = 'vote-confirmation';
-    confirmation.textContent = `Thank you for voting ${vote === 'Yes' ? 'In the Park' : 'At the Beach'}!`;
-    confirmation.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #4CAF50;
-      color: white;
-      padding: 16px 24px;
-      border-radius: 8px;
-      font-size: 16px;
-      z-index: 1000;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-      opacity: 0;
-      transform: translateY(-20px);
-    `;
+  function showVoteConfirmation(optionName) {
+    console.log(`Vote recorded for ${optionName}`);
     
-    // Add the confirmation to the page
-    document.body.appendChild(confirmation);
+    // Store that user has voted in this session
+    sessionStorage.setItem('hasVoted', 'true');
     
-    // Remove the confirmation after 3 seconds
-    setTimeout(() => {
-      confirmation.style.animation = 'fadeOut 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards';
-      setTimeout(() => {
-        if (confirmation.parentNode) {
-          confirmation.parentNode.removeChild(confirmation);
-        }
-      }, 400);
-    }, 2800);
+    // Get the confirmation message element
+    const confirmationMessage = document.getElementById('confirmation-message');
+    
+    // Update the message text
+    confirmationMessage.textContent = `Your vote for "${optionName}" has been recorded!`;
+    
+    // Show the confirmation message
+    confirmationMessage.style.display = 'block';
+    
+    // Hide the message after 3 seconds
+    setTimeout(function() {
+      confirmationMessage.style.opacity = '0';
+      setTimeout(function() {
+        confirmationMessage.style.display = 'none';
+        confirmationMessage.style.opacity = '1';
+      }, 500);
+    }, 3000);
   }
 
   /**
@@ -305,30 +398,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // Set up any initial state when the page loads
   
   // Initialize vote counts to 0 if they don't exist in the database
+  // This ensures we start with a clean slate
   database.ref('poll').once('value')
     .then(function(snapshot) {
       if (!snapshot.exists()) {
-        // Initialize with all options set to 0
+        // If no poll data exists, initialize it with zeros for all options
         const initialData = {};
-        options.forEach(option => {
-          initialData[option] = 0;
+        Object.keys(pollOptions).forEach(key => {
+          initialData[key] = 0;
         });
         return database.ref('poll').set(initialData);
       } else {
-        // Ensure all current options exist in the database
-        const data = snapshot.val() || {};
+        // If poll data exists, ensure all current options are included
         const updates = {};
-        let needsUpdate = false;
-        
-        // Check for missing options
-        options.forEach(option => {
-          if (data[option] === undefined) {
-            updates[option] = 0;
-            needsUpdate = true;
+        Object.keys(pollOptions).forEach(key => {
+          if (!snapshot.hasChild(key)) {
+            updates[key] = 0;
           }
         });
-        
-        if (needsUpdate) {
+        if (Object.keys(updates).length > 0) {
           return database.ref('poll').update(updates);
         }
       }

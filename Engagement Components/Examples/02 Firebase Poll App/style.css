@@ -1,32 +1,8 @@
-/* Import Google Fonts - this loads the Roboto font family from Google's servers */
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
-/* Global Styles */
+/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* Keyframe Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-20px); }
-}
-
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes buttonAppear {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 body {
@@ -37,241 +13,301 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    color: #333;
-    line-height: 1.6;
 }
 
-/* Style the entire body of the webpage */
-body {
-  font-family: 'Roboto', sans-serif;  /* Set the font to Roboto, with sans-serif as backup */
-  background-color: #ffffff;          /* Set background color to white */
-  color: #111;                        /* Set text color to dark gray (almost black) */
-  margin: 0;                          /* Remove default spacing around the body */
-  padding: 0;                         /* Remove default internal spacing */
-}
-
-/* Style the header section at the top of the page */
-header {
-  display: flex;                      /* Use flexbox layout for flexible positioning */
-  justify-content: space-between;     /* Spread items evenly across the header */
-  align-items: center;                /* Center items vertically */
-  padding: 24px 40px;                 /* Add 24px top/bottom, 40px left/right spacing inside */
-  border-bottom: 1px solid #ccc;      /* Add a light gray line at the bottom */
-  font-size: 14px;                    /* Set font size to 14 pixels */
-}
-
-/* Style the left section of the header */
-header .left {
-  color: #aaa;                        /* Set text color to light gray */
-}
-
-/* Style the center section of the header */
-header .center {
-  font-weight: 400;                   /* Set font weight to normal (not bold) */
-  text-align: center;                 /* Center the text horizontally */
-}
-
-/* Style the span element inside the center section */
-header .center span {
-  font-size: 12px;                    /* Make this text smaller (12 pixels) */
-  color: #888;                        /* Set text color to medium gray */
-}
-
-/* Style links in the right section of the header */
-header .right a {
-  color: #000;                        /* Set link color to black */
-  text-decoration: none;              /* Remove the underline from links */
-  font-weight: 400;                   /* Set font weight to normal */
-}
-
-/* Main Content Area */
-main {
-    max-width: 800px;
-    margin: 0 auto;
-  padding: 0 20px;                    /* Add 20px left/right padding, no top/bottom */
-}
-
-/* Style the project year/date */
-.project-meta {
-  font-size: 14px;                    /* Set font size to 14 pixels */
-  color: #999;                        /* Set text color to light gray */
-  margin-bottom: 8px;                 /* Add 8 pixels of space below this element */
-}
-
-/* Style the main project title */
-.project-title {
-  font-size: 24px;                    /* Set font size to 24 pixels (larger) */
-  font-weight: 400;                   /* Set font weight to normal (not bold) */
-  margin-bottom: 4px;                 /* Add 4 pixels of space below this element */
-}
-
-/* Style the project subtitle */
-.project-subtitle {
-  font-size: 16px;                    /* Set font size to 16 pixels */
-  color: #999;                        /* Set text color to light gray */
-  margin-bottom: 24px;                /* Add 24 pixels of space below this element */
-}
-
-/* Style the advisor information */
-.advisor {
-  font-size: 14px;                    /* Set font size to 14 pixels */
-  margin-bottom: 40px;                /* Add 40 pixels of space below this element */
-  color: #333;                        /* Set text color to dark gray */
-}
-
-/* Style section titles (like "Abstract", "Motivation") */
-.section-title {
-  font-weight: 700;                   /* Make the text bold */
-  text-transform: uppercase;          /* Convert text to all capital letters */
-  margin-top: 40px;                   /* Add 40 pixels of space above this element */
-  margin-bottom: 12px;                /* Add 12 pixels of space below this element */
-  font-size: 14px;                    /* Set font size to 14 pixels */
-}
-
-/* Style all paragraph elements */
-p {
-  font-size: 16px;                    /* Set font size to 16 pixels */
-  line-height: 1.6;                   /* Set space between lines to 1.6 times the font size */
-  margin-bottom: 24px;                /* Add 24 pixels of space below each paragraph */
-  color: #111;                        /* Set text color to dark gray (almost black) */
-}
-
-/* ======================================== */
-/* POLL CONTAINER STYLES */
-/* ======================================== */
-
-/* Main poll container */
-.poll-container {
-  margin-bottom: 40px;                /* Space below the poll */
-  padding: 32px;                      /* Internal spacing */
-  border: 2px solid #e0e0e0;          /* Subtle border */
-  border-radius: 12px;                /* Rounded corners */
-  background-color: #fafafa;          /* Very light background */
-  text-align: center;                 /* Center all content */
+/* CAPTCHA Container */
+.captcha-container {
+  max-width: 320px;
+  margin: 0 auto 30px;
+  padding: 20px;
   background: white;
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-/* Poll question styling */
-.poll-question h3 {
-  font-size: 20px;                    /* Larger font for the question */
-  font-weight: 500;                   /* Medium font weight */
-  margin-bottom: 24px;                /* Space below the question */
-  color: #333;                        /* Dark gray text */
-}
-
-/* Vote buttons container */
-.vote-buttons {
-  display: flex;                       /* Use flexbox for button layout */
-  justify-content: center;             /* Center buttons horizontally */
-  gap: 20px;                          /* Space between buttons */
-  margin-bottom: 24px;                /* Space below buttons */
-  flex-wrap: wrap;                    /* Allow buttons to wrap on small screens */
-}
-
-/* Individual vote button styling */
-.vote-btn {
-  display: flex;                       /* Use flexbox for button content */
-  flex-direction: column;              /* Stack text and count vertically */
-  align-items: center;                 /* Center content horizontally */
-  justify-content: center;             /* Center content vertically */
-  min-width: 120px;                   /* Minimum button width */
-  padding: 20px 24px;                 /* Internal spacing */
-  border: none;                        /* No border */
-  border-radius: 8px;                 /* Rounded corners */
-  font-size: 16px;                    /* Font size */
-  font-weight: 500;                   /* Medium font weight */
-  cursor: pointer;                    /* Hand cursor on hover */
-  transition: all 0.3s ease;          /* Smooth transitions */
-  font-family: 'Roboto', sans-serif;  /* Consistent font */
-  position: relative;                 /* For hover effects */
-  overflow: hidden;                   /* Hide overflow for effects */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 20px 25px;
-  border: none;
   border-radius: 12px;
-  background: #f5f7fa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.captcha-box {
+  text-align: center;
+}
+
+.captcha-box h3 {
+  margin: 0 0 10px;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.captcha-box p {
+  margin: 0 0 15px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.captcha-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  margin-bottom: 15px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  user-select: none;
+  color: #333;
+  border: 1px dashed #ccc;
+}
+
+.captcha-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.captcha-input {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.captcha-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.captcha-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  text-align: left;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: buttonAppear 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  animation-delay: 0.3s;
+  transition: all 0.3s;
 }
 
-.vote-btn:last-child {
-  animation-delay: 0.5s;
+.captcha-button:hover {
+  background: #e9e9e9;
+  border-color: #ccc;
 }
 
-/* Yes button specific styling */
-.vote-yes {
-  background: linear-gradient(135deg, #4CAF50, #45a049); /* Green gradient */
-  color: white;                       /* White text */
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3); /* Green shadow */
+.captcha-button svg {
+  width: 20px;
+  height: 20px;
+  color: #666;
 }
 
-.vote-yes:hover {
-  transform: translateY(-2px);        /* Lift effect on hover */
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); /* Enhanced shadow */
+.captcha-verify-button {
+  width: 100%;
+  padding: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.vote-yes:active {
-  transform: translateY(0);           /* Return to normal on click */
+.captcha-verify-button:hover {
+  background: #5a6fd8;
 }
 
-/* No button specific styling */
-.vote-no {
-  background: linear-gradient(135deg, #f44336, #d32f2f); /* Red gradient */
-  color: white;                       /* White text */
-  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3); /* Red shadow */
+.captcha-verify-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
-.vote-no:hover {
-  transform: translateY(-2px);        /* Lift effect on hover */
-  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4); /* Enhanced shadow */
+.captcha-status {
+  margin: 10px 0 0;
+  min-height: 20px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.vote-no:active {
-  transform: translateY(0);           /* Return to normal on click */
+.captcha-status.success {
+  color: #4caf50;
 }
 
-/* Vote text styling */
-.vote-text {
-  font-size: 18px;                    /* Larger font for vote text */
-  font-weight: 600;                   /* Bold font weight */
-  margin-bottom: 8px;                 /* Space below text */
+.captcha-status.error {
+  color: #f44336;
 }
 
-/* Vote count styling */
+/* Hide CAPTCHA by default */
+.captcha-container {
+  display: none;
+}
+
+/* Show CAPTCHA when needed */
+.show-captcha .captcha-container {
+  display: block;
+}
+
+/* Hide poll options until verified */
+.poll-options {
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.show-poll-options .poll-options {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Poll Container */
+.poll-container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Poll Title */
+.poll-title {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* Poll Options */
+.poll-options {
+    margin-bottom: 30px;
+}
+
+.poll-option {
+    margin-bottom: 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.poll-option:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+}
+
+.option-content {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}
+
+.option-icon {
+    font-size: 1.5em;
+    margin-right: 15px;
+    width: 40px;
+    text-align: center;
+}
+
+.option-text {
+    font-size: 1.1em;
+    color: #333;
+    font-weight: 500;
+    flex-grow: 1;
+    text-align: left;
+}
+
 .vote-count {
-  font-size: 24px;                    /* Large font for count */
-  font-weight: 700;                   /* Bold font weight */
-  background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-  padding: 4px 12px;                  /* Internal spacing */
-  border-radius: 20px;                /* Rounded background */
-  min-width: 40px;                    /* Minimum width for count */
-  display: inline-block;              /* Block display for padding */
+    font-weight: 600;
+    color: #667eea;
+    margin-left: 10px;
+    font-size: 0.9em;
+    transition: opacity 0.3s ease;
 }
 
-/* Total votes display */
-.total-votes {
-  margin-top: 20px;                   /* Space above total */
-  padding: 16px;                      /* Internal spacing */
-  background-color: white;            /* White background */
-  border-radius: 8px;                 /* Rounded corners */
-  border: 1px solid #e0e0e0;          /* Light border */
+.vote-count.visible {
+    opacity: 1;
 }
+
+/* Progress Bar */
+.progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    width: 0%;
+    transition: width 0.8s ease-out;
+}
+
+/* Voted State */
+.poll-option.voted {
+    border-color: #667eea;
+    background-color: #f8f9ff;
+}
+
+/* Total Votes */
+.total-votes {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.total-votes p {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Status Display */
+.status-display {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .poll-container {
+        padding: 25px;
+    }
+    
+    .poll-title {
+        font-size: 1.5em;
+    }
+    
+    .option-content {
+        padding: 15px;
+    }
+    
+    .option-icon {
+        font-size: 1.3em;
+        margin-right: 10px;
+    }
+    
+    .option-text {
+        font-size: 1em;
+    }
+}
+
 
 .total-votes p {
   margin: 0;                          /* Remove default margin */

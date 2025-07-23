@@ -1,0 +1,41 @@
+{
+  "rules": {
+    "poll": {
+      ".read": true,
+      ".write": "false",
+      "$optionId": {
+        ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 1000000"
+      }
+    },
+    "pendingVotes": {
+      ".read": "false",
+      ".write": "false",
+      "$voteId": {
+        ".validate": "newData.hasChildren(['option', 'timestamp'])",
+        "option": {
+          ".validate": "newData.isString() && newData.val().matches(/^(yes|no|beach|mountains)$/)"        
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber() && newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "userVotes": {
+      ".read": "auth != null && auth.token.admin === true",
+      "$sessionId": {
+        ".write": "!data.exists() && newData.hasChildren(['option', 'timestamp'])",
+        ".validate": "newData.child('option').isString() && newData.child('option').val().matches(/^(yes|no|beach|mountains)$/) && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now"
+      }
+    },
+    "server": {
+      ".read": "false",
+      ".write": "false",
+      "processVote": {
+        ".validate": "root.child('pendingVotes/'+newData.child('$pending_vote_id').val()).exists()"
+      }
+    }
+  }
+}
