@@ -3,20 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temporal Structures - Cellular Painting Network</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- D3.js -->
+    <title>Cellular Painting Network</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    
-    <!-- Navigation -->
-    <link rel="stylesheet" href="../style.css">
-    <script src="../js/include-nav.js"></script>
-    
-    <!-- Page-specific styles -->
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-bg: #0a0a1a;
@@ -483,333 +472,82 @@
         }
     </style>
 </head>
-<body class="dark-theme">
-    <!-- Navigation will be loaded here by include-nav.js -->
-    <div id="nav-placeholder"></div>
+<body>
+    <!-- Simplified fluid background -->
+    <div class="fluid-bg"></div>
     
-    <main class="content-wrapper">
-        <!-- Simplified fluid background -->
-        <div class="fluid-bg"></div>
-    
-        <!-- Header Section -->
-        <header class="page-header">
-            <div class="header-content">
-                <div class="titles">
-                    <h1>Cellular Painting Network</h1>
-                </div>
-                        
-                        <div class="dropdown-content" id="dropdownContent">
-                            <a href="../index.html" class="nav-link">
-                                <span class="link-icon">🏠</span>
-                                <span>Home</span>
-                            </a>
-                            <a href="../Temporal%20Structures/index.html" class="nav-link">
-                                <span class="link-icon">⏱️</span>
-                                <span>Relational Structure</span>
-                            </a>
-                            <a href="../Geospatial%20Structures/index.html" class="nav-link">
-                                <span class="link-icon">🌐</span>
-                                <span>Geospatial Structures</span>
-                            </a>
-                            <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">
-                                <span class="link-icon">💬</span>
-                                <span>Engagement</span>
-                            </a>
-                            <a href="#about" class="nav-link">
-                                <span class="link-icon">ℹ️</span>
-                                <span>About</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+    <!-- Title Panel -->
+    <div class="title-panel">
+        <div class="title-content">
+            <h1>Cellular Painting Network</h1>
+            <p class="subtitle">Visualizing emotional relationships through cellular structures</p>
+        </div>
+        
+        <div class="menu-container">
+            <button class="menu-button" id="menuButton">
+                <span class="menu-icon">☰</span>
+                <span class="menu-text">Menu</span>
+            </button>
+            
+            <div class="dropdown-content" id="dropdownContent">
+                <a href="../index.html">Home</a>
+                <a href="../Temporal Structures/index.html">Temporal Structures</a>
+                <a href="../Geospatial Structures/index.html">Geospatial Structures</a>
+                <a href="../Engagement Components/index.html">Engagement Components</a>
+                <a href="#about">About</a>
             </div>
-        </header>
+        </div>
+    </div>
     
     <div class="container">
-        <div class="visualization-container">
-            <div id="network"></div>
-            
-            <div class="controls-panel">
-                <div class="controls-header">
-                    <h3>Network Controls</h3>
-                    <button class="toggle-controls" aria-label="Toggle controls panel">
-                        <span class="toggle-icon">▼</span>
-                    </button>
+        <div id="network"></div>
+        
+        <div class="controls">
+            <button onclick="restartSimulation()">
+                <span class="button-icon">🔄</span>
+                <span class="button-text">Restart Animation</span>
+            </button>
+            <button onclick="toggleLabels()">
+                <span class="button-icon">🏷️</span>
+                <span class="button-text">Toggle Labels</span>
+            </button>
+            <button onclick="toggleLinks()">
+                <span class="button-icon">🔗</span>
+                <span class="button-text">Toggle Links</span>
+            </button>
+        </div>
+        
+        <div class="legend">
+            <h3>Emotion Categories</h3>
+            <div id="legend-items">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: linear-gradient(to right, #FFD700, #FFA500);"></span>
+                    <span class="legend-label">Happiness</span>
                 </div>
-                
-                <div class="controls-content">
-                    <div class="control-group">
-                        <label>Simulation</label>
-                        <button class="control-button" onclick="restartSimulation()" title="Reset the simulation">
-                            <span class="button-icon">🔄</span>
-                            <span class="button-text">Restart</span>
-                        </button>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>Display</label>
-                        <div class="button-group">
-                            <button class="control-button" onclick="toggleLabels()" title="Toggle node labels">
-                                <span class="button-icon">🏷️</span>
-                                <span class="button-text">Labels</span>
-                            </button>
-                            <button class="control-button" onclick="toggleLinks()" title="Toggle connection lines">
-                                <span class="button-icon">🔗</span>
-                                <span class="button-text">Links</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>Layout</label>
-                        <div class="button-group">
-                            <button class="control-button" onclick="applyForceLayout('circular')" title="Arrange in a circle">
-                                <span class="button-icon">⭕</span>
-                                <span class="button-text">Circle</span>
-                            </button>
-                            <button class="control-button" onclick="applyForceLayout('force')" title="Apply force-directed layout">
-                                <span class="button-icon">⚡</span>
-                                <span class="button-text">Force</span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: linear-gradient(to right, #1E90FF, #00008B);"></span>
+                    <span class="legend-label">Sadness</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: linear-gradient(to right, #FF4500, #8B0000);"></span>
+                    <span class="legend-label">Anger</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: linear-gradient(to right, #9932CC, #4B0082);"></span>
+                    <span class="legend-label">Fear</span>
                 </div>
             </div>
         </div>
         
-        <div class="legend-container">
-            <div class="legend-card">
-                <div class="legend-header">
-                    <h3>Emotion Spectrum</h3>
-                    <button class="legend-toggle" aria-label="Toggle legend">
-                        <span class="toggle-icon">▼</span>
-                    </button>
-                </div>
-                
-                <div class="legend-content">
-                    <div class="legend-grid">
-                        <div class="legend-item" data-category="happiness">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #FFD700, #FF8C00);">
-                                <span class="legend-emoji">😊</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Happiness</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="sadness">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #1E90FF, #00008B);">
-                                <span class="legend-emoji">😢</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Sadness</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="anger">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #FF4500, #8B0000);">
-                                <span class="legend-emoji">😠</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Anger</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="fear">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #9932CC, #4B0082);">
-                                <span class="legend-emoji">😨</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Fear</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="legend-actions">
-                        <button class="action-button" id="highlightAll">
-                            <span class="button-icon">✨</span>
-                            <span>Highlight All</span>
-                        </button>
-                        <button class="action-button" id="resetView">
-                            <span class="button-icon">🔄</span>
-                            <span>Reset View</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-header">
-                    <h3>How to Interact</h3>
-                    <span class="info-icon">ℹ️</span>
-                </div>
-                <div class="info-content">
-                    <ul class="info-list">
-                        <li>🖱️ <strong>Click & Drag</strong> nodes to explore connections</li>
-                        <li>👆 <strong>Hover</strong> over nodes to highlight relationships</li>
-                        <li>🔍 <strong>Scroll</strong> to zoom in/out of the network</li>
-                        <li>🎨 <strong>Intensity</strong> of color indicates emotional strength</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="info">
+            <p>Interact with the cellular network by clicking and dragging nodes. Hover to see connections.</p>
+            <p>Intensity of color represents emotional strength.</p>
         </div>
     </div>
     
 
     <script>
-        // DOM Elements
-        const controlsToggle = document.querySelector('.toggle-controls');
-        const controlsContent = document.querySelector('.controls-content');
-        const legendToggle = document.querySelector('.legend-toggle');
-        const legendContent = document.querySelector('.legend-content');
-        const highlightAllBtn = document.getElementById('highlightAll');
-        const resetViewBtn = document.getElementById('resetView');
-        
-        // Toggle controls panel
-        if (controlsToggle && controlsContent) {
-            controlsToggle.addEventListener('click', () => {
-                const isExpanded = controlsToggle.getAttribute('aria-expanded') === 'true';
-                controlsToggle.setAttribute('aria-expanded', !isExpanded);
-                controlsContent.style.display = isExpanded ? 'none' : 'block';
-                controlsToggle.querySelector('.toggle-icon').textContent = isExpanded ? '▼' : '▲';
-            });
-            
-            // Start with controls expanded
-            controlsToggle.setAttribute('aria-expanded', 'true');
-        }
-        
-        // Toggle legend content on mobile
-        if (legendToggle && legendContent) {
-            legendToggle.addEventListener('click', () => {
-                const isExpanded = legendToggle.getAttribute('aria-expanded') === 'true';
-                legendToggle.setAttribute('aria-expanded', !isExpanded);
-                legendContent.style.display = isExpanded ? 'none' : 'block';
-                legendToggle.querySelector('.toggle-icon').textContent = isExpanded ? '▼' : '▲';
-            });
-            
-            // Start with legend expanded on desktop, collapsed on mobile
-            const isMobile = window.innerWidth < 768;
-            legendToggle.setAttribute('aria-expanded', !isMobile);
-            legendContent.style.display = isMobile ? 'none' : 'block';
-            
-            // Update on window resize
-            window.addEventListener('resize', () => {
-                const isMobile = window.innerWidth < 768;
-                const isExpanded = legendToggle.getAttribute('aria-expanded') === 'true';
-                if (isMobile && isExpanded) {
-                    legendContent.style.display = 'none';
-                } else if (!isMobile) {
-                    legendContent.style.display = 'block';
-                }
-            });
-        }
-        
-        // Highlight all nodes of a category when legend item is clicked
-        document.querySelectorAll('.legend-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                // Remove active state from all legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Add active state to clicked item
-                this.style.background = 'rgba(99, 102, 241, 0.2)';
-                
-                // Here you would add logic to highlight nodes of this category
-                // For example: highlightNodesByCategory(category);
-            });
-        });
-        
-        // Highlight all nodes
-        if (highlightAllBtn) {
-            highlightAllBtn.addEventListener('click', () => {
-                // Reset any active legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Here you would add logic to highlight all nodes
-                // For example: highlightAllNodes();
-            });
-        }
-        
-        // Reset view
-        if (resetViewBtn) {
-            resetViewBtn.addEventListener('click', () => {
-                // Reset any active legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Reset the visualization to initial state
-                restartSimulation();
-            });
-        }
-        
-        // Apply different layout algorithms
-        function applyForceLayout(layoutType) {
-            if (!simulation) return;
-            
-            // Stop any current simulation
-            simulation.stop();
-            
-            if (layoutType === 'circular') {
-                // Arrange nodes in a circle
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) * 0.4;
-                const angle = (2 * Math.PI) / nodes.length;
-                
-                nodes.forEach((node, i) => {
-                    // Position nodes in a circle
-                    node.fx = centerX + radius * Math.cos(angle * i);
-                    node.fy = centerY + radius * Math.sin(angle * i);
-                    
-                    // Add a little randomness to prevent overlapping
-                    node.fx += (Math.random() - 0.5) * 20;
-                    node.fy += (Math.random() - 0.5) * 20;
-                });
-                
-                // Restart simulation with no forces initially
-                simulation.force('charge', d3.forceManyBody().strength(-100));
-                simulation.force('center', d3.forceCenter(width / 2, height / 2));
-                simulation.alpha(1).restart();
-                
-                // After a delay, add some force to make it more dynamic
-                setTimeout(() => {
-                    simulation.force('charge', d3.forceManyBody().strength(-300));
-                    simulation.alpha(1).restart();
-                }, 500);
-                
-                console.log('Applied circular layout');
-                
-            } else if (layoutType === 'force') {
-                // Reset fixed positions for force-directed layout
-                nodes.forEach(node => {
-                    node.fx = null;
-                    node.fy = null;
-                });
-                
-                // Set up force simulation
-                simulation.force('charge', d3.forceManyBody().strength(-300));
-                simulation.force('center', d3.forceCenter(width / 2, height / 2));
-                simulation.force('link', d3.forceLink(links)
-                    .id(d => d.id)
-                    .distance(100)
-                    .strength(0.1)
-                );
-                
-                // Add collision detection
-                simulation.force('collision', d3.forceCollide().radius(d => d.size * 1.5 || 25));
-                
-                // Restart simulation
-                simulation.alpha(1).restart();
-                
-                console.log('Applied force-directed layout');
-            }
-        }
+
         
         // Emoji mapping for different color categories
         const emojiMap = {
@@ -1379,20 +1117,17 @@
             const menuButton = document.getElementById('menuButton');
             const dropdownContent = document.getElementById('dropdownContent');
             
-            if (menuButton && dropdownContent) {
-                menuButton.addEventListener('click', function() {
-                    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!event.target.matches('.menu-button') && !event.target.matches('.menu-button *')) {
-                        dropdownContent.style.display = 'none';
-                    }
-                });
-            }
+            menuButton.addEventListener('click', function() {
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!event.target.matches('.menu-button') && !event.target.matches('.menu-button *')) {
+                    dropdownContent.style.display = 'none';
+                }
+            });
         });
     </script>
-    </main>
 </body>
 </html>

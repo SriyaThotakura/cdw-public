@@ -3,30 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engagement Components - Interactive Poll</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK -->
+    <title>Do You Like This Tutorial?</title>
+    <!-- Load Firebase SDK from CDN -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    
-    <!-- Navigation -->
-    <link rel="stylesheet" href="../../style.css">
-    <script src="../../js/include-nav.js"></script>
-    
-    <!-- Page-specific scripts and styles -->
     <script src="captcha.js"></script>
     <script src="poll-app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Navigation will be loaded here by include-nav.js -->
-  <div id="nav-placeholder"></div>
-  
-  <div class="content-wrapper">
-    <div class="captcha-container">
+
+  <div class="captcha-container">
     <div id="captcha-verification" class="captcha-box">
       <h3>Verify you're human</h3>
       <p>Complete the CAPTCHA to vote</p>

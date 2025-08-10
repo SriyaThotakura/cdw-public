@@ -3,11 +3,17 @@
 (function() {
     const container = document.getElementById('splitting-cube-container');
     if (!container) return;
+    
+    // Set fixed dimensions
     const WIDTH = 800;
     const HEIGHT = 600;
+    
+    // Set container styles
     container.style.width = WIDTH + 'px';
     container.style.height = HEIGHT + 'px';
     container.style.position = 'relative';
+    container.style.overflow = 'hidden';
+    container.style.margin = '0 auto'; // Center the container
 
     // --- Splitting Cube logic from splitting_cube.html (refactored for canvas) ---
     let scene, camera, renderer, raycaster, mouse;
@@ -21,14 +27,41 @@
     let frameCount = 0;
 
     function init() {
+        // Set fixed size for the renderer
+        const updateSize = () => {
+            if (renderer) {
+                renderer.setSize(WIDTH, HEIGHT);
+                camera.aspect = WIDTH / HEIGHT;
+                camera.updateProjectionMatrix();
+            }
+        };
+        
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(75, WIDTH / HEIGHT, 0.1, 1000);
-        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer = new THREE.WebGLRenderer({ 
+            antialias: true,
+            alpha: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColor(0x1a1a2e, 1);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
+        // Clear any existing canvas
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
         container.appendChild(renderer.domElement);
+        
+        // Handle window resize
+        const resizeObserver = new ResizeObserver(entries => {
+            updateSize();
+        });
+        resizeObserver.observe(container);
+        
+        // Also handle window resize as fallback
+        window.addEventListener('resize', updateSize);
         raycaster = new THREE.Raycaster();
         mouse = new THREE.Vector2();
 

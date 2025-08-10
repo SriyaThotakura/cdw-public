@@ -10,12 +10,29 @@
   <!-- Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.min.js"></script>
-  <!-- Include navigation script -->
-  <script src="js/include-nav.js"></script>
 </head>
 <body>
-  <!-- Navigation will be loaded here by include-nav.js -->
-  <div id="nav-placeholder"></div>
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <div class="year">2025</div>
+        <div class="title">Temporal Structures</div>
+        <div class="subtitle">Sriya Thotakura</div>
+        <div class="instructor">Catherine Griffiths</div>
+      </div>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span class="menu-icon">☰</span>
+      </button>
+      <div class="nav-links">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="Relational%20Structures/color_network_diagram.html" class="nav-link">Relational Structures</a>
+        <a href="Temporal%20Structures/index.html" class="nav-link">Temporal Structures</a>
+        <a href="Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
+        <a href="Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement Components</a>
+      </div>
+    </div>
+  </nav>
 
   <!-- Main Content -->
   <main>

@@ -6,40 +6,48 @@
 
 <head>
   <!-- The head section contains information about the page, not visible content -->
+
+
+  <!-- ------------------------------------------------------------ -->
+  <!-- Load D3.js library from CDN -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- This loads the D3.js library which provides functions for creating data visualizations -->
+  <!-- ------------------------------------------------------------ -->
+
+  
   <meta charset="UTF-8">
   <!-- This sets the character encoding to UTF-8, which supports special characters and emojis -->
   
-  <title>Temporal Structures - Computational Design Workflows</title>
+  <title>Module 1</title>
   <!-- This is the title that appears in the browser tab and bookmarks -->
   
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <!-- This loads the Roboto font from Google Fonts for use on our page -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <!-- This loads the DM Sans font for modern timeline styling -->
   
-  <!-- D3.js -->
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  
-  <!-- Navigation -->
-  <link rel="stylesheet" href="../style.css">
-  <script src="../js/include-nav.js"></script>
-  
-  <!-- Page-specific styles -->
   <link rel="stylesheet" href="style.css">
+  <!-- This links our CSS file to style the page - the href points to our style.css file -->
 </head>
 
 <body>
   <!-- The body contains all the visible content that users will see on the page -->
   
-  <!-- Navigation will be loaded here by include-nav.js -->
-  <div id="nav-placeholder"></div>
-  
-  <div class="content-wrapper">
-    <header>
-      <div class="left">
-        <h1>Computational Design Workflows</h1>
-        <p class="subtitle">Exploration of Digital Objects</p>
-      </div>
+  <header>
+    <div class="left">
+      <a href="../index.html" class="home-link">Columbia GSAPP</a>
+    </div>
+    
+    <div class="center">
+      Computational Design Workflows<br>
+      <span>Exploration of Digital Objects</span>
+    </div>
+    
+    <nav class="main-nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">Home</a>
+        </li>
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle">Modules</a>
           <ul class="dropdown-menu">

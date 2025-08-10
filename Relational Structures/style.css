@@ -1,0 +1,445 @@
+/* Cellular Painting Network Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-color: #0a0a1a;
+    --panel-bg: rgba(20, 20, 40, 0.9);
+    --text-color: #e0e0ff;
+    --accent-color: #6a4c93;
+    --highlight-color: #8a6cbc;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Network Container */
+#network {
+    flex: 1;
+    position: relative;
+    background: radial-gradient(ellipse at center, #1a1a3a 0%, #0a0a1a 100%);
+    overflow: hidden;
+}
+
+/* Info Panel */
+.info-panel {
+    position: fixed;
+    top: 20px;
+    right: -350px;
+    width: 320px;
+    height: calc(100vh - 40px);
+    background: var(--panel-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    z-index: 1000;
+    transition: right 0.3s ease, opacity 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    overflow-y: auto;
+    opacity: 0.95;
+}
+
+.info-panel h2 {
+    margin: 0 0 15px 0;
+    color: #fff;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-panel {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.close-panel:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.node-info {
+    margin-bottom: 20px;
+}
+
+.node-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #fff;
+}
+
+.node-group {
+    display: inline-block;
+    background: var(--accent-color);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+}
+
+.node-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 10px 0;
+}
+
+.connections-section h3 {
+    font-size: 1.1rem;
+    margin: 20px 0 10px 0;
+    color: #fff;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.connections-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 0 -10px;
+    padding: 0 10px;
+}
+
+.connection {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s;
+    border-left: 3px solid var(--accent-color);
+}
+
+.connection:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.connection-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.connection-type {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 5px;
+}
+
+.connection-strength {
+    height: 3px;
+    background: var(--accent-color);
+    border-radius: 3px;
+    margin-top: 5px;
+}
+
+/* Node and Link Styling */
+.node {
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.node:hover {
+    transform: scale(1.05);
+}
+
+.node.selected {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7));
+    z-index: 10;
+}
+
+.link-line {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-opacity 0.3s, stroke-width 0.3s;
+}
+
+.link-dash {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 5, 5;
+    animation: dash 10s linear infinite;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 1000;
+    }
+}
+
+/* Controls */
+.controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel-bg);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    gap: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.control-btn.active {
+    background: var(--accent-color);
+    border-color: var(--highlight-color);
+}
+
+/* Loading State */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-color);
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--accent-color);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .info-panel {
+        width: 280px;
+        right: -280px;
+    }
+    
+    .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 90%;
+        bottom: 10px;
+    }
+    
+    .control-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animation for nodes */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.node .cell-body {
+    animation: pulse 8s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.2s);
+}
+
+/* Legend */
+.legend {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--panel-bg);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    max-width: 200px;
+}
+
+.legend h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #fff;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+.legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.legend-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Cellular Painting Specific Styles */
+.cell-body {
+    fill: url(#cell-gradient);
+    stroke: rgba(255, 255, 255, 0.3);
+    stroke-width: 0.5;
+    filter: url(#cell-glow);
+}
+
+.cell-membrane {
+    fill: none;
+    stroke-width: 2;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-dasharray: 2, 2;
+}
+
+.cell-nucleus {
+    fill: url(#nucleus-gradient);
+    filter: url(#nucleus-glow);
+}
+
+.cell-particle {
+    fill: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.node:hover .cell-particle {
+    opacity: 1;
+}
+
+/* Tissue-like background pattern */
+.tissue-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    pointer-events: none;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.8) 2%, transparent 0%),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.8) 2%, transparent 0%),
+        radial-gradient(circle at 25% 75%, rgba(255,255,255,0.8) 2%, transparent 0%),
+        radial-gradient(circle at 75% 25%, rgba(255,255,255,0.8) 2%, transparent 0%);
+    background-size: 100px 100px;
+    z-index: -1;
+}
+
+/* Animation for cell particles */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(2px, -2px); }
+    50% { transform: translate(0, -4px); }
+    75% { transform: translate(-2px, -2px); }
+}
+
+.node .cell-particle {
+    animation: float 4s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.2s);
+}
+
+/* Responsive adjustments for cellular elements */
+@media (max-width: 768px) {
+    .cell-body {
+        stroke-width: 0.3;
+    }
+    
+    .cell-membrane {
+        stroke-width: 1.5;
+    }
+    
+    .node .cell-particle {
+        display: none; /* Hide particles on mobile for better performance */
+    }
+}
