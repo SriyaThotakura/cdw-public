@@ -2,18 +2,23 @@
 // This version keeps the API key secure on the server side
 
 // Firebase configuration - Replace with your Firebase config
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  // Replace with your Firebase config from Firebase Console
-  apiKey: "your-api-key",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id"
+  apiKey: "AIzaSyB2dpXeL1noVAKUPfDpdajxMXAsqBv60cA",
+  authDomain: "openai-fdbd4.firebaseapp.com",
+  projectId: "openai-fdbd4",
+  storageBucket: "openai-fdbd4.firebasestorage.app",
+  messagingSenderId: "553704335428",
+  appId: "1:553704335428:web:eca2a37f70a14dd44c7411"
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
 const auth = firebase.auth();

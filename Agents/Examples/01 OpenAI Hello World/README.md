@@ -159,7 +159,7 @@ input.addEventListener('keydown', (e) => {
 **Important**: Replace `YOUR_API_KEY` in the JavaScript file with your actual OpenAI API key:
 
 ```javascript
-"Authorization": "Bearer YOUR_ACTUAL_API_KEY_HERE"
+"Authorization": "Bearer YOUR_API_KEY"
 ```
 
 ## Step 6: Test Your Application
@@ -180,7 +180,7 @@ async function chatWithOpenAI(userMessage) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer YOUR_API_KEY"
+      "Authorization": "Bearer"
     },
     body: JSON.stringify({
       model: "gpt-3.5-turbo",

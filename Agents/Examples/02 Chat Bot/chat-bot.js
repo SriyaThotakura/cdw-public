@@ -12,22 +12,19 @@ document.addEventListener('DOMContentLoaded', function() {
   // STEP 1: FIREBASE CONFIGURATION
   // ========================================
   // Firebase configuration object - connects your app to your Firebase project
-  // Get these values from your Firebase Console (https://console.firebase.google.com)
-  
   const firebaseConfig = {
-    apiKey: "your-firebase-api-key",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project.appspot.com",
-    databaseURL: "https://your-project-default-rtdb.firebaseio.com/",
-    messagingSenderId: "your-sender-id",
-    appId: "your-app-id"
+    apiKey: "AIzaSyAoGxqTGyqxyW1hBUylQ4_WiZUFzFxCIVU",
+    authDomain: "my-chatbot-a7674.firebaseapp.com",
+    databaseURL: "https://my-chatbot-a7674-default-rtdb.firebaseio.com",
+    projectId: "my-chatbot-a7674",
+    storageBucket: "my-chatbot-a7674.firebasestorage.app",
+    messagingSenderId: "549556045119",
+    appId: "1:549556045119:web:9c3d00b2437a3e0e753f8a",
+    measurementId: "G-QNN5P7L73N"
   };
 
-  // Initialize Firebase - connects your app to Firebase services
+  // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-
-  // Get a reference to the Firebase Realtime Database
   const database = firebase.database();
 
   // ========================================
@@ -36,7 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // ChatGPT API configuration - get an API key from OpenAI
   // Visit: https://platform.openai.com/api-keys to create your API key
   
-  const OPENAI_API_KEY = 'your-openai-api-key-here';
+  // IMPORTANT: For production, use a backend service to securely handle your API key
+  // This should be replaced with a call to your backend service
+  const OPENAI_API_KEY = 'your-openai-api-key-here'; // Replace with your actual OpenAI API key
   const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
   
   // Rate limiting configuration
@@ -222,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Prepare the request to ChatGPT API
     const requestBody = {
-      model: "gpt-3.5-turbo", // Using a valid model name
+      model: "gpt-5", // Using a valid model name
       messages: [
         {
           role: "system",

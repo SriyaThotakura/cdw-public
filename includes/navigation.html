@@ -1,0 +1,69 @@
+<!-- Navigation -->
+<nav class="main-nav">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <div class="year">2025</div>
+      <div class="title">Temporal Structures</div>
+      <div class="subtitle">Sriya Thotakura</div>
+      <div class="instructor">Catherine Griffiths</div>
+    </div>
+    <button class="menu-toggle" aria-label="Toggle menu">
+      <span class="menu-icon">☰</span>
+    </button>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="../Relational%20Structures/index.html" class="nav-link">Relational Structures</a>
+      <a href="../Temporal%20Structures/index.html" class="nav-link">Temporal Structures</a>
+      <a href="../Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
+      <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement Components</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+// Mobile menu toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  
+  if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('active');
+      menuToggle.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+    });
+    
+    // Close menu when clicking on a nav link
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) {
+          navLinks.classList.remove('active');
+          menuToggle.classList.remove('active');
+          document.body.classList.remove('menu-open');
+        }
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-links') && !e.target.closest('.menu-toggle')) {
+        navLinks.classList.remove('active');
+        menuToggle.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    });
+    
+    // Set active link based on current page
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-link').forEach(link => {
+      const linkHref = link.getAttribute('href');
+      if (linkHref && linkHref.endsWith(currentPage) || 
+          (currentPage === 'index.html' && linkHref.endsWith('/'))) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+});
+</script>
