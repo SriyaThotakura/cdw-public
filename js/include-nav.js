@@ -2,7 +2,7 @@
 function includeNavigation() {
   const navPlaceholder = document.getElementById('nav-placeholder');
   if (navPlaceholder) {
-    fetch('/includes/navigation.html')
+    fetch('includes/navigation.html')
       .then(response => response.text())
       .then(html => {
         navPlaceholder.outerHTML = html;

@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; style-src 'self' 'unsafe-inline' https:; img-src data: https: https://upload.wikimedia.org; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://api.mapbox.com; connect-src 'self' https://api.mapbox.com https://events.mapbox.com;">
   <title>Sriya's Interactive Canvases</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
   <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
   <!-- Include navigation script -->
   <script src="js/include-nav.js"></script>
 </head>
@@ -87,7 +88,7 @@
       <p>© 2025 Sriya's Portfolio. All rights reserved.</p>
       <div class="footer-links">
         <a href="#" class="footer-link">Home</a>
-        <a href="Relational%20Structures/color_network_diagram.html" class="footer-link">Relational Structures</a>
+        <a href="Relational%20Structures/index.html" class="footer-link">Relational Structures</a>
         <a href="Temporal%20Structures/index.html" class="footer-link">Temporal Structures</a>
         <a href="Geospatial%20Structures/index.html" class="footer-link">Geospatial Structures</a>
         <a href="Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="footer-link">Engagement Components</a>
@@ -96,9 +97,6 @@
   </footer>
 
   <!-- Scripts -->
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
   <!-- 3D Monkey Script -->
   <script src="monkey.js"></script>
   <script>
