@@ -1,5 +1,7 @@
-// Function for second canvas - Interactive triangles
-function sketch2(p) {
+console.log('sketch2.js: Script loaded');
+
+let sketch2 = function(p) {
+  console.log('sketch2: Initializing p5.js instance');
   let cols = 20;
   let rows = 15;
   let spacing = 40;
@@ -7,11 +9,34 @@ function sketch2(p) {
   let triangles = [];
   let isInteractive = false;
   let lastMouseMove = 0;
+  let canvas, container, containerWidth, containerHeight;
 
   p.setup = function() {
-    let canvas = p.createCanvas(800, 600);
-  canvas.parent('sketch2-container');
+    console.log('sketch2: Running setup()');
+    // Get the container element
+    container = document.getElementById('sketch2-container');
+    
+    if (!container) {
+      console.error('sketch2-container not found!');
+      return;
+    }
+    
+    // Set container size to match its display size
+    containerWidth = container.offsetWidth || 400;
+    containerHeight = container.offsetHeight || 400;
+    
+    console.log('sketch2: Container dimensions:', containerWidth, 'x', containerHeight);
+    
+    // Create canvas that fits the container (using 2D mode for better compatibility)
+    canvas = p.createCanvas(containerWidth, containerHeight);
+    canvas.parent('sketch2-container');
+    
+    // Set color mode and pixel density
     p.colorMode(p.HSB, 360, 100, 100);
+    p.pixelDensity(1);
+    
+    // Disable context menu on right-click
+    canvas.elt.oncontextmenu = () => false;
     
     // Initialize triangle positions
     for (let i = 0; i < cols; i++) {
@@ -27,6 +52,34 @@ function sketch2(p) {
       }
     }
   };
+
+  function handleResize() {
+    if (container) {
+      containerWidth = container.offsetWidth || 400;
+      containerHeight = container.offsetHeight || 400;
+      p.resizeCanvas(containerWidth, containerHeight);
+    
+      // Recalculate spacing based on new container size
+      spacing = Math.min(containerWidth / cols, containerHeight / rows) * 0.9;
+      
+      // Reinitialize triangle positions
+      triangles = [];
+      for (let i = 0; i < cols; i++) {
+        triangles[i] = [];
+        for (let j = 0; j < rows; j++) {
+          triangles[i][j] = {
+            x: i * spacing + spacing,
+            y: j * spacing + spacing,
+            baseY: j * spacing + spacing,
+            size: spacing * 0.8,
+            rotation: 0
+          };
+        }
+      }
+    }
+  }
+  
+  p.windowResized = handleResize;
 
   p.draw = function() {
     p.background(40, 20, 90); // Light cream background
@@ -140,5 +193,37 @@ function sketch2(p) {
   };
 }
 
-// Run second p5 instance  
-new p5(sketch2);
+// Create p5 instance when the DOM is ready
+let sketch2Instance = null;
+
+function initSketch2() {
+  console.log('initSketch2 called, document ready state:', document.readyState);
+  const container = document.getElementById('sketch2-container');
+  console.log('sketch2-container found:', !!container);
+  
+  if (container && !sketch2Instance) {
+    console.log('Creating sketch2 p5 instance');
+    sketch2Instance = new p5(sketch2, 'sketch2-container');
+  } else if (!container) {
+    console.warn('sketch2-container not found, retrying in 200ms...');
+    setTimeout(initSketch2, 200);
+  }
+}
+
+// Multiple initialization attempts
+console.log('sketch2.js: Setting up initialization');
+
+// Immediate attempt
+setTimeout(initSketch2, 150);
+
+// DOM ready attempt
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded fired for sketch2');
+  setTimeout(initSketch2, 50);
+});
+
+// Window load attempt (final fallback)
+window.addEventListener('load', function() {
+  console.log('Window load fired for sketch2');
+  setTimeout(initSketch2, 50);
+});

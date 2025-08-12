@@ -995,33 +995,49 @@ function fitMapToData() {
     }
 }
 
-// Setup control buttons
-document.getElementById('zoomIn').addEventListener('click', () => {
-    map.zoomIn();
-});
+// Setup control buttons (with null checks)
+const zoomInBtn = document.getElementById('zoomIn');
+const zoomOutBtn = document.getElementById('zoomOut');
+const resetViewBtn = document.getElementById('resetView');
 
-document.getElementById('zoomOut').addEventListener('click', () => {
-    map.zoomOut();
-});
+if (zoomInBtn) {
+    zoomInBtn.addEventListener('click', () => {
+        map.zoomIn();
+    });
+}
 
-document.getElementById('resetView').addEventListener('click', () => {
-    fitMapToData();
-});
+if (zoomOutBtn) {
+    zoomOutBtn.addEventListener('click', () => {
+        map.zoomOut();
+    });
+}
 
-document.getElementById('toggleBirds').addEventListener('click', () => {
-    const visible = layerVisibility.birds = !layerVisibility.birds;
-    const opacity = visible ? 0.8 : 0;
-    
-    map.setPaintProperty('migration-routes', 'line-opacity', opacity);
-    map.setPaintProperty('migration-arrows', 'icon-opacity', opacity);
-    
-    // Update button text
-    document.getElementById('toggleBirds').textContent = 
-        visible ? 'Hide Bird Migration' : 'Show Bird Migration';
-});
+if (resetViewBtn) {
+    resetViewBtn.addEventListener('click', () => {
+        fitMapToData();
+    });
+}
 
-document.getElementById('toggleFeatures').addEventListener('click', () => {
-    // This is a placeholder for toggling additional features
-    // You can add more feature layers here
-    console.log('Toggle features clicked');
-});
+const toggleBirdsBtn = document.getElementById('toggleBirds');
+if (toggleBirdsBtn) {
+    toggleBirdsBtn.addEventListener('click', () => {
+        const visible = layerVisibility.birds = !layerVisibility.birds;
+        const opacity = visible ? 0.8 : 0;
+        
+        map.setPaintProperty('migration-routes', 'line-opacity', opacity);
+        map.setPaintProperty('migration-arrows', 'icon-opacity', opacity);
+        
+        // Update button text
+        toggleBirdsBtn.textContent = 
+            visible ? 'Hide Bird Migration' : 'Show Bird Migration';
+    });
+}
+
+const toggleFeaturesBtn = document.getElementById('toggleFeatures');
+if (toggleFeaturesBtn) {
+    toggleFeaturesBtn.addEventListener('click', () => {
+        // This is a placeholder for toggling additional features
+        // You can add more feature layers here
+        console.log('Toggle features clicked');
+    });
+}

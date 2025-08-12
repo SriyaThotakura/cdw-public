@@ -165,13 +165,23 @@
             camera.position.set(8, 8, 8);
             camera.lookAt(0, 0, 0);
             
-            // Create renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            // Create a dedicated canvas element for the renderer
+            const canvas = document.createElement('canvas');
+            canvas.style.display = 'block';
+            document.getElementById('container').appendChild(canvas);
+            
+            // Create renderer with the specified canvas
+            renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                alpha: true,
+                powerPreference: 'high-performance'
+            });
+            
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.setClearColor(0x0a0a0a, 1);
-            document.getElementById('container').appendChild(renderer.domElement);
             
             // Create raycaster and mouse vector
             raycaster = new THREE.Raycaster();
@@ -555,9 +565,18 @@
         }
         
         function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            // Update camera
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Update renderer
+            renderer.setSize(width, height, false);
+            
+            // Update renderer's pixel ratio for high DPI displays
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         }
         
         // Initialize the application

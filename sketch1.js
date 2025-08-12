@@ -1,17 +1,58 @@
-function sketch1(p) {
+console.log('sketch1.js: Script loaded');
+
+let sketch1 = function(p) {
+  console.log('sketch1: Initializing p5.js instance');
   let legoBlocks = [];
   let staticBackground;
+  let canvas;
+  let container, containerWidth, containerHeight;
 
   p.setup = function() {
-    let canvas = p.createCanvas(800, 600);
-  canvas.parent('sketch1-container');
+    console.log('sketch1: Running setup()');
+    // Get the container element
+    container = document.getElementById('sketch1-container');
+    
+    if (!container) {
+      console.error('sketch1-container not found!');
+      return;
+    }
+    
+    // Set container size to match its display size
+    containerWidth = container.offsetWidth || 400;
+    containerHeight = container.offsetHeight || 400;
+    
+    console.log('sketch1: Container dimensions:', containerWidth, 'x', containerHeight);
+    
+    // Create canvas that fits the container
+    canvas = p.createCanvas(containerWidth, containerHeight);
+    canvas.parent('sketch1-container');
+    
+    // Set pixel density for better rendering
+    p.pixelDensity(1);
+    
+    // Disable context menu on right-click
+    canvas.elt.oncontextmenu = () => false;
     
     // Create static background
     createStaticBackground();
     
     // Create Lego-like block arrangements
     createLegoStructures();
+    
+    // Handle window resize
+    window.addEventListener('resize', handleResize);
   };
+  
+  function handleResize() {
+    if (container) {
+      containerWidth = container.offsetWidth || 400;
+      containerHeight = container.offsetHeight || 400;
+      p.resizeCanvas(containerWidth, containerHeight);
+      createStaticBackground();
+    }
+  }
+  
+  p.windowResized = handleResize;
 
   function createStaticBackground() {
     staticBackground = p.createGraphics(p.width, p.height);
@@ -100,32 +141,35 @@ function sketch1(p) {
       // Outer glow
       p.fill(block.color[0], block.color[1], block.color[2], 20);
       p.noStroke();
-      p.rect(-glowWidth/2, -glowHeight/2, glowWidth, glowHeight);
+      p.rectMode(p.CENTER);
+      p.rect(0, 0, glowWidth, glowHeight);
       
       // Main glass rectangle
       p.fill(block.color[0], block.color[1], block.color[2], block.opacity * 255);
       p.stroke(255, 255, 255, 100);
       p.strokeWeight(2);
-      p.rect(-block.width/2, -block.height/2, block.width, block.height);
+      p.rect(0, 0, block.width, block.height);
       
       // Glass reflection highlight
       p.fill(255, 255, 255, 80);
       p.noStroke();
       let highlightWidth = block.width * 0.3;
       let highlightHeight = block.height * 0.4;
+      p.rectMode(p.CORNER);
       p.rect(-block.width/2 + 8, -block.height/2 + 4, highlightWidth, highlightHeight);
       
       // Inner bright core
       p.fill(block.color[0], block.color[1], block.color[2], 100);
       let coreWidth = block.width * 0.6;
       let coreHeight = block.height * 0.6;
-      p.rect(-coreWidth/2, -coreHeight/2, coreWidth, coreHeight);
+      p.rectMode(p.CENTER);
+      p.rect(0, 0, coreWidth, coreHeight);
       
       // Bright edge effect
       p.stroke(block.color[0] + 50, block.color[1] + 50, block.color[2] + 50, 150);
       p.strokeWeight(3);
       p.noFill();
-      p.rect(-block.width/2, -block.height/2, block.width, block.height);
+      p.rect(0, 0, block.width, block.height);
       
       // Add organic spots like algae cells - fixed position
       p.fill(255, 255, 255, 120);
@@ -156,5 +200,37 @@ function sketch1(p) {
   };
 }
 
-// Run first p5 instance
-new p5(sketch1);
+// Create p5 instance when the DOM is ready
+let sketch1Instance = null;
+
+function initSketch1() {
+  console.log('initSketch1 called, document ready state:', document.readyState);
+  const container = document.getElementById('sketch1-container');
+  console.log('Container found:', !!container);
+  
+  if (container && !sketch1Instance) {
+    console.log('Creating sketch1 p5 instance');
+    sketch1Instance = new p5(sketch1, 'sketch1-container');
+  } else if (!container) {
+    console.warn('sketch1-container not found, retrying in 200ms...');
+    setTimeout(initSketch1, 200);
+  }
+}
+
+// Multiple initialization attempts
+console.log('sketch1.js: Setting up initialization');
+
+// Immediate attempt
+setTimeout(initSketch1, 100);
+
+// DOM ready attempt
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded fired for sketch1');
+  setTimeout(initSketch1, 50);
+});
+
+// Window load attempt (final fallback)
+window.addEventListener('load', function() {
+  console.log('Window load fired for sketch1');
+  setTimeout(initSketch1, 50);
+});

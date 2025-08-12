@@ -41,7 +41,180 @@
       background-color: #f5f7fb;
       color: var(--gray-800);
       line-height: 1.6;
-      height: 100vh;
+      margin: 0;
+    }
+    
+    /* Header Styles */
+    .main-header {
+      background: #ffffff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #007bff;
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #007bff;
+      border-radius: 1px;
+    }
+
+    /* Mobile Menu */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .hamburger {
+      width: 25px;
+      height: 3px;
+      background: #1a1a1a;
+      margin: 3px 0;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+      content: '';
+      width: 25px;
+      height: 3px;
+      background: #1a1a1a;
+      display: block;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    .hamburger::before {
+      transform: translateY(-8px);
+    }
+
+    .hamburger::after {
+      transform: translateY(5px);
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 73px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 99;
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      .nav-link {
+        padding: 1rem 0;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      .nav-link:last-child {
+        border-bottom: none;
+      }
+    }
+
+    /* Title container */
+    .title-container {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, #4a6cf7 0%, #3a5bd9 100%);
+      color: white;
+    }
+
+    .title-container h1 {
+      font-size: 2.8em;
+      font-weight: 300;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1.5px;
+      animation: fadeInTitle 1s ease-out;
+    }
+
+    .title-container p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2em;
+      font-weight: 300;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    /* Title fade-in animation */
+    @keyframes fadeInTitle {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .app-container {
+      height: calc(100vh - 200px);
       display: flex;
       flex-direction: column;
     }
@@ -811,7 +984,35 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Navigation -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-name">Sriya's Portfolio | Columbia GSAPP | WorkFlows</span>
+      </div>
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <span class="hamburger"></span>
+      </button>
+      <nav class="nav-links">
+        <a href="../../../index.html" class="nav-link">Home</a>
+        <a href="../../../Relational%20Structures/index.html" class="nav-link">Relational Structures</a>
+        <a href="../../../Temporal%20Structures/index.html" class="nav-link">Temporal Structures</a>
+        <a href="../../../Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
+        <a href="../../../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement</a>
+        <a href="./index.html" class="nav-link active">OpenAI Hello</a>
+        <a href="../02%20Chat%20Bot/index.html" class="nav-link">Chat Bot</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Title -->
+  <div class="title-container">
+    <h1>OpenAI Hello World</h1>
+    <p>AI-Powered Assistant & Chat Interface</p>
+  </div>
+  
+  <div class="app-container">
+    <div class="container">
     <header class="chat-header">
       <div class="logo">
         <i class="fas fa-robot"></i>
@@ -864,6 +1065,42 @@
   <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1.12.0/dist/index.min.js"></script>
   <script src="hello-openai.js">
     // The chat application is initialized in hello-openai.js
+  </script>
+  
+  <!-- Mobile Menu JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize mobile menu
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      const hamburger = document.querySelector('.hamburger');
+
+      if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+          hamburger.classList.toggle('active');
+        });
+
+        // Close menu when clicking a nav link
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            hamburger.classList.remove('active');
+          });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.header-container') && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            hamburger.classList.remove('active');
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>

@@ -1,45 +1,93 @@
 <!-- Navigation -->
-<nav class="main-nav">
-  <div class="nav-container">
-    <div class="nav-logo">
-      <div class="year">2025</div>
-      <div class="title">Temporal Structures</div>
-      <div class="subtitle">Sriya Thotakura</div>
-      <div class="instructor">Catherine Griffiths</div>
-    </div>
-    <button class="menu-toggle" aria-label="Toggle menu">
-      <span class="menu-icon">☰</span>
+<header class="main-header">
+  <div class="header-container">
+      <span class="logo-name">Sriya's Portfolio | Columbia GSAPP | WorkFlows</span>
+    <button class="menu-toggle" aria-label="Toggle navigation">
+      <span class="hamburger"></span>
     </button>
-    <div class="nav-links">
+    <nav class="nav-links">
       <a href="../index.html" class="nav-link">Home</a>
       <a href="../Relational%20Structures/index.html" class="nav-link">Relational Structures</a>
       <a href="../Temporal%20Structures/index.html" class="nav-link">Temporal Structures</a>
       <a href="../Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
-      <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement Components</a>
-    </div>
+      <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement</a>
+      <a href="../Building%20a%20Website/index.html" class="nav-link">Building a Website</a>
+    </nav>
   </div>
-</nav>
+</header>
 
 <script>
 // Mobile menu toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.querySelector('.menu-toggle');
   const navLinks = document.querySelector('.nav-links');
+  const hamburger = document.querySelector('.hamburger');
   
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener('click', function() {
+  if (menuToggle && navLinks && hamburger) {
+    menuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
       navLinks.classList.toggle('active');
       menuToggle.classList.toggle('active');
       document.body.classList.toggle('menu-open');
+      
+      // Animate hamburger to X
+      if (menuToggle.classList.contains('active')) {
+        hamburger.style.transform = 'rotate(45deg)';
+        hamburger.style.top = '0';
+        hamburger.style.bottom = '0';
+        hamburger.style.margin = 'auto';
+        
+        // Create the X shape
+        hamburger.style.width = '20px';
+        hamburger.style.height = '20px';
+        hamburger.style.background = 'transparent';
+        hamburger.style.border = 'none';
+        hamburger.style.position = 'relative';
+        hamburger.style.transform = 'rotate(45deg)';
+        
+        // Add the two lines that form the X
+        hamburger.innerHTML = `
+          <span style="position: absolute; top: 0; left: 50%; width: 2px; height: 20px; background: var(--text-primary); margin-left: -1px;"></span>
+          <span style="position: absolute; left: 0; top: 50%; width: 20px; height: 2px; background: var(--text-primary); margin-top: -1px;"></span>
+        `;
+      } else {
+        // Reset to hamburger
+        hamburger.innerHTML = '';
+        hamburger.style.transform = 'rotate(0)';
+        hamburger.style.top = 'auto';
+        hamburger.style.bottom = 'auto';
+        hamburger.style.margin = '0';
+        hamburger.style.width = '18px';
+        hamburger.style.height = '1px';
+        hamburger.style.background = 'var(--text-primary)';
+        hamburger.style.position = 'relative';
+        
+        // Recreate the hamburger lines
+        hamburger.innerHTML = `
+          <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+          <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+          <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+        `;
+      }
     });
     
     // Close menu when clicking on a nav link
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', () => {
-        if (navLinks.classList.contains('active')) {
+        if (window.innerWidth <= 768 && navLinks.classList.contains('active')) {
           navLinks.classList.remove('active');
           menuToggle.classList.remove('active');
           document.body.classList.remove('menu-open');
+          
+          // Reset hamburger icon
+          const hamburger = document.querySelector('.hamburger');
+          if (hamburger) {
+            hamburger.innerHTML = `
+              <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+              <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+              <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+            `;
+          }
         }
       });
     });
@@ -50,20 +98,39 @@ document.addEventListener('DOMContentLoaded', function() {
         navLinks.classList.remove('active');
         menuToggle.classList.remove('active');
         document.body.classList.remove('menu-open');
+        
+        // Reset hamburger icon
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) {
+          hamburger.innerHTML = `
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+          `;
+        }
       }
     });
     
-    // Set active link based on current page
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    document.querySelectorAll('.nav-link').forEach(link => {
-      const linkHref = link.getAttribute('href');
-      if (linkHref && linkHref.endsWith(currentPage) || 
-          (currentPage === 'index.html' && linkHref.endsWith('/'))) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
+    // Handle window resize
+    function handleResize() {
+      if (window.innerWidth > 768) {
+        navLinks.classList.remove('active');
+        menuToggle.classList.remove('active');
+        document.body.classList.remove('menu-open');
+        
+        // Reset hamburger icon
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) {
+          hamburger.innerHTML = `
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+            <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+          `;
+        }
       }
-    });
+    }
+    
+    window.addEventListener('resize', handleResize);
   }
 });
 </script>

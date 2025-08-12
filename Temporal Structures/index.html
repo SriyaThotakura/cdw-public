@@ -8,7 +8,6 @@
   <!-- The head section contains information about the page, not visible content -->
   <meta charset="UTF-8">
   <!-- This sets the character encoding to UTF-8, which supports special characters and emojis -->
-  
   <title>Temporal Structures - Computational Design Workflows</title>
   <!-- This is the title that appears in the browser tab and bookmarks -->
   
@@ -20,19 +19,222 @@
   <!-- D3.js -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
   
-  <!-- Navigation -->
-  <link rel="stylesheet" href="../style.css">
-  <script src="../js/include-nav.js"></script>
-  
   <!-- Page-specific styles -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" type="text/css">
+  
+  <!-- Inline styles for critical content -->
+  <style>
+    /* Basic styles to prevent FOUC */
+    body { margin: 0; font-family: 'Inter', sans-serif; }
+    
+    /* Header Styles */
+    .main-header {
+      background: #ffffff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #4a5568;
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #007bff;
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #007bff;
+      border-radius: 1px;
+    }
+
+    /* Mobile Menu */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .hamburger {
+      width: 25px;
+      height: 3px;
+      background: #1a1a1a;
+      margin: 3px 0;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+
+    .hamburger::before,
+    .hamburger::after {
+      content: '';
+      width: 25px;
+      height: 3px;
+      background: #1a1a1a;
+      display: block;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    .hamburger::before {
+      transform: translateY(-8px);
+    }
+
+    .hamburger::after {
+      transform: translateY(5px);
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 73px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 99;
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      .nav-link {
+        padding: 1rem 0;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      
+      .nav-link:last-child {
+        border-bottom: none;
+      }
+    }
+
+    /* Title container */
+    .title-container {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .title-container h1 {
+      font-size: 2.8em;
+      font-weight: 300;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1.5px;
+      animation: fadeInTitle 1s ease-out;
+    }
+
+    .title-container p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2em;
+      font-weight: 300;
+      margin-top: 10px;
+      letter-spacing: 1px;
+    }
+
+    /* Title fade-in animation */
+    @keyframes fadeInTitle {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .content-wrapper { 
+      opacity: 0; 
+      transition: opacity 0.3s; 
+    }
+    .content-wrapper.loaded { 
+      opacity: 1; 
+    }
+  </style>
 </head>
 
 <body>
   <!-- The body contains all the visible content that users will see on the page -->
   
-  <!-- Navigation will be loaded here by include-nav.js -->
-  <div id="nav-placeholder"></div>
+  <!-- Navigation -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="logo">
+        <span class="logo-name">Sriya's Portfolio | Columbia GSAPP | WorkFlows</span>
+      </div>
+      <button class="menu-toggle" aria-label="Toggle navigation">
+        <span class="hamburger"></span>
+      </button>
+      <nav class="nav-links">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="../Relational%20Structures/index.html" class="nav-link">Relational Structures</a>
+        <a href="./index.html" class="nav-link active">Temporal Structures</a>
+        <a href="../Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
+        <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement</a>
+        <a href="../Agents/Examples/01%20OpenAI%20Hello%20World/index.html" class="nav-link">OpenAI Hello</a>
+        <a href="../Agents/Examples/02%20Chat%20Bot/index.html" class="nav-link">Chat Bot</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Title -->
+  <div class="title-container">
+    <h1>Temporal Structures</h1>
+    <p>Time-based Data Visualization & Analysis</p>
+  </div>
   
   <div class="content-wrapper">
     <header>
@@ -40,20 +242,7 @@
         <h1>Computational Design Workflows</h1>
         <p class="subtitle">Exploration of Digital Objects</p>
       </div>
-        <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle">Modules</a>
-          <ul class="dropdown-menu">
-            <li><a href="../Temporal%20Structures/index.html" class="dropdown-item">Temporal Structures</a></li>
-            <li><a href="../Geospatial%20Structures/index.html" class="dropdown-item">Geospatial Structures</a></li>
-            <li><a href="../Engagement%20Components/index.html" class="dropdown-item">Engagement Components</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">About</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+    </header>
 
   <main>
     <!-- The main tag contains the primary content of the page -->
@@ -122,11 +311,104 @@
 
   <!-- LOAD EACH NEW D3.JS SCRIPT HERE -->
 
-  <script src="calendar-heatmap.js"></script>
-  <script src="d3-testing.js"></script>
-  <script src="events-simple.js"></script>
-  <script src="concurrent-events.js"></script>
-  <script src="art-history-tangled-tree.js"></script>
+  <script>
+    // Base URL for scripts - using the current page's location
+    const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+    
+    // Scripts to load in order with their relative paths
+    const scripts = [
+      'js/d3-testing.js',
+      'js/events-simple.js',
+      'js/calendar-heatmap.js',
+      'js/concurrent-events.js',
+      'js/art-history-tangled-tree.js',
+      'js/concurrent-events-cvs.js'
+    ];
+    
+    // Function to get the correct script path
+    function getScriptPath(scriptName) {
+      // Construct the full URL relative to the current page
+      return baseUrl + scriptName;
+    }
+    
+    // Function to load scripts sequentially
+    function loadScripts(index = 0) {
+      if (index >= scripts.length) {
+        // All scripts loaded
+        const contentWrapper = document.querySelector('.content-wrapper');
+        if (contentWrapper) {
+          contentWrapper.classList.add('loaded');
+        }
+        console.log('All scripts loaded successfully');
+        return;
+      }
+      
+      const scriptPath = getScriptPath(scripts[index]);
+      console.log('Loading script:', scriptPath);
+      
+      // Create and append script element directly
+      const script = document.createElement('script');
+      script.src = scriptPath;
+      script.onload = () => {
+        console.log('Successfully loaded:', scriptPath);
+        loadScripts(index + 1);
+      };
+      script.onerror = () => {
+        console.error('Failed to load script:', scriptPath);
+        loadScripts(index + 1);
+      };
+      script.async = false; // Load scripts in order
+      document.body.appendChild(script);
+    }
+    
+    // Start loading scripts when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM fully loaded, initializing...');
+      // Show header
+      const header = document.querySelector('.main-header');
+      if (header) header.style.display = 'block';
+      
+      // Initialize mobile menu
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+      const hamburger = document.querySelector('.hamburger');
+
+      if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+          hamburger.classList.toggle('active');
+        });
+
+        // Close menu when clicking a nav link
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            hamburger.classList.remove('active');
+          });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.header-container') && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            document.body.classList.remove('menu-open');
+            hamburger.classList.remove('active');
+          }
+        });
+      }
+      
+      // Start loading scripts
+      try {
+        console.log('Starting to load scripts...');
+        loadScripts();
+      } catch (error) {
+        console.error('Error loading scripts:', error);
+        document.querySelector('.content-wrapper').classList.add('loaded');
+      }
+    });
+  </script>
 
   <!-- ------------------------------------------------------------ -->
 

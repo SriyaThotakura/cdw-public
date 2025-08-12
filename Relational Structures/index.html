@@ -3,1396 +3,1073 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temporal Structures - Cellular Painting Network</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- D3.js -->
+    <title>Emotion Flow Network</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
-    
-    <!-- Navigation -->
-    <link rel="stylesheet" href="../style.css">
-    <script src="../js/include-nav.js"></script>
-    
-    <!-- Page-specific styles -->
-    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --primary-bg: #0a0a1a;
-            --card-bg: rgba(20, 20, 40, 0.9);
-            --text-color: #e0e0e0;
-            --text-muted: #a0a0c0;
-            --accent-1: #ff6b9f;
-            --accent-2: #4ecdc4;
-            --accent-3: #45b7d1;
-            --accent-4: #96ceb4;
-            --accent-5: #ffd166;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            --transition: all 0.3s ease-in-out;
-            --blur: 20px;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400@display=swap');
         
-        /* Cellular background with subtle pattern */
-        .fluid-bg {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #0a0a1a 0%, #000000 100%);
-            opacity: 1;
-            overflow: hidden;
-        }
-        
-        .fluid-bg::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(78, 205, 196, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 107, 159, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 30% 60%, rgba(69, 183, 209, 0.05) 0%, transparent 25%);
-            animation: float 30s ease-in-out infinite;
-        }
-        
-        /* Pixel art pattern */
-        @keyframes pixelMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 40px 40px; }
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.4; }
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: var(--primary-bg);
-            color: var(--text-color);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                /* Subtle grid pattern */
-                linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px) 0 0 / 20px 20px,
-                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px) 0 0 / 20px 20px,
-                /* Diagonal pattern */
-                linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%),
-                linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.02) 75%);
-            background-size: 40px 40px, 40px 40px, 20px 20px, 20px 20px;
-            background-position: 0 0, 0 0, 0 0, 10px 10px;
-            animation: pixelMove 120s linear infinite;
-            opacity: 0.4;
-            z-index: -2;
-            pointer-events: none;
-        }
-        
-        /* Floating pixel elements */
-        
-        /* Background styles */
-        body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-color);
-            background: var(--primary-bg);
-            min-height: 100vh;
-        }
-        
-        .title-panel {
-            background: linear-gradient(135deg, #4a6cf7 0%, #2541b2 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
             box-sizing: border-box;
         }
-        
-        .title-content {
+
+        body {
+            background: radial-gradient(ellipse at center, #000510 0%, #000208 40%, #000000 100%);
+            font-family: 'Inter', sans-serif;
+            font-weight: 200;
+            color: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            cursor: none;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        /* Title container */
+        .title-container {
+            position: fixed;
+            top: 80px; /* Position below header */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            z-index: 998; /* Below header but above content */
+            background: linear-gradient(to bottom, rgba(0, 5, 16, 0.9) 0%, rgba(0, 2, 8, 0.8) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .title-container h1 {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 2.8em;
+            font-weight: 300;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1.5px;
+            animation: fadeInTitle 1s ease-out;
+        }
+
+        /* Title fade-in animation */
+        @keyframes fadeInTitle {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Adjust content below header */
+        #network-container {
+            padding-top: 190px; /* Increased from 140px to 190px to accommodate the lower title */
+            height: calc(100vh - 70px);
+        }
+
+        /* Navigation */
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #f5f5f5;
+            --accent-color: #ff3366;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --background-light: #ffffff;
+            --background-dark: #1a1a1a;
+            --transition-speed: 0.3s;
+        }
+
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 30px;
+            z-index: 1000;
+            background: var(--background-light);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .header-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 30px;
-            position: relative;
-            z-index: 2;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .title-text {
-            flex: 1;
-        }
-        
-        .menu-container {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .menu-button {
-            color: white;
-            text-decoration: none;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        .menu-button:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background: rgba(255, 255, 255, 0.98);
-            min-width: 220px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            overflow: hidden;
-            margin-top: 10px;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .menu-container:hover .dropdown-content {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .dropdown-content a {
-            color: #2d3436;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            transition: all 0.2s ease;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .dropdown-content a:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-content a:hover {
-            background: #f8f9ff;
-            color: #4a6cf7;
-            padding-left: 20px;
-        }
-        
-        .menu-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .menu-container:hover .menu-icon {
-            transform: rotate(180deg);
-        }
-        
-        .title-panel h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            margin: 0;
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-top: 10px;
+
+        .logo-name {
+            font-size: 1.1em;
             font-weight: 400;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
+            color: var(--text-primary);
         }
-        
-        .title-gradient {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 40%;
-            background: linear-gradient(90deg, rgba(74,108,247,0) 0%, rgba(37,65,178,0.8) 100%);
-            z-index: 1;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-top: 30px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .controls {
-            text-align: center;
-            margin-bottom: 30px;
+
+        .nav-links {
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
+            gap: 25px;
+            transition: all var(--transition-speed) ease;
         }
-        
-        button {
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-5));
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 400;
             position: relative;
-            overflow: hidden;
-            z-index: 1;
+            padding: 5px 0;
+            transition: color var(--transition-speed) ease;
         }
-        
-        button::before {
+
+        .nav-link::after {
             content: '';
             position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width var(--transition-speed) ease;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .hamburger {
+            display: block;
+            width: 18px;
+            height: 1px;
+            background: var(--text-primary);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .hamburger::before,
+        .hamburger::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 1px;
+            background: var(--text-primary);
+            left: 0;
+            transition: all 0.2s ease;
+        }
+
+        .hamburger::before {
+            top: -6px;
+        }
+
+        .hamburger::after {
+            top: 6px;
+        }
+
+        .menu-toggle.active .hamburger {
+            background: transparent;
+        }
+
+        .menu-toggle.active .hamburger::before {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .menu-toggle.active .hamburger::after {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* Mobile Menu */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--background-light);
+                flex-direction: column;
+                padding: 80px 30px 30px;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-link {
+                font-size: 1.1em;
+                padding: 10px 0;
+            }
+        }
+
+        /* Flowing particles background */
+        .flow-particles {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--accent-5), var(--accent-1));
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .flow-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
             opacity: 0;
+            animation: flowMovement 15s infinite linear;
+        }
+
+        @keyframes flowMovement {
+            0% { 
+                opacity: 0;
+                transform: translateY(100vh) translateX(0px) scale(0.5);
+            }
+            5% { 
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(50vh) translateX(100px) scale(1);
+            }
+            95% { 
+                opacity: 0.6;
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-10vh) translateX(200px) scale(0.3);
+            }
+        }
+
+        /* Custom cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.3) 40%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: screen;
+            transition: all 0.1s ease;
+        }
+
+        /* Minimalist controls */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+            display: flex;
+            gap: 20px;
+            opacity: 0.7;
             transition: opacity 0.3s ease;
-            z-index: -1;
         }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        button:hover::before {
+
+        .controls:hover {
             opacity: 1;
         }
-        
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Style for the second button */
-        button:nth-child(2) {
-            background: linear-gradient(135deg, var(--accent-3), #ff2d75);
-        }
-        
-        button:nth-child(2)::before {
-            background: linear-gradient(135deg, #ff2d75, var(--accent-3));
-        }
-        
-        /* Style for the third button */
-        button:nth-child(3) {
-            background: linear-gradient(135deg, var(--accent-4), #ff9a44);
-        }
-        
-        button:nth-child(3)::before {
-            background: linear-gradient(135deg, #ff9a44, var(--accent-4));
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: var(--transition);
+
+        .control-item {
             background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        
-        .legend-item:hover {
+
+        .control-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-item input, .control-item select {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: inherit;
+            font-family: inherit;
+            outline: none;
+            width: 80px;
+        }
+
+        .control-item input[type="range"] {
+            accent-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Flow-style info panel */
+        .info-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            padding: 20px 25px;
+            max-width: 350px;
+            color: white;
+            font-size: 16px;
+            line-height: 1.6;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .info-panel h3 {
+            margin: 0 0 12px 0;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .info-panel .detail {
+            font-size: 14px;
+            margin-bottom: 6px;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+
+        /* Flow nodes */
+        .flow-node {
+            cursor: none;
+            transition: all 0.6s ease;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+        }
+
+        .flow-node:hover {
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
+        }
+
+        .flow-node.highlighted {
+            filter: drop-shadow(0 0 30px rgba(255,255,255,1));
+            animation: flowPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes flowPulse {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        /* Flow connections */
+        .flow-connection {
+            stroke-opacity: 0.4;
+            stroke-width: 1px;
+            transition: all 0.8s ease;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.3));
+        }
+
+        .flow-connection.highlighted {
+            stroke-opacity: 0.9;
+            stroke-width: 3px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.8));
+            animation: flowEnergy 3s infinite linear;
+        }
+
+        @keyframes flowEnergy {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 20; }
+        }
+
+        .node-label {
+            font-size: 1.2em; /* Increased from 0.9em */
+            fill: #fff;
+            text-shadow: 0 0 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            font-weight: 500;
+        }
+
+        /* Flow labels */
+        .flow-label {
+            font-size: 12px; /* Increased from 10px */
+            font-weight: 200;
+            text-anchor: middle;
+            dominant-baseline: central;
+            fill: rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .flow-label.visible {
+            opacity: 1;
+        }
+
+        /* Stats */
+        .stats {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 200;
+            line-height: 1.6;
+        }
+
+        /* Ripple effects */
+        .ripple {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.8);
+            stroke-width: 1px;
+            opacity: 1;
+        }
+
+        /* Flow trails */
+        .flow-trail {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Ambient glow overlay */
+        .ambient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                rgba(255,255,255,0.02) 0%, 
+                rgba(255,255,255,0.01) 40%, 
+                transparent 70%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Breathing animation for the whole scene */
+        @keyframes sceneBreath {
+            0%, 100% { 
+                filter: brightness(1) contrast(1);
+            }
+            50% { 
+                filter: brightness(1.05) contrast(1.1);
+            }
+        }
+
+        #network-svg {
+            animation: sceneBreath 8s infinite ease-in-out;
+        }
+
+        /* Connection strength indicators */
+        .connection-strong { stroke-width: 2px; }
+        .connection-medium { stroke-width: 1.5px; }
+        .connection-weak { stroke-width: 1px; }
+
+        /* Emotional intensity glow */
+        .intensity-high { filter: drop-shadow(0 0 15px rgba(255,255,255,0.6)); }
+        .intensity-medium { filter: drop-shadow(0 0 8px rgba(255,255,255,0.4)); }
+        .intensity-low { filter: drop-shadow(0 0 4px rgba(255,255,255,0.2)); }
+        
+        /* Title and description styles - using unified title styling above */
+        
+        .description {
+            position: fixed;
+            bottom: 80px;  /* Moved up from 40px */
+            left: 40px;
+            text-align: left;
+            z-index: 100;
+            pointer-events: none;
+            max-width: 400px;
         }
         
-        .legend-color {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            margin-right: 12px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        .description p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin: 0;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .info {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: 400;
-            margin-top: 30px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            border-left: 3px solid var(--accent-1);
+        .description a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            pointer-events: auto;
+            transition: all 0.3s ease;
         }
         
-        /* Voxel node styling */
-        .node circle {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: 
-                drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2))
-                drop-shadow(-1px -1px 0 rgba(255, 255, 255, 0.3));
-            clip-path: polygon(
-                25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%
-            );
-            transform: rotate(45deg) scale(0.8);
-        }
-        
-        .node circle:hover {
-            transform: rotate(45deg) scale(1);
-            filter: 
-                drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.25))
-                drop-shadow(-2px -2px 0 rgba(255, 255, 255, 0.4));
-        }
-        
-        .link {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            stroke-opacity: 0.4;
-        }
-        
-        .link:hover {
-            stroke-opacity: 0.8;
-            stroke-width: 3px;
-        }
-        
-        /* Voxel pulse animation */
-        @keyframes voxelPulse {
-            0%, 100% { 
-                transform: rotate(45deg) scale(0.8); 
-                filter: 
-                    drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2))
-                    drop-shadow(-1px -1px 0 rgba(255, 255, 255, 0.3));
-            }
-            50% { 
-                transform: rotate(45deg) scale(0.9);
-                filter: 
-                    drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.25))
-                    drop-shadow(-2px -2px 0 rgba(255, 255, 255, 0.4));
-            }
-        }
-        
-        .node circle {
-            animation: voxelPulse 6s infinite ease-in-out;
-        }
-        
-        .node:nth-child(4n) circle {
-            animation-delay: 0s;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-            transform: rotate(0deg) scale(0.8);
-        }
-        
-        .node:nth-child(4n+1) circle {
-            animation-delay: 1.5s;
-            clip-path: polygon(0 0, 100% 0%, 100% 75%, 75% 75%, 75% 100%, 0 100%);
-            transform: rotate(0deg) scale(0.8);
-        }
-        
-        .node:nth-child(4n+2) circle {
-            animation-delay: 3s;
-            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-            transform: rotate(0deg) scale(0.8);
-        }
-        
-        .node:nth-child(4n+3) circle {
-            animation-delay: 4.5s;
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            transform: rotate(0deg) scale(0.8);
-        }
-        
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                border-radius: 16px;
-            }
-            
-            h1 {
-                font-size: 2em;
-                margin-bottom: 20px;
-            }
-            
-            .controls {
-                gap: 8px;
-            }
-            
-            button {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-            
-            .network-container {
-                padding: 15px;
-                border-radius: 16px;
-            }
+        .description a:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
-<body class="dark-theme">
-    <!-- Navigation will be loaded here by include-nav.js -->
-    <div id="nav-placeholder"></div>
-    
-    <main class="content-wrapper">
-        <!-- Simplified fluid background -->
-        <div class="fluid-bg"></div>
-    
-        <!-- Header Section -->
-        <header class="page-header">
-            <div class="header-content">
-                <div class="titles">
-                    <h1>Cellular Painting Network</h1>
-                </div>
-                        
-                        <div class="dropdown-content" id="dropdownContent">
-                            <a href="../index.html" class="nav-link">
-                                <span class="link-icon">🏠</span>
-                                <span>Home</span>
-                            </a>
-                            <a href="../Temporal%20Structures/index.html" class="nav-link">
-                                <span class="link-icon">⏱️</span>
-                                <span>Relational Structure</span>
-                            </a>
-                            <a href="../Geospatial%20Structures/index.html" class="nav-link">
-                                <span class="link-icon">🌐</span>
-                                <span>Geospatial Structures</span>
-                            </a>
-                            <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">
-                                <span class="link-icon">💬</span>
-                                <span>Engagement</span>
-                            </a>
-                            <a href="#about" class="nav-link">
-                                <span class="link-icon">ℹ️</span>
-                                <span>About</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-    
-    <div class="container">
-        <div class="visualization-container">
-            <div id="network"></div>
-            
-            <div class="controls-panel">
-                <div class="controls-header">
-                    <h3>Network Controls</h3>
-                    <button class="toggle-controls" aria-label="Toggle controls panel">
-                        <span class="toggle-icon">▼</span>
-                    </button>
-                </div>
-                
-                <div class="controls-content">
-                    <div class="control-group">
-                        <label>Simulation</label>
-                        <button class="control-button" onclick="restartSimulation()" title="Reset the simulation">
-                            <span class="button-icon">🔄</span>
-                            <span class="button-text">Restart</span>
-                        </button>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>Display</label>
-                        <div class="button-group">
-                            <button class="control-button" onclick="toggleLabels()" title="Toggle node labels">
-                                <span class="button-icon">🏷️</span>
-                                <span class="button-text">Labels</span>
-                            </button>
-                            <button class="control-button" onclick="toggleLinks()" title="Toggle connection lines">
-                                <span class="button-icon">🔗</span>
-                                <span class="button-text">Links</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label>Layout</label>
-                        <div class="button-group">
-                            <button class="control-button" onclick="applyForceLayout('circular')" title="Arrange in a circle">
-                                <span class="button-icon">⭕</span>
-                                <span class="button-text">Circle</span>
-                            </button>
-                            <button class="control-button" onclick="applyForceLayout('force')" title="Apply force-directed layout">
-                                <span class="button-icon">⚡</span>
-                                <span class="button-text">Force</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+<body>
+    <!-- Navigation -->
+    <header class="main-header">
+        <div class="header-container">
+            <span class="logo-name">Sriya's Portfolio | Columbia GSAPP | WorkFlows</span>
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <span class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+            <nav class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="./index.html" class="nav-link active">Relational Structures</a>
+                <a href="../Temporal%20Structures/index.html" class="nav-link">Temporal Structures</a>
+                <a href="../Geospatial%20Structures/index.html" class="nav-link">Geospatial Structures</a>
+                <a href="../Engagement%20Components/Examples/02%20Firebase%20Poll%20App/index.html" class="nav-link">Engagement</a>
+                <a href="../Agents/Examples/01%20OpenAI%20Hello%20World/index.html" class="nav-link">OpenAI Hello</a>
+                <a href="../Agents/Examples/02%20Chat%20Bot/index.html" class="nav-link">Chat Bot</a>
+            </nav>
         </div>
-        
-        <div class="legend-container">
-            <div class="legend-card">
-                <div class="legend-header">
-                    <h3>Emotion Spectrum</h3>
-                    <button class="legend-toggle" aria-label="Toggle legend">
-                        <span class="toggle-icon">▼</span>
-                    </button>
-                </div>
-                
-                <div class="legend-content">
-                    <div class="legend-grid">
-                        <div class="legend-item" data-category="happiness">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #FFD700, #FF8C00);">
-                                <span class="legend-emoji">😊</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Happiness</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="sadness">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #1E90FF, #00008B);">
-                                <span class="legend-emoji">😢</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Sadness</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="anger">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #FF4500, #8B0000);">
-                                <span class="legend-emoji">😠</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Anger</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                        
-                        <div class="legend-item" data-category="fear">
-                            <span class="legend-color" style="background: linear-gradient(135deg, #9932CC, #4B0082);">
-                                <span class="legend-emoji">😨</span>
-                            </span>
-                            <div class="legend-details">
-                                <span class="legend-label">Fear</span>
-                                <span class="legend-count">5 nodes</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="legend-actions">
-                        <button class="action-button" id="highlightAll">
-                            <span class="button-icon">✨</span>
-                            <span>Highlight All</span>
-                        </button>
-                        <button class="action-button" id="resetView">
-                            <span class="button-icon">🔄</span>
-                            <span>Reset View</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="info-card">
-                <div class="info-header">
-                    <h3>How to Interact</h3>
-                    <span class="info-icon">ℹ️</span>
-                </div>
-                <div class="info-content">
-                    <ul class="info-list">
-                        <li>🖱️ <strong>Click & Drag</strong> nodes to explore connections</li>
-                        <li>👆 <strong>Hover</strong> over nodes to highlight relationships</li>
-                        <li>🔍 <strong>Scroll</strong> to zoom in/out of the network</li>
-                        <li>🎨 <strong>Intensity</strong> of color indicates emotional strength</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    </header>
+    
+    <!-- Title -->
+    <div class="title-container">
+        <h1>Relational Structures</h1>
+        <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.2em; font-weight: 300; margin-top: 10px; letter-spacing: 1px;">Interactive Network Visualization</p>
     </div>
     
+    <!-- Custom cursor -->
+    <div class="custom-cursor"></div>
+    
+    <!-- Ambient overlay -->
+    <div class="ambient-overlay"></div>
+    
+    <!-- Flowing particles -->
+    <div class="flow-particles"></div>
 
-    <script>
-        // DOM Elements
-        const controlsToggle = document.querySelector('.toggle-controls');
-        const controlsContent = document.querySelector('.controls-content');
-        const legendToggle = document.querySelector('.legend-toggle');
-        const legendContent = document.querySelector('.legend-content');
-        const highlightAllBtn = document.getElementById('highlightAll');
-        const resetViewBtn = document.getElementById('resetView');
+    <div id="network-container">
+        <div class="stats">
+            <div id="node-count"></div>
+            <div id="connection-count"></div>
+            <div id="current-emotion"></div>
+        </div>
+
+        <div class="info-panel" id="info-panel">
+            <h3 id="emotion-name"></h3>
+            <div id="emotion-details"></div>
+        </div>
+
+        <div class="controls">
+            <div class="control-item">
+                <input type="range" id="flow-strength" min="10" max="300" value="80">
+                <label>flow</label>
+            </div>
+            <div class="control-item">
+                <input type="range" id="connection-distance" min="20" max="150" value="60">
+                <label>distance</label>
+            </div>
+            <div class="control-item">
+                <select id="emotion-filter">
+                    <option value="all">all</option>
+                </select>
+                <label>filter</label>
+            </div>
+            <div class="control-item">
+                <input type="checkbox" id="show-labels" checked>
+                <label>labels</label>
+            </div>
+        </div>
+
+        <svg id="network-svg"></svg>
         
-        // Toggle controls panel
-        if (controlsToggle && controlsContent) {
-            controlsToggle.addEventListener('click', () => {
-                const isExpanded = controlsToggle.getAttribute('aria-expanded') === 'true';
-                controlsToggle.setAttribute('aria-expanded', !isExpanded);
-                controlsContent.style.display = isExpanded ? 'none' : 'block';
-                controlsToggle.querySelector('.toggle-icon').textContent = isExpanded ? '▼' : '▲';
-            });
-            
-            // Start with controls expanded
-            controlsToggle.setAttribute('aria-expanded', 'true');
+        <!-- Description -->
+        <div class="description">
+            <p>This work is inspired by the game <a href="https://www.synonuity.com/" target="_blank">Synonuity</a>. It shifts my focus from direct relationships to the underlying system mechanics and complexities, revealing subsets of context that shape meaning.</p>
+        </div>
+    </div>
+
+  <script>
+    // Create flowing particles
+    function createFlowParticles() {
+        const container = document.querySelector('.flow-particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'flow-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            container.appendChild(particle);
         }
+    }
+
+    // Custom cursor follow
+    let mouseX = 0, mouseY = 0;
+    const cursor = document.querySelector('.custom-cursor');
+    
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = (mouseX - 10) + 'px';
+        cursor.style.top = (mouseY - 10) + 'px';
         
-        // Toggle legend content on mobile
-        if (legendToggle && legendContent) {
-            legendToggle.addEventListener('click', () => {
-                const isExpanded = legendToggle.getAttribute('aria-expanded') === 'true';
-                legendToggle.setAttribute('aria-expanded', !isExpanded);
-                legendContent.style.display = isExpanded ? 'none' : 'block';
-                legendToggle.querySelector('.toggle-icon').textContent = isExpanded ? '▼' : '▲';
-            });
-            
-            // Start with legend expanded on desktop, collapsed on mobile
-            const isMobile = window.innerWidth < 768;
-            legendToggle.setAttribute('aria-expanded', !isMobile);
-            legendContent.style.display = isMobile ? 'none' : 'block';
-            
-            // Update on window resize
-            window.addEventListener('resize', () => {
-                const isMobile = window.innerWidth < 768;
-                const isExpanded = legendToggle.getAttribute('aria-expanded') === 'true';
-                if (isMobile && isExpanded) {
-                    legendContent.style.display = 'none';
-                } else if (!isMobile) {
-                    legendContent.style.display = 'block';
-                }
-            });
-        }
-        
-        // Highlight all nodes of a category when legend item is clicked
-        document.querySelectorAll('.legend-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                // Remove active state from all legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Add active state to clicked item
-                this.style.background = 'rgba(99, 102, 241, 0.2)';
-                
-                // Here you would add logic to highlight nodes of this category
-                // For example: highlightNodesByCategory(category);
-            });
-        });
-        
-        // Highlight all nodes
-        if (highlightAllBtn) {
-            highlightAllBtn.addEventListener('click', () => {
-                // Reset any active legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Here you would add logic to highlight all nodes
-                // For example: highlightAllNodes();
-            });
-        }
-        
-        // Reset view
-        if (resetViewBtn) {
-            resetViewBtn.addEventListener('click', () => {
-                // Reset any active legend items
-                document.querySelectorAll('.legend-item').forEach(i => {
-                    i.style.background = 'rgba(255, 255, 255, 0.03)';
-                });
-                // Reset the visualization to initial state
-                restartSimulation();
-            });
-        }
-        
-        // Apply different layout algorithms
-        function applyForceLayout(layoutType) {
-            if (!simulation) return;
-            
-            // Stop any current simulation
-            simulation.stop();
-            
-            if (layoutType === 'circular') {
-                // Arrange nodes in a circle
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const radius = Math.min(width, height) * 0.4;
-                const angle = (2 * Math.PI) / nodes.length;
-                
-                nodes.forEach((node, i) => {
-                    // Position nodes in a circle
-                    node.fx = centerX + radius * Math.cos(angle * i);
-                    node.fy = centerY + radius * Math.sin(angle * i);
-                    
-                    // Add a little randomness to prevent overlapping
-                    node.fx += (Math.random() - 0.5) * 20;
-                    node.fy += (Math.random() - 0.5) * 20;
-                });
-                
-                // Restart simulation with no forces initially
-                simulation.force('charge', d3.forceManyBody().strength(-100));
-                simulation.force('center', d3.forceCenter(width / 2, height / 2));
-                simulation.alpha(1).restart();
-                
-                // After a delay, add some force to make it more dynamic
-                setTimeout(() => {
-                    simulation.force('charge', d3.forceManyBody().strength(-300));
-                    simulation.alpha(1).restart();
-                }, 500);
-                
-                console.log('Applied circular layout');
-                
-            } else if (layoutType === 'force') {
-                // Reset fixed positions for force-directed layout
-                nodes.forEach(node => {
-                    node.fx = null;
-                    node.fy = null;
-                });
-                
-                // Set up force simulation
-                simulation.force('charge', d3.forceManyBody().strength(-300));
-                simulation.force('center', d3.forceCenter(width / 2, height / 2));
-                simulation.force('link', d3.forceLink(links)
-                    .id(d => d.id)
-                    .distance(100)
-                    .strength(0.1)
-                );
-                
-                // Add collision detection
-                simulation.force('collision', d3.forceCollide().radius(d => d.size * 1.5 || 25));
-                
-                // Restart simulation
-                simulation.alpha(1).restart();
-                
-                console.log('Applied force-directed layout');
-            }
-        }
-        
-        // Emoji mapping for different color categories
-        const emojiMap = {
-            // Red hues (0-30°)
-            'red': '❤️',
-            // Orange/Yellow hues (30-90°)
-            'orange': '🍊',
-            'yellow': '⭐',
-            // Green hues (90-180°)
-            'green': '🌿',
-            // Blue hues (180-240°)
-            'blue': '💧',
-            // Purple/Pink hues (240-360°)
-            'purple': '🌸',
-            'pink': '🎀',
-            // Special emoji for connections
-            'hue': '🔗',
-            'synonym': '🔄'
-        };
+        // Update ambient overlay
+        document.documentElement.style.setProperty('--mouse-x', (mouseX / window.innerWidth * 100) + '%');
+        document.documentElement.style.setProperty('--mouse-y', (mouseY / window.innerHeight * 100) + '%');
+    });
 
-        // Color dataset with hue values, comprehensive real-life examples, and synonyms
-        const colorData = [
-            { name: "Crimson", hex: "#dc143c", hue: 348, emoji: '❤️', examples: ["Ripe cherries", "Rose petals", "Fire truck", "Apple skin", "Red wine", "Cranberries", "Valentine's roses", "Stop sign"], synonyms: ["Deep Red", "Blood Red", "Cherry Red"] },
-            { name: "Scarlet", hex: "#ff2400", hue: 8, emoji: '🍒', examples: ["Strawberries", "Cardinal bird", "Red lipstick", "Tomatoes", "Red peppers", "Ladybug", "Fire engine", "Red maple leaves"], synonyms: ["Bright Red", "Fire Red", "Vermillion"] },
-            { name: "Coral", hex: "#ff7f50", hue: 16, emoji: '🦩', examples: ["Coral reef", "Sunset clouds", "Peach fruit", "Salmon flesh", "Papaya", "Hibiscus flower", "Flamingo feathers", "Terracotta pots"], synonyms: ["Salmon", "Peach", "Apricot"] },
-            { name: "Orange", hex: "#ffa500", hue: 39, emoji: '🍊', examples: ["Orange fruit", "Autumn leaves", "Basketball", "Pumpkin", "Carrot", "Tiger fur", "Traffic cones", "Monarch butterfly"], synonyms: ["Amber", "Burnt Orange", "Rust"] },
-            { name: "Tangerine", hex: "#ff8c00", hue: 33, examples: ["Tangerine fruit", "Marigold flowers", "Safety cone", "Persimmon", "Orange bell pepper", "Goldfish", "Sunset", "Clementine"], synonyms: ["Mandarin", "Pumpkin Orange", "Flame"] },
-            { name: "Gold", hex: "#ffd700", hue: 51, examples: ["Gold jewelry", "Sunflower petals", "Honey", "Corn kernels", "Banana peel", "Wheat fields", "Golden retriever", "Daffodils"], synonyms: ["Golden Yellow", "Amber", "Honey"] },
-            { name: "Yellow", hex: "#ffff00", hue: 60, emoji: '⭐', examples: ["Lemon", "Taxi cab", "Banana", "Sunflower center", "Butter", "Canary bird", "School bus", "Corn on the cob"], synonyms: ["Lemon Yellow", "Canary", "Sunshine"] },
-            { name: "Chartreuse", hex: "#7fff00", hue: 90, emoji: '🍏', examples: ["Tennis ball", "Lime zest", "Spring leaves", "Green apple", "Kiwi fruit", "Parrot feathers", "Highlighter", "Young grass"], synonyms: ["Yellow Green", "Lime Green", "Electric Green"] },
-            { name: "Lime", hex: "#32cd32", hue: 120, examples: ["Lime fruit", "Fresh grass", "Emerald gem", "Green grapes", "Basil leaves", "Tree frog", "Mint leaves", "Cucumber skin"], synonyms: ["Bright Green", "Vivid Green", "Spring Green"] },
-            { name: "Forest Green", hex: "#228b22", hue: 120, examples: ["Pine trees", "Moss", "Jade stone", "Spinach", "Broccoli", "Evergreen needles", "Avocado skin", "Pickle"], synonyms: ["Dark Green", "Hunter Green", "Emerald"] },
-            { name: "Teal", hex: "#008080", hue: 180, examples: ["Turquoise stone", "Peacock feathers", "Ocean water", "Duck egg", "Patina copper", "Eucalyptus leaves", "Teal duck", "Amazonite"], synonyms: ["Blue Green", "Turquoise", "Aqua"] },
-            { name: "Cyan", hex: "#00ffff", hue: 180, emoji: '💧', examples: ["Swimming pool", "Tropical sea", "Aquamarine gem", "Blue raspberry", "Iceberg", "Bluebird egg", "Toothpaste", "Mouthwash"], synonyms: ["Aqua", "Electric Blue", "Bright Turquoise"] },
-            { name: "Sky Blue", hex: "#87ceeb", hue: 197, emoji: '🌐', examples: ["Clear sky", "Robin's egg", "Sapphire", "Forget-me-not", "Blue jay", "Cornflower", "Baby boy items", "Bluebell flower"], synonyms: ["Light Blue", "Baby Blue", "Powder Blue"] },
-            { name: "Royal Blue", hex: "#4169e1", hue: 225, emoji: '🔵', examples: ["Royal robe", "Bluebird", "Denim jeans", "Blue iris", "Cobalt glass", "Police uniform", "Smurf", "Blue morpho butterfly"], synonyms: ["Cobalt Blue", "True Blue", "Imperial Blue"] },
-            { name: "Navy", hex: "#000080", hue: 240, examples: ["Navy uniform", "Midnight sky", "Blueberry", "Dark denim", "Sapphire", "Night ocean", "Blackberry", "Formal suit"], synonyms: ["Dark Blue", "Midnight Blue", "Deep Blue"] },
-            { name: "Indigo", hex: "#4b0082", hue: 275, emoji: '🌀', examples: ["Indigo dye", "Eggplant", "Purple grapes", "Twilight sky", "Plum skin", "Blackcurrant", "Amethyst", "Violet flower"], synonyms: ["Blue Purple", "Deep Purple", "Violet"] },
-            { name: "Purple", hex: "#800080", hue: 300, emoji: '🌸', examples: ["Amethyst crystal", "Lavender flowers", "Plum fruit", "Purple cabbage", "Violet petals", "Grape juice", "Orchid", "Purple onion"], synonyms: ["Violet", "Plum", "Royal Purple"] },
-            { name: "Magenta", hex: "#ff00ff", hue: 300, emoji: '🌸', examples: ["Fuchsia flower", "Pink flamingo", "Magenta ink", "Dragon fruit", "Bougainvillea", "Petunia", "Highlighter", "Party decorations"], synonyms: ["Fuchsia", "Hot Pink", "Electric Pink"] },
-            { name: "Rose", hex: "#ff007f", hue: 330, examples: ["Rose flower", "Pink sunset", "Carnation", "Watermelon flesh", "Pink grapefruit", "Hibiscus", "Raspberry", "Strawberry milk"], synonyms: ["Pink", "Blush", "Dusty Rose"] },
-            { name: "Hot Pink", hex: "#ff69b4", hue: 330, emoji: '🎀', examples: ["Pink flamingo", "Bubble gum", "Cherry blossom", "Cotton candy", "Pink roses", "Peony flower", "Barbie pink", "Watermelon interior"], synonyms: ["Bright Pink", "Neon Pink", "Bubble Gum Pink"] }
-        ];
+    // Parse emotion data with flow-inspired colors
+    const flowColors = {
+        'Happiness': 'rgba(255, 230, 100, 0.9)',
+        'Sadness': 'rgba(100, 150, 255, 0.9)', 
+        'Anger': 'rgba(255, 80, 80, 0.9)',
+        'Fear': 'rgba(180, 100, 255, 0.9)',
+        'Surprise': 'rgba(255, 150, 200, 0.9)',
+        'Disgust': 'rgba(120, 200, 120, 0.9)',
+        'Trust': 'rgba(100, 200, 220, 0.9)',
+        'Anticipation': 'rgba(255, 180, 100, 0.9)'
+    };
 
-        // Create links based on hue similarity and synonym relationships
-        function createLinks(nodes) {
-            const links = [];
-            const threshold = 60; // Hue difference threshold
-            
-            // Create hue-based connections (bidirectional)
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const hue1 = nodes[i].hue;
-                    const hue2 = nodes[j].hue;
-                    
-                    // Calculate hue difference considering circular nature (0-360)
-                    let diff = Math.abs(hue1 - hue2);
-                    if (diff > 180) diff = 360 - diff;
-                    
-                    if (diff < threshold) {
-                        links.push({
-                            source: i,
-                            target: j,
-                            strength: 1 - (diff / threshold),
-                            type: 'hue',
-                            bidirectional: true
-                        });
-                    }
-                }
-            }
-            
-            // Create synonym connections (unidirectional)
-            nodes.forEach((node, sourceIndex) => {
-                node.synonyms.forEach(synonym => {
-                    // Find if any other node's name matches this synonym (case-insensitive)
-                    const targetIndex = nodes.findIndex((targetNode, targetIdx) => 
-                        targetIdx !== sourceIndex && 
-                        targetNode.name.toLowerCase() === synonym.toLowerCase()
-                    );
-                    
-                    if (targetIndex !== -1) {
-                        links.push({
-                            source: sourceIndex,
-                            target: targetIndex,
-                            strength: 0.8,
-                            type: 'synonym',
-                            bidirectional: false,
-                            synonymName: synonym
-                        });
-                    }
-                });
-            });
-            
-            return links;
-        }
-
-        // Set up SVG
-        const width = 1000;
-        const height = 600;
-        const svg = d3.select("#network")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height);
-
-        // Create gradient definitions
-        const defs = svg.append("defs");
-        colorData.forEach((color, i) => {
-            const gradient = defs.append("radialGradient")
-                .attr("id", `gradient-${i}`)
-                .attr("cx", "50%")
-                .attr("cy", "50%")
-                .attr("r", "50%");
-            
-            gradient.append("stop")
-                .attr("offset", "0%")
-                .attr("stop-color", color.hex)
-                .attr("stop-opacity", 1);
-            
-            gradient.append("stop")
-                .attr("offset", "100%")
-                .attr("stop-color", d3.color(color.hex).darker(1))
-                .attr("stop-opacity", 0.8);
-        });
-
-        // Initialize data
-        let nodes = colorData.map((d, i) => ({ ...d, id: i }));
-        let links = createLinks(nodes);
-        let showConnections = true;
-
-        // Create tooltip
-        const tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip");
-
-        // Create simulation with adjusted forces for larger nodes
-        let simulation = d3.forceSimulation(nodes)
-            .force("link", d3.forceLink(links).id(d => d.id).distance(120).strength(d => d.strength)) // Increased from 80 to 120
-            .force("charge", d3.forceManyBody().strength(-300)) // Increased from -200 to -300
-            .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("collision", d3.forceCollide().radius(35)); // Increased from 25 to 35
-
-        // Create voxel-style links
-        const linkElements = svg.append("g")
-            .attr("class", "links")
-            .selectAll("line")
-            .data(links)
-            .enter()
-            .append("line")
-            .attr("class", "link")
-            .attr("stroke", "#666")
-            .attr("stroke-opacity", 0.4)
-            .attr("stroke-width", 1.2)
-            .attr("stroke-dasharray", "4,2") // Dashed for voxel look
-            .style("stroke-linecap", "square"); // Sharp edges
-
-        // Create bubble groups for each link
-        let bubbleGroups = svg.selectAll(".bubble-group")
-            .data(links)
-            .enter()
-            .append("g")
-            .attr("class", "bubble-group");
-
-        // Add multiple bubbles per link for continuous flow
-        bubbleGroups.each(function(d, i) {
-            const group = d3.select(this);
-            const numBubbles = d.type === 'synonym' ? 3 : 2;
-            
-            for (let j = 0; j < numBubbles; j++) {
-                group.append("circle")
-                    .attr("class", "bubble")
-                    .attr("r", d.type === 'synonym' ? 4 : 3)
-                    .attr("fill", d.type === 'synonym' ? "#ffff00" : "#ffffff")
-                    .attr("opacity", d.type === 'synonym' ? 0.9 : 0.7)
-                    .style("filter", d.type === 'synonym' ? 
-                        "drop-shadow(0 0 6px #ffff00)" : 
-                        "drop-shadow(0 0 4px rgba(255,255,255,0.5))")
-                    .style("animation-delay", `${j * 0.8}s`);
-            }
-        });
-
-        // Add arrowheads for unidirectional synonym links
-        defs.append("defs").append("marker")
-            .attr("id", "arrowhead")
-            .attr("viewBox", "0 -5 10 10")
-            .attr("refX", 15)
-            .attr("refY", 0)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("d", "M0,-5L10,0L0,5")
-            .attr("fill", "#ffff00")
-            .style("filter", "drop-shadow(0 0 2px #ffff00)");
-
-        // Apply arrowheads to synonym links
-        linkElements.filter(d => d.type === 'synonym')
-            .attr("marker-end", "url(#arrowhead)");
-
-        // Animate bubbles along the links
-        function animateBubbles() {
-            bubbleGroups.selectAll(".bubble")
-                .transition()
-                .duration(2000)
-                .ease(d3.easeLinear)
-                .attrTween("transform", function(d) {
-                    const link = d3.select(this.parentNode).datum();
-                    return function(t) {
-                        if (!link.source.x || !link.target.x) return "";
-                        
-                        const x1 = link.source.x;
-                        const y1 = link.source.y;
-                        const x2 = link.target.x;
-                        const y2 = link.target.y;
-                        
-                        // For synonym links, animate from source to target
-                        // For hue links, animate both directions
-                        let progress = t;
-                        if (link.type === 'hue') {
-                            // Create back-and-forth movement for hue connections
-                            progress = t < 0.5 ? t * 2 : (1 - t) * 2;
-                        }
-                        
-                        const x = x1 + (x2 - x1) * progress;
-                        const y = y1 + (y2 - y1) * progress;
-                        
-                        return `translate(${x}, ${y})`;
-                    };
-                })
-                .on("end", function() {
-                    // Restart animation for continuous flow
-                    d3.select(this).attr("transform", "translate(0,0)");
-                });
-        }
-
-        // Start bubble animation
-        function startBubbleAnimation() {
-            animateBubbles();
-            setInterval(animateBubbles, 2200); // Slight delay to create continuous flow
-        }
-
-        // Create nodes with voxel style
-        let nodeElements = svg.selectAll(".node")
-            .data(nodes)
-            .enter()
-            .append("g")
-            .attr("class", "node")
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
-
-        // Create computational nodes with complex 3D voxel design
-        nodeElements.each(function(d, i) {
-            const node = d3.select(this);
-            const baseSize = d.size || 18; // Slightly larger base size for more detail
-            const group = node.append("g")
-                .attr("class", "computational-node")
-                .style("cursor", "pointer");
-            
-            // Create base voxel structure with multiple layers
-            const createVoxelLayer = (x, y, size, color, depth) => {
-                const layer = group.append("g")
-                    .attr("class", `voxel-layer depth-${depth}`)
-                    .attr("transform", `translate(${x}, ${y})`);
-                
-                // Base shape with subtle rotation for computational feel
-                layer.append("rect")
-                    .attr("width", size)
-                    .attr("height", size)
-                    .attr("rx", 1)
-                    .attr("ry", 1)
-                    .style("fill", color)
-                    .style("stroke", "rgba(255,255,255,0.8)")
-                    .style("stroke-width", 0.5)
-                    .style("filter", `url(#voxel-shadow-${depth})`);
-                
-                // Add computational grid pattern
-                const gridSize = size / 4;
-                for (let gx = 0; gx < 4; gx++) {
-                    for (let gy = 0; gy < 4; gy++) {
-                        if ((gx + gy) % 2 === 0) continue; // Skip every other cell
-                        layer.append("rect")
-                            .attr("x", gx * gridSize)
-                            .attr("y", gy * gridSize)
-                            .attr("width", gridSize - 0.5)
-                            .attr("height", gridSize - 0.5)
-                            .style("fill", "rgba(255,255,255,0.1)")
-                            .style("stroke", "none");
-                    }
-                }
-                
-                return layer;
+    const nodes = `id,label,category,valence,arousal,intensity,group,color
+n1,Joy,Primary,Positive,High,0.9,Happiness,#FFD700
+n2,Happiness,Primary,Positive,Medium,0.85,Happiness,#FFE066
+n3,Ecstasy,Secondary,Positive,Very High,0.95,Happiness,#FF4500
+n4,Contentment,Secondary,Positive,Low,0.6,Happiness,#FFF8DC
+n5,Sadness,Primary,Negative,Medium,0.8,Sadness,#1E90FF
+n6,Melancholy,Secondary,Negative,Medium,0.75,Sadness,#4682B4
+n7,Grief,Secondary,Negative,High,0.9,Sadness,#00008B
+n8,Anger,Primary,Negative,High,0.9,Anger,#FF0000
+n9,Rage,Secondary,Negative,Very High,0.95,Anger,#8B0000
+n10,Annoyance,Secondary,Negative,Low,0.6,Anger,#FF6347
+n11,Fear,Primary,Negative,High,0.85,Fear,#9400D3
+n12,Terror,Secondary,Negative,Very High,0.95,Fear,#4B0082
+n13,Anxiety,Secondary,Negative,Medium,0.7,Fear,#9932CC
+n14,Surprise,Primary,Neutral,Medium,0.75,Surprise,#FF69B4
+n15,Amazement,Secondary,Positive,High,0.85,Surprise,#FF1493
+n16,Disgust,Primary,Negative,Medium,0.8,Disgust,#228B22
+n17,Contempt,Secondary,Negative,Low,0.6,Disgust,#6B8E23
+n18,Trust,Primary,Positive,Medium,0.8,Trust,#00CED1
+n19,Acceptance,Secondary,Positive,Low,0.7,Trust,#20B2AA
+n20,Anticipation,Primary,Positive,Medium,0.75,Anticipation,#FFA500`
+        .split('\n')
+        .slice(1)
+        .map(d => {
+            const [id, label, category, valence, arousal, intensity, group, color] = d.split(',');
+            return {
+                id,
+                label,
+                category,
+                valence,
+                arousal,
+                intensity: parseFloat(intensity),
+                group,
+                color,
+                size: 5 + (parseFloat(intensity) * 15)
             };
-            
-            // Create multiple layers for 3D effect
-            const mainVoxel = createVoxelLayer(-baseSize/2, -baseSize/2, baseSize, d.hex, 1);
-            
-            // Add secondary voxel elements for computational look
-            const secondarySize = baseSize * 0.6;
-            createVoxelLayer(
-                baseSize * 0.2, 
-                -baseSize * 0.8, 
-                secondarySize, 
-                d3.color(d.hex).brighter(0.4),
-                2
-            );
-            
-            // Add small indicator lights
-            const indicatorSize = baseSize * 0.15;
-            for (let i = 0; i < 3; i++) {
-                group.append("circle")
-                    .attr("cx", -baseSize/2 + (i * indicatorSize * 1.5) + indicatorSize)
-                    .attr("cy", baseSize/2 - indicatorSize/2)
-                    .attr("r", indicatorSize/2)
-                    .style("fill", i === 0 ? "#4CAF50" : i === 1 ? "#FFC107" : "#F44336")
-                    .style("opacity", 0.8)
-                    .style("filter", "url(#glow)")
-                    .style("mix-blend-mode", "screen");
-            }
-            
-            // Add emoji element (initially hidden)
-            const emoji = group.append("text")
-                .attr("class", "node-emoji")
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.35em")
-                .attr("font-size", baseSize * 0.7)
-                .style("opacity", 0)
-                .style("pointer-events", "none")
-                .style("transition", "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)")
-                .style("transform", "scale(0.5)")
-                .style("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.3))")
-                .text(d => d.emoji || '✨');
-            
-            // Interactive elements
-            group.on("mouseover", function(event, d) {
-                // Animate main voxel
-                d3.select(this).select(".voxel-layer.depth-1 rect")
-                    .transition()
-                    .duration(300)
-                    .attr("width", baseSize * 1.1)
-                    .attr("height", baseSize * 1.1)
-                    .attr("x", -baseSize * 0.55)
-                    .attr("y", -baseSize * 0.55);
-                
-                // Show tooltip
-                tooltip.transition().duration(200).style("opacity", 1);
-                tooltip.html(`
-                    <div class="tooltip-header">
-                        <span class="tooltip-emoji">${d.emoji || '✨'}</span>
-                        <span class="tooltip-title">${d.name}</span>
-                    </div>
-                    <div class="tooltip-body">
-                        <div class="tooltip-row">
-                            <span class="tooltip-label">HEX:</span>
-                            <span class="tooltip-value">${d.hex}</span>
-                            <span class="color-swatch" style="background: ${d.hex}"></span>
-                        </div>
-                        <div class="tooltip-row">
-                            <span class="tooltip-label">HUE:</span>
-                            <span class="tooltip-value">${d.hue}°</span>
-                        </div>
-                        <div class="tooltip-divider"></div>
-                        <div class="tooltip-section">
-                            <div class="tooltip-subtitle">SYNONYMS</div>
-                            <div class="tooltip-tags">
-                                ${d.synonyms.map(s => `<span class="tag">${s}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="tooltip-section">
-                            <div class="tooltip-subtitle">EXAMPLES</div>
-                            <div class="tooltip-tags">
-                                ${d.examples.slice(0, 3).map(e => `<span class="tag">${e}</span>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `)
-                .style("left", (event.pageX + 15) + "px")
-                .style("top", (event.pageY - 15) + "px");
-                
-                // Show emoji with animation
-                emoji
-                    .style("opacity", 1)
-                    .style("transform", "scale(1.3) translateY(-15px)");
-                
-                // Animate indicator lights
-                d3.select(this).selectAll("circle")
-                    .transition()
-                    .duration(200)
-                    .attr("r", indicatorSize/1.5)
-                    .style("opacity", 1);
-            })
-            .on("mouseout", function() {
-                // Reset main voxel
-                d3.select(this).select(".voxel-layer.depth-1 rect")
-                    .transition()
-                    .duration(300)
-                    .attr("width", baseSize)
-                    .attr("height", baseSize)
-                    .attr("x", -baseSize/2)
-                    .attr("y", -baseSize/2);
-                
-                tooltip.transition().duration(200).style("opacity", 0);
-                
-                // Hide emoji with animation
-                emoji
-                    .style("opacity", 0)
-                    .style("transform", "scale(0.5) translateY(0)");
-                
-                // Reset indicator lights
-                d3.select(this).selectAll("circle")
-                    .transition()
-                    .duration(200)
-                    .attr("r", indicatorSize/2)
-                    .style("opacity", 0.8);
-            })
-            .on("mousemove", function(event) {
-                tooltip
-                    .style("left", (event.pageX + 15) + "px")
-                    .style("top", (event.pageY - 15) + "px");
-            });
-        });
-        
-        // Add filters for voxel shadows and glows
-        const createVoxelFilter = (id, dx, dy, stdDev, opacity, blur = 0) => {
-            const filter = defs.append("filter")
-                .attr("id", `voxel-shadow-${id}`)
-                .attr("width", "200%")
-                .attr("height", "200%")
-                .attr("x", "-50%")
-                .attr("y", "-50%");
-                
-            filter.append("feDropShadow")
-                .attr("dx", dx)
-                .attr("dy", dy)
-                .attr("stdDeviation", stdDev)
-                .attr("flood-opacity", opacity);
-                
-            if (blur > 0) {
-                filter.append("feGaussianBlur")
-                    .attr("stdDeviation", blur)
-                    .attr("result", "blur");
-            }
-            
-            return filter;
-        };
-        
-        // Create multiple depth levels of shadows
-        createVoxelFilter(1, 1, 1, 1.5, 0.2);
-        createVoxelFilter(2, 2, 2, 2, 0.3);
-        
-        // Add glow filter for indicators
-        const glowFilter = defs.append("filter")
-            .attr("id", "glow")
-            .attr("width", "300%")
-            .attr("height", "300%")
-            .attr("x", "-100%")
-            .attr("y", "-100%");
-            
-        glowFilter.append("feGaussianBlur")
-            .attr("stdDeviation", 2)
-            .attr("result", "blur");
-            
-        glowFilter.append("feComposite")
-            .attr("in", "SourceGraphic")
-            .attr("in2", "blur")
-            .attr("operator", "over");
-            
-        // Update tooltip style for voxel theme
-        tooltip.style("border-radius", "4px")
-
-        // Add labels with computational style
-        nodeElements.append("text")
-            .text(d => d.name)
-            .attr("text-anchor", "middle")
-            .attr("dy", 45) // Position below the larger nodes
-            .attr("font-size", "10px")
-            .attr("fill", "#444")
-            .attr("font-weight", "600")
-            .style("text-transform", "uppercase")
-            .style("letter-spacing", "0.5px")
-            .style("font-family", "'Courier New', monospace")
-            .style("background", "rgba(255,255,255,0.8)")
-            .style("padding", "2px 6px")
-            .style("border-radius", "3px")
-            .style("box-shadow", "0 1px 3px rgba(0,0,0,0.1)")
-            .style("pointer-events", "none");
-
-        // Update positions on simulation tick
-        simulation.on("tick", () => {
-            linkElements
-                .attr("x1", d => d.source.x)
-                .attr("y1", d => d.source.y)
-                .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
-
-            nodeElements
-                .attr("transform", d => `translate(${d.x},${d.y})`);
-            
-            // Update bubble positions to follow the links
-            bubbleGroups.attr("transform", d => `translate(0,0)`);
         });
 
-        // Drag functions
-        function dragstarted(event, d) {
-            if (!event.active) simulation.alphaTarget(0.3).restart();
-            d.fx = d.x;
-            d.fy = d.y;
-        }
+    const links = `source,target,relationship,weight,directed,color
+n1,n2,related,0.8,TRUE,#FFD700
+n1,n3,related,0.7,TRUE,#FFD700
+n1,n4,related,0.6,TRUE,#FFD700
+n2,n5,opposite,0.7,TRUE,#1E90FF
+n2,n6,related,0.6,TRUE,#1E90FF
+n5,n7,related,0.8,TRUE,#1E90FF
+n5,n8,related,0.5,FALSE,#FF0000
+n8,n9,related,0.9,TRUE,#8B0000
+n8,n10,related,0.7,TRUE,#FF6347
+n11,n12,related,0.9,TRUE,#4B0082
+n11,n13,related,0.8,TRUE,#9932CC
+n14,n15,related,0.8,TRUE,#FF1493
+n16,n17,related,0.7,TRUE,#6B8E23
+n18,n19,related,0.8,TRUE,#20B2AA
+n20,n1,related,0.6,TRUE,#FFA500
+n20,n5,opposite,0.5,TRUE,#1E90FF
+n20,n8,opposite,0.6,TRUE,#FF0000
+n20,n11,related,0.4,TRUE,#9400D3
+n20,n14,related,0.5,TRUE,#FF69B4
+n20,n16,opposite,0.6,TRUE,#228B22
+n20,n18,related,0.7,TRUE,#00CED1`
+        .split('\n')
+        .slice(1)
+        .map(d => {
+            const [source, target, relationship, weight, directed, color] = d.split(',');
+            return {
+                source,
+                target,
+                relationship,
+                weight: parseFloat(weight),
+                directed: directed === 'TRUE',
+                color
+            };
+        });
 
-        function dragged(event, d) {
-            d.fx = event.x;
-            d.fy = event.y;
-        }
+    // Set up the SVG with zoom behavior
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    // Create SVG with viewBox for responsive scaling
+    const svg = d3.select('#network-svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('preserveAspectRatio', 'xMidYMid meet')
+        .style('background-color', 'transparent')
+        .call(d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            }));
 
-        function dragended(event, d) {
-            if (!event.active) simulation.alphaTarget(0);
-            d.fx = null;
-            d.fy = null;
-        }
+    // Add defs for arrow markers
+    const defs = svg.append('defs');
 
-        // Control functions
-        function restartSimulation() {
-            simulation.alpha(1).restart();
-        }
+    // Arrow marker for directed edges
+    defs.append('marker')
+        .attr('id', 'arrowhead')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 15)
+        .attr('refY', 0)
+        .attr('orient', 'auto')
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('xoverflow', 'visible')
+        .append('svg:path')
+        .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+        .attr('fill', 'rgba(255,255,255,0.5)');
 
-        function toggleLabels() {
-            const labels = d3.selectAll('.node text');
-            const isVisible = labels.style('display') !== 'none';
-            labels.style('display', isVisible ? 'none' : 'block');
-        }
+    // Create a group for the graph and center it
+    const g = svg.append('g')
+        .attr('transform', `translate(${width/2},${height/2})`);
 
-        function toggleLinks() {
-            const links = d3.selectAll('line');
-            const isVisible = links.style('opacity') !== '0';
-            links.style('opacity', isVisible ? 0 : 0.6);
-        }
+    // Create a group for links and nodes
+    const linkGroup = g.append('g').attr('class', 'links');
+    const nodeGroup = g.append('g').attr('class', 'nodes');
 
-        // Add some initial animation
+    // Set up the force simulation with centered layout
+    const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(d => 80 - (d.weight * 50)))
+        .force('charge', d3.forceManyBody().strength(-400))
+        .force('center', d3.forceCenter(0, 0)) // Center at 0,0 since we're translating the group
+        .force('collision', d3.forceCollide().radius(d => d.size * 1.2))
+        .force('x', d3.forceX().strength(0.1))
+        .force('y', d3.forceY().strength(0.1));
+
+    // Create the links
+    const link = linkGroup.selectAll('line')
+        .data(links)
+        .enter().append('line')
+        .attr('class', 'flow-connection')
+        .attr('stroke', d => d.color || 'rgba(255,255,255,0.3)')
+        .attr('stroke-width', d => d.weight * 2)
+        .attr('marker-end', d => d.directed ? 'url(#arrowhead)' : '');
+
+    // Create the nodes
+    const node = nodeGroup.selectAll('circle')
+        .data(nodes)
+        .enter().append('circle')
+        .attr('class', 'flow-node')
+        .attr('r', d => d.size)
+        .attr('fill', d => d.color)
+        .call(d3.drag()
+            .on('start', dragstarted)
+            .on('drag', dragged)
+            .on('end', dragended));
+
+    // Add labels
+    const label = nodeGroup.selectAll('text')
+        .data(nodes)
+        .enter().append('text')
+        .attr('class', 'flow-label')
+        .text(d => d.label)
+        .attr('dy', d => d.size + 15);
+
+    // Update node and link positions on each tick
+    simulation.on('tick', () => {
+        link
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+
+        node
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y);
+
+        label
+            .attr('x', d => d.x)
+            .attr('y', d => d.y);
+    });
+
+    // Handle node hover
+    node.on('mouseover', (event, d) => {
+        // Highlight connected nodes
+        const connectedNodes = new Set();
+        const connectedLinks = [];
+
+        links.forEach(link => {
+            if (link.source.id === d.id || link.target.id === d.id) {
+                connectedNodes.add(link.source.id === d.id ? link.target.id : link.source.id);
+                connectedLinks.push(link);
+            }
+        });
+
+        // Update node and link styles
+        node.classed('highlighted', nodeD => 
+            nodeD.id === d.id || connectedNodes.has(nodeD.id)
+        );
+
+        link.classed('highlighted', linkD => 
+            linkD.source.id === d.id || linkD.target.id === d.id
+        );
+
+        // Show info panel
+        const infoPanel = d3.select('#info-panel');
+        infoPanel.select('#emotion-name').text(d.label);
+        infoPanel.select('#emotion-details').html(`
+            <div class="detail"><strong>Category:</strong> ${d.category}</div>
+            <div class="detail"><strong>Valence:</strong> ${d.valence}</div>
+            <div class="detail"><strong>Arousal:</strong> ${d.arousal}</div>
+            <div class="detail"><strong>Intensity:</strong> ${(d.intensity * 100).toFixed(0)}%</div>
+        `);
+        infoPanel.classed('visible', true);
+    });
+
+    node.on('mouseout', () => {
+        // Reset styles
+        node.classed('highlighted', false);
+        link.classed('highlighted', false);
+        
+        // Hide info panel
+        d3.select('#info-panel').classed('visible', false);
+    });
+
+    // Handle drag behavior
+    function dragstarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+        
+        // Create flow trail
+        createFlowTrail(event.x, event.y);
+    }
+
+    function dragended(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+    // Create flow trail effect
+    function createFlowTrail(x, y) {
+        const trail = document.createElement('div');
+        trail.className = 'flow-trail';
+        trail.style.left = x + 'px';
+        trail.style.top = y + 'px';
+        document.body.appendChild(trail);
+        
+        // Fade out and remove
         setTimeout(() => {
-            nodeElements.selectAll("circle")
-                .transition()
-                .duration(2000)
-                .ease(d3.easeElastic)
-                .attr("r", 20);
-            
-            // Start bubble animations after nodes are settled
-            setTimeout(startBubbleAnimation, 1000);
-        }, 500);
-    </script>
-    <script src="cellular-painting.js"></script>
+            trail.style.opacity = '0';
+            trail.style.transform = 'scale(1.5)';
+            setTimeout(() => trail.remove(), 500);
+        }, 100);
+    }
+
+    // Update stats
+    function updateStats() {
+        d3.select('#node-count').text(`Nodes: ${nodes.length}`);
+        d3.select('#connection-count').text(`Connections: ${links.length}`);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        createFlowParticles();
+        updateStats();
+        
+        // Show labels based on checkbox
+        d3.select('#show-labels').on('change', function() {
+            const show = this.checked;
+            d3.selectAll('.flow-label').classed('visible', show);
+        });
+
+        // Update flow strength
+        d3.select('#flow-strength').on('input', function() {
+            const strength = +this.value;
+            simulation.force('charge').strength(-strength);
+            simulation.alpha(0.3).restart();
+        });
+
+        // Update connection distance
+        d3.select('#connection-distance').on('input', function() {
+            const distance = +this.value;
+            simulation.force('link').distance(distance);
+            simulation.alpha(0.3).restart();
+        });
+
+        // Show labels initially
+        d3.selectAll('.flow-label').classed('visible', true);
+        
+        // Show info panel after delay
+        setTimeout(() => {
+            d3.select('#info-panel').classed('visible', true);
+            setTimeout(() => d3.select('#info-panel').classed('visible', false), 3000);
+        }, 2000);
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
+        
+        svg.attr('width', newWidth)
+           .attr('height', newHeight);
+        
+        simulation.force('center', d3.forceCenter(newWidth / 2, newHeight / 2));
+        simulation.alpha(0.3).restart();
+    });
+  </script>
     <script>
-        // Toggle node labels visibility
-        function toggleLabels() {
-            const labels = d3.selectAll('.node text');
-            const isVisible = labels.style('display') !== 'none';
-            labels.style('display', isVisible ? 'none' : 'block');
-        }
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
         
-        // Toggle links visibility
-        function toggleLinks() {
-            const links = d3.selectAll('line');
-            const isVisible = links.style('opacity') !== '0';
-            links.style('opacity', isVisible ? 0 : 0.6);
-        }
-        
-        // Initialize mobile menu
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuButton = document.getElementById('menuButton');
-            const dropdownContent = document.getElementById('dropdownContent');
-            
-            if (menuButton && dropdownContent) {
-                menuButton.addEventListener('click', function() {
-                    dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-                });
+        if (menuToggle && navLinks && hamburger) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+                document.body.classList.toggle('menu-open');
                 
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!event.target.matches('.menu-button') && !event.target.matches('.menu-button *')) {
-                        dropdownContent.style.display = 'none';
+                // Animate hamburger to X
+                if (menuToggle.classList.contains('active')) {
+                    hamburger.style.transform = 'rotate(45deg)';
+                    hamburger.style.top = '0';
+                    hamburger.style.bottom = '0';
+                    hamburger.style.margin = 'auto';
+                    hamburger.style.width = '20px';
+                    hamburger.style.height = '20px';
+                    hamburger.style.background = 'transparent';
+                    hamburger.style.border = 'none';
+                    hamburger.style.position = 'relative';
+                    hamburger.style.transform = 'rotate(45deg)';
+                    
+                    // Add the two lines that form the X
+                    hamburger.innerHTML = `
+                        <span style="position: absolute; top: 0; left: 50%; width: 2px; height: 20px; background: var(--text-primary); margin-left: -1px;"></span>
+                        <span style="position: absolute; left: 0; top: 50%; width: 20px; height: 2px; background: var(--text-primary); margin-top: -1px;"></span>
+                    `;
+                } else {
+                    // Reset to hamburger
+                    hamburger.innerHTML = '';
+                    hamburger.style.transform = 'rotate(0)';
+                    hamburger.style.top = 'auto';
+                    hamburger.style.bottom = 'auto';
+                    hamburger.style.margin = '0';
+                    hamburger.style.width = '18px';
+                    hamburger.style.height = '1px';
+                    hamburger.style.background = 'var(--text-primary)';
+                    hamburger.style.position = 'relative';
+                    
+                    // Recreate the hamburger lines
+                    hamburger.innerHTML = `
+                        <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+                        <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+                        <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+                    `;
+                }
+            });
+            
+            // Close menu when clicking on a nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768 && navLinks.classList.contains('active')) {
+                        navLinks.classList.remove('active');
+                        menuToggle.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        
+                        // Reset hamburger icon
+                        const hamburger = document.querySelector('.hamburger');
+                        if (hamburger) {
+                            hamburger.innerHTML = `
+                                <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: -6px; left: 0; transition: all 0.2s ease;"></span>
+                                <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 0; left: 0; transition: all 0.2s ease;"></span>
+                                <span style="position: absolute; width: 18px; height: 1px; background: var(--text-primary); top: 6px; left: 0; transition: all 0.2s ease;"></span>
+                            `;
+                        }
                     }
                 });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-links') && !e.target.closest('.menu-toggle')) {
+                    navLinks.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+            });
+            
+            // Handle window resize
+            function handleResize() {
+                if (window.innerWidth > 768) {
+                    navLinks.classList.remove('active');
+                    menuToggle.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
             }
-        });
+            
+            window.addEventListener('resize', handleResize);
+        }
+    });
     </script>
-    </main>
 </body>
 </html>
